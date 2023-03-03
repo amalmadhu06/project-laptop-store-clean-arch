@@ -74,13 +74,13 @@ tset rest
 
 ## user_info
 
-| id  | userID | first_name | last_name | isBlocked | blockedAt           | blockedBy | reasonForBlocking |
-|-----| ------ |------------|-----------|-----------|---------------------|-----------|-------------------|
-| 1   | 1      | sample     | user1     | false     | null                | null      | null              |
-| 2   | 2      | sample     | user2     | true      | 2022-02-28 10:30:00 | 1         | Abusive behavior  |
-| 3   | 3      | sample     | user3     | false     | null                | null      | null              |
-| 4   | 4      | sample     | user4     | false     | null                | null      | null              |
-| 5   | 5      | sample     | user5     | true      | 2022-02-28 12:30:00 | 1         | Spamming          |
+| id  | userID | first_name | last_name | isBlocked | blockedAt           | blockedBy | reasonForBlocking | isVerified |
+|-----| ------ |------------|-----------|-----------|---------------------|-----------|-------------------|------------|
+| 1   | 1      | sample     | user1     | false     | null                | null      | null              | true       |
+| 2   | 2      | sample     | user2     | true      | 2022-02-28 10:30:00 | 1         | Abusive behavior  | true       |
+| 3   | 3      | sample     | user3     | false     | null                | null      | null              | true       |
+| 4   | 4      | sample     | user4     | false     | null                | null      | null              | true       |
+| 5   | 5      | sample     | user5     | true      | 2022-02-28 12:30:00 | 1         | Spamming          | true       |
 
 
 ## address
