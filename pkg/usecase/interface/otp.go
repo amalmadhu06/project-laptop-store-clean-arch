@@ -8,5 +8,5 @@ import (
 
 type OtpUseCase interface {
 	SendOtp(ctx context.Context, input modelHelper.OTPData) error
-	ValidateOtp(ctx context.Context, data modelHelper.VerifyData) (*openapi.VerifyV2VerificationCheck, error)
+	ValidateOtp(ctx context.Context, data modelHelper.VerifyData) (*openapi.VerifyV2VerificationCheck, modelHelper.UserDataOutput, string, error)
 }

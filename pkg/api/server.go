@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	//_ "github.com/thnkrn/go-gin-clean-arch/cmd/api/docs"
 )
 
 type ServerHTTP struct {
@@ -20,6 +19,8 @@ func NewServerHTTP(userHandler *handler.UserHandler, otpHandler *handler.OtpHand
 
 	// Swagger docs
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	//engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	// request JWT
 

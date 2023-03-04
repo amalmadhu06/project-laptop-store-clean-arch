@@ -29,9 +29,9 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Accept json
 // @Produce json
 // @Param user_details body modelHelper.UserDataInput true "User details"
-// @Success 201 {object} response.response
-// @Failure 400 {object} response.response
-// @Failure 500 {object} response.response
+// @Success 201 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 500 {object} response.Response
 // @Router /signup [post]
 func (cr UserHandler) CreateUser(c *gin.Context) {
 	//cancelling the request if it is taking more than one minute to send back a response
@@ -79,10 +79,10 @@ func (cr UserHandler) CreateUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user_details body modelHelper.UserLoginEmail true "User details"
-// @Success 200
+// @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /login [post]
+// @Router /login-email [post]
 func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 	// receive data from request body
 	var body modelHelper.UserLoginEmail
@@ -127,10 +127,10 @@ func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user_details body modelHelper.UserLoginPhone true "User details"
-// @Success 200
+// @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /login [post]
+// @Router /login-phone [post]
 func (cr *UserHandler) LoginWithPhone(c *gin.Context) {
 	// receive data from request body
 	var body modelHelper.UserLoginPhone

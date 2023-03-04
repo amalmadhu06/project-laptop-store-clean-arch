@@ -32,9 +32,9 @@ func NewOtpHandler(otpUsecase services.OtpUseCase) *OtpHandler {
 // @Accept json
 // @Produce json
 // @Param user_mobile body modelHelper.OTPData true "User mobile number"
-// @Success 200 {object} response.response
-// @Failure 422 {object} response.response
-// @Failure 500 {object} response.response
+// @Success 200 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Failure 500 {object} response.Response
 // @Router /signup [post]
 func (cr *OtpHandler) SendOtp(c *gin.Context) {
 	//declare a variable to receive data from request
@@ -78,9 +78,9 @@ func (cr *OtpHandler) SendOtp(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param otp body modelHelper.VerifyData true "OTP sent to user's mobile number"
-// @Success 200 {object} response.response
-// @Failure 422 {object} response.response
-// @Failure 500 {object} response.response
+// @Success 200 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Failure 500 {object} response.Response
 // @Router /verifyOTP [post]
 func (cr *OtpHandler) ValidateOtp(c *gin.Context) {
 	//declare a variable to receive request data
@@ -97,7 +97,7 @@ func (cr *OtpHandler) ValidateOtp(c *gin.Context) {
 		return
 	}
 	//call validateOtp method from otp use case
-	resp, err := cr.otpUseCase.ValidateOtp(c.Request.Context(), otpDetails)
+	resp, userData, ss, err := cr.otpUseCase.ValidateOtp(c.Request.Context(), otpDetails)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{
 			StatusCode: 500,
@@ -106,10 +106,12 @@ func (cr *OtpHandler) ValidateOtp(c *gin.Context) {
 			Errors:     err.Error(),
 		})
 	} else if *resp.Status == "approved" {
+		c.SetSameSite(http.SameSiteLaxMode)
+		c.SetCookie("UserAuth", ss, 3600*24*30, "", "", false, true)
 		c.JSON(http.StatusOK, response.Response{
 			StatusCode: 200,
-			Message:    "Successfully verified OTP",
-			Data:       resp.Status,
+			Message:    "Successfully verified OTP and logged in",
+			Data:       userData,
 			Errors:     nil,
 		})
 	} else {
