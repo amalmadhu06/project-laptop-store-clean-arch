@@ -34,7 +34,7 @@ func (c *userUseCase) CreateUser(ctx context.Context, input modelHelper.UserData
 	return userData, err
 }
 
-func (c *userUseCase) UserLogin(ctx context.Context, input modelHelper.UserLoginInfo) (string, modelHelper.UserDataOutput, error) {
+func (c *userUseCase) LoginWithEmail(ctx context.Context, input modelHelper.UserLoginEmail) (string, modelHelper.UserDataOutput, error) {
 
 	var userData modelHelper.UserDataOutput
 
@@ -64,7 +64,7 @@ func (c *userUseCase) UserLogin(ctx context.Context, input modelHelper.UserLogin
 		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	
+
 	// singed string
 	ss, err := token.SignedString([]byte("secret"))
 
@@ -75,6 +75,90 @@ func (c *userUseCase) UserLogin(ctx context.Context, input modelHelper.UserLogin
 
 	return ss, userData, err
 }
+
+func (c *userUseCase) LoginWithPhone(ctx context.Context, input modelHelper.UserLoginPhone) (string, modelHelper.UserDataOutput, error) {
+
+	var userData modelHelper.UserDataOutput
+
+	// 1. Find the userData with given email
+	user, err := c.userRepo.FindByPhone(ctx, input.Phone)
+	if err != nil {
+		return "", userData, fmt.Errorf("error finding userData")
+	}
+	if user.Email == "" {
+		return "", userData, fmt.Errorf("no such userData found")
+	}
+
+	// 2. Compare and hash the password
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
+		return "", userData, err
+	}
+
+	// 3. Check whether the userData is blocked by admin
+	if user.IsBlocked {
+		return "", userData, fmt.Errorf("userData account is blocked")
+	}
+
+	// 4. Create JWT Token
+	// creating jwt token and sending it in cookie
+	claims := jwt.MapClaims{
+		"id":  user.ID,
+		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	// singed string
+	ss, err := token.SignedString([]byte("secret"))
+
+	// 4. Send back the created token
+
+	//user data for sending back as response
+	userData.ID, userData.FName, userData.LName, userData.Email, userData.Phone = user.ID, user.FName, user.LName, user.Email, user.Phone
+
+	return ss, userData, err
+}
+
+//func (c *userUseCase) LoginWithOtp(ctx context.Context, input modelHelper.UserLoginInfo) (string, modelHelper.UserDataOutput, error) {
+//
+//	var userData modelHelper.UserDataOutput
+//
+//	// 1. Find the userData with given email
+//	user, err := c.userRepo.FindByEmail(ctx, input.Email)
+//	if err != nil {
+//		return "", userData, fmt.Errorf("error finding userData")
+//	}
+//	if user.Email == "" {
+//		return "", userData, fmt.Errorf("no such userData found")
+//	}
+//
+//	// 2. Compare and hash the password
+//	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
+//		return "", userData, err
+//	}
+//
+//	// 3. Check whether the userData is blocked by admin
+//	if user.IsBlocked {
+//		return "", userData, fmt.Errorf("userData account is blocked")
+//	}
+//
+//	// 4. Create JWT Token
+//	// creating jwt token and sending it in cookie
+//	claims := jwt.MapClaims{
+//		"id":  user.ID,
+//		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),
+//	}
+//	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+//
+//	// singed string
+//	ss, err := token.SignedString([]byte("secret"))
+//
+//	// 4. Send back the created token
+//
+//	//user data for sending back as response
+//	userData.ID, userData.FName, userData.LName, userData.Email, userData.Phone = user.ID, user.FName, user.LName, user.Email, user.Phone
+//
+//	return ss, userData, err
+//}
 
 func (c *userUseCase) FindAll(ctx context.Context) ([]domain.Users, error) {
 	users, err := c.userRepo.FindAll(ctx)

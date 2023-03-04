@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/config"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
@@ -28,7 +29,7 @@ func (c *otpUseCase) SendOtp(ctx context.Context, phone modelHelper.OTPData) err
 		Password: c.cfg.TWILIOAUTHTOKEN,
 	})
 	params := &openapi.CreateVerificationParams{}
-	params.SetTo(phone.Phone)
+	params.SetTo("+91" + phone.Phone)
 	params.SetChannel("sms")
 
 	_, err := client.VerifyV2.CreateVerification(c.cfg.TWILIOSERVICESID, params)
@@ -37,19 +38,22 @@ func (c *otpUseCase) SendOtp(ctx context.Context, phone modelHelper.OTPData) err
 }
 
 func (c *otpUseCase) ValidateOtp(ctx context.Context, data modelHelper.VerifyData) (*openapi.VerifyV2VerificationCheck, error) {
+	var resp *openapi.VerifyV2VerificationCheck
 	var client *twilio.RestClient = twilio.NewRestClientWithParams(twilio.ClientParams{
 		Username: c.cfg.TWILIOACCOUNTSID,
 		Password: c.cfg.TWILIOAUTHTOKEN,
 	})
 	params := &openapi.CreateVerificationCheckParams{}
-	params.SetTo(data.Phone.Phone)
+	params.SetTo("+91" + data.Phone.Phone)
 	params.SetCode(data.Otp)
 	resp, err := client.VerifyV2.CreateVerificationCheck(c.cfg.TWILIOSERVICESID, params)
 
 	//update database on successful phone number verification
+	fmt.Println("No error till approving otp")
 	if *resp.Status == "approved" {
 		//Todo : Update in database
-		//err = c.otpRepo.UpdateAsVerified(ctx, data.Phone.Phone)
+		err = c.otpRepo.UpdateAsVerified(ctx, data.Phone.Phone)
+		fmt.Println("update usecase called")
 	}
 
 	return resp, err

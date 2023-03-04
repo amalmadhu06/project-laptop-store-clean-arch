@@ -8,8 +8,9 @@ import (
 
 type UserUseCase interface {
 	CreateUser(ctx context.Context, input modelHelper.UserDataInput) (modelHelper.UserDataOutput, error)
-	UserLogin(ctx context.Context, input modelHelper.UserLoginInfo) (string, modelHelper.UserDataOutput, error)
-
+	LoginWithEmail(ctx context.Context, input modelHelper.UserLoginEmail) (string, modelHelper.UserDataOutput, error)
+	LoginWithPhone(ctx context.Context, input modelHelper.UserLoginPhone) (string, modelHelper.UserDataOutput, error)
+	//LoginWithOtp(ctx context.Context, input modelHelper.UserLoginInfo) (string, modelHelper.UserDataOutput, error)
 	FindAll(ctx context.Context) ([]domain.Users, error)
 	FindByID(ctx context.Context, id uint) (domain.Users, error)
 	Save(ctx context.Context, user domain.Users) (domain.Users, error)

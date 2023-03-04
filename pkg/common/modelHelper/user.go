@@ -16,8 +16,13 @@ type UserDataOutput struct {
 	Phone string `json:"phone"`
 }
 
-type UserLoginInfo struct {
+type UserLoginEmail struct {
 	Email    string `json:"email" binding:"required" validate:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type UserLoginPhone struct {
+	Phone    string `json:"phone" binding:"required" validate:"required"`
 	Password string `json:"password" binding:"required"`
 }
 

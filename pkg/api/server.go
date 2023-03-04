@@ -24,7 +24,8 @@ func NewServerHTTP(userHandler *handler.UserHandler, otpHandler *handler.OtpHand
 	// request JWT
 
 	engine.POST("/signup", userHandler.CreateUser)
-	engine.POST("/login", userHandler.UserLogin)
+	engine.POST("/login-email", userHandler.LoginWithEmail)
+	engine.POST("login-phone", userHandler.LoginWithPhone)
 	engine.POST("/sendOTP", otpHandler.SendOtp)
 	engine.POST("/verifyOTP", otpHandler.ValidateOtp)
 

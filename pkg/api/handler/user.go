@@ -15,12 +15,6 @@ type UserHandler struct {
 	userUseCase services.UserUseCase
 }
 
-type Response struct {
-	ID      uint   `copier:"must"`
-	Name    string `copier:"must"`
-	Surname string `copier:"must"`
-}
-
 func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 	return &UserHandler{
 		userUseCase: usecase,
@@ -77,21 +71,21 @@ func (cr UserHandler) CreateUser(c *gin.Context) {
 	})
 }
 
-// UserLogin
+// LoginWithEmail
 // @Summary User Login
-// @ID user-login
+// @ID user-login-email
 // @Description Login as a user to access the ecommerce site
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user_details body modelHelper.UserLoginInfo true "User details"
+// @Param user_details body modelHelper.UserLoginEmail true "User details"
 // @Success 200
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /login [post]
-func (cr *UserHandler) UserLogin(c *gin.Context) {
+func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 	// receive data from request body
-	var body modelHelper.UserLoginInfo
+	var body modelHelper.UserLoginEmail
 	if err := c.Bind(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
@@ -103,7 +97,7 @@ func (cr *UserHandler) UserLogin(c *gin.Context) {
 		return
 	}
 	// Call the UserLogin method of the userUseCase to login as a user.
-	ss, user, err := cr.userUseCase.UserLogin(c.Request.Context(), body)
+	ss, user, err := cr.userUseCase.LoginWithEmail(c.Request.Context(), body)
 	if err != nil {
 		// Return a 400 Bad Request response if there is an error while creating the user.
 		c.JSON(http.StatusBadRequest, response.Response{
@@ -125,6 +119,55 @@ func (cr *UserHandler) UserLogin(c *gin.Context) {
 	})
 }
 
+// LoginWithPhone
+// @Summary User Login-Phone
+// @ID user-login-phone
+// @Description Login as a user to access the ecommerce site
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user_details body modelHelper.UserLoginPhone true "User details"
+// @Success 200
+// @Failure 400 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /login [post]
+func (cr *UserHandler) LoginWithPhone(c *gin.Context) {
+	// receive data from request body
+	var body modelHelper.UserLoginPhone
+	if err := c.Bind(&body); err != nil {
+		// Return a 421 response if the request body is malformed.
+		c.JSON(http.StatusUnprocessableEntity, response.Response{
+			StatusCode: 422,
+			Message:    "unable to process the request",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	// Call the UserLogin method of the userUseCase to login as a user.
+	ss, user, err := cr.userUseCase.LoginWithPhone(c.Request.Context(), body)
+	if err != nil {
+		// Return a 400 Bad Request response if there is an error while creating the user.
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "failed to login",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("UserAuth", ss, 3600*24*30, "", "", false, true)
+	// Return a 201 Created response if the user is successfully logged in.
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    "Successfully logged in",
+		Data:       user,
+		Errors:     nil,
+	})
+}
+
+// UserLogout
 // @Summary User Logout
 // @ID user-logout
 // @Description Logs out a logged-in user from the E-commerce web api

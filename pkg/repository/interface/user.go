@@ -9,6 +9,7 @@ import (
 type UserRepository interface {
 	CreateUser(ctx context.Context, user modelHelper.UserDataInput) (modelHelper.UserDataOutput, error)
 	FindByEmail(ctx context.Context, email string) (modelHelper.UserLoginVerifier, error)
+	FindByPhone(ctx context.Context, phone string) (modelHelper.UserLoginVerifier, error)
 
 	FindAll(ctx context.Context) ([]domain.Users, error)
 	FindByID(ctx context.Context, id uint) (domain.Users, error)
