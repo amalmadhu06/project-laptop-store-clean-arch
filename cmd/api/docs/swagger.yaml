@@ -1,32 +1,224 @@
+basePath: /
 definitions:
-  handler.Response:
+  modelHelper.OTPData:
     properties:
-      id:
-        type: integer
-      name:
+      phone:
         type: string
-      surname:
-        type: string
+    required:
+    - phone
     type: object
+  modelHelper.UserDataInput:
+    properties:
+      email:
+        type: string
+      f_name:
+        type: string
+      l_name:
+        type: string
+      password:
+        maxLength: 64
+        minLength: 8
+        type: string
+      phone:
+        type: string
+    required:
+    - email
+    - password
+    - phone
+    type: object
+  modelHelper.UserLoginEmail:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  modelHelper.UserLoginPhone:
+    properties:
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - password
+    - phone
+    type: object
+  modelHelper.VerifyData:
+    properties:
+      otp:
+        type: string
+      phone:
+        $ref: '#/definitions/modelHelper.OTPData'
+    required:
+    - otp
+    - phone
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      errors: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+host: localhost:3000
 info:
-  contact: {}
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Ecommerce Web Application built using Go Lang, PSQL, REST API following
+    Clean Architecture.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Ecommerce Web API
+  version: "1.0"
 paths:
-  /api/users:
-    get:
-      description: Get all users
-      operationId: FindAll
+  /login-email:
+    post:
+      consumes:
+      - application/json
+      description: Login as a user to access the ecommerce site
+      operationId: user-login-email
+      parameters:
+      - description: User details
+        in: body
+        name: user_details
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.UserLoginEmail'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/handler.Response'
-            type: array
-      security:
-      - ApiKeyAuth: []
-      summary: Get all users
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Login
       tags:
-      - users
+      - Users
+  /login-phone:
+    post:
+      consumes:
+      - application/json
+      description: Login as a user to access the ecommerce site
+      operationId: user-login-phone
+      parameters:
+      - description: User details
+        in: body
+        name: user_details
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.UserLoginPhone'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Login-Phone
+      tags:
+      - Users
+  /logout:
+    get:
+      consumes:
+      - application/json
+      description: Logs out a logged-in user from the E-commerce web api
+      operationId: user-logout
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: User Logout
+      tags:
+      - Users
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the specified details.
+      operationId: create-user
+      parameters:
+      - description: User details
+        in: body
+        name: user_details
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.UserDataInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create a new user
+      tags:
+      - Users
+  /verifyOTP:
+    post:
+      consumes:
+      - application/json
+      description: Validate the  OTP sent to use's mobile
+      operationId: validate-otp
+      parameters:
+      - description: OTP sent to user's mobile number
+        in: body
+        name: otp
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.VerifyData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Validate the OTP to user's mobile
+      tags:
+      - Users
 swagger: "2.0"

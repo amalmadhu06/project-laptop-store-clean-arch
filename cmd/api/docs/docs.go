@@ -10,36 +10,230 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/users": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
+        "/login-email": {
+            "post": {
+                "description": "Login as a user to access the ecommerce site",
+                "consumes": [
+                    "application/json"
                 ],
-                "description": "Get all users",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
-                "summary": "Get all users",
-                "operationId": "FindAll",
+                "summary": "User Login",
+                "operationId": "user-login-email",
+                "parameters": [
+                    {
+                        "description": "User details",
+                        "name": "user_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.UserLoginEmail"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/handler.response"
-                            }
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/login-phone": {
+            "post": {
+                "description": "Login as a user to access the ecommerce site",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User Login-Phone",
+                "operationId": "user-login-phone",
+                "parameters": [
+                    {
+                        "description": "User details",
+                        "name": "user_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.UserLoginPhone"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "get": {
+                "description": "Logs out a logged-in user from the E-commerce web api",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User Logout",
+                "operationId": "user-logout",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/signup": {
+            "post": {
+                "description": "Create a new user with the specified details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a new user",
+                "operationId": "create-user",
+                "parameters": [
+                    {
+                        "description": "User details",
+                        "name": "user_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.UserDataInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/verifyOTP": {
+            "post": {
+                "description": "Validate the  OTP sent to use's mobile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Validate the OTP to user's mobile",
+                "operationId": "validate-otp",
+                "parameters": [
+                    {
+                        "description": "OTP sent to user's mobile number",
+                        "name": "otp",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.VerifyData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -47,17 +241,99 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.response": {
+        "modelHelper.OTPData": {
+            "type": "object",
+            "required": [
+                "phone"
+            ],
+            "properties": {
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelHelper.UserDataInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "phone"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "f_name": {
+                    "type": "string"
+                },
+                "l_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 8
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelHelper.UserLoginEmail": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelHelper.UserLoginPhone": {
+            "type": "object",
+            "required": [
+                "password",
+                "phone"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                }
+            }
+        },
+        "modelHelper.VerifyData": {
+            "type": "object",
+            "required": [
+                "otp",
+                "phone"
+            ],
+            "properties": {
+                "otp": {
+                    "type": "string"
+                },
+                "phone": {
+                    "$ref": "#/definitions/modelHelper.OTPData"
+                }
+            }
+        },
+        "response.Response": {
             "type": "object",
             "properties": {
-                "id": {
+                "data": {},
+                "errors": {},
+                "message": {
+                    "type": "string"
+                },
+                "status_code": {
                     "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "surname": {
-                    "type": "string"
                 }
             }
         }
@@ -66,12 +342,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost:3000",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Ecommerce Web API",
+	Description:      "Ecommerce Web Application built using Go Lang, PSQL, REST API following Clean Architecture.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }
