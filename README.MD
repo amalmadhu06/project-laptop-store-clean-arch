@@ -123,7 +123,7 @@ tset rest
 | 4  | Google Pay  |
 | 5  | Apple Pay   |
 
-         
+ 
 ## Table: product_category
 | Id  | Category_name          |
 |-----|------------------------|
@@ -134,6 +134,7 @@ tset rest
 | 6   | Chromebooks            |
 | 7   | MacBook                |
 
+
 ## Table : product_brand
 | id  | brand  |
 |-----|--------|
@@ -143,10 +144,7 @@ tset rest
 | 4   | Apple  |
 | 5   | Asus   |
 
-
-
 ## Table: product
-
 | Id  | category_id | name            | brand_id | Description                                                                                                       | Product_image         |
 |-----|-------------|-----------------|----------|-------------------------------------------------------------------------------------------------------------------|-----------------------|
 | 1   | 5           | Pavilion 15     | 1        | This laptop is ideal for work and entertainment. It comes with a 10th Gen Intel Core i5 processor and 8GB of RAM. | [product image URL]   |
@@ -155,61 +153,18 @@ tset rest
 | 4   | 7           | MacBook Air     | 4        | This laptop is designed for Apple enthusiasts. It comes with an M1 chip and 8GB of RAM.                           | [product image URL]   |
 | 5   | 6           | VivoBook 15     | 5        | This laptop is ideal for students and professionals. It comes with an AMD Ryzen 5 processor and 8GB of RAM.       | [product image URL]   |
 
-
 ## Table: product_item
-| id  | product_id | sku                   | qty_in_stock | product_image       | price_INR |
-|-----|------------|-----------------------|--------------|---------------------|-----------|
-| 1   | 1          | HP-Pavilion-15-001    | 10           | [product image URL] | 59448.00  |
-| 2   | 1          | HP-Pavilion-15-002    | 15           | [product image URL] | 63323.50  |
-| 3   | 2          | Dell-Inspiron-14-001  | 20           | [product image URL] | 52047.00  |
-| 4   | 2          | Dell-Inspiron-14-002  | 25           | [product image URL] | 55822.50  |
-| 5   | 3          | Lenovo-IdeaPad-3-001  | 30           | [product image URL] | 44646.00  |
-| 6   | 3          | Lenovo-IdeaPad-3-002  | 35           | [product image URL] | 48421.50  |
-| 7   | 4          | Apple-MacBook-Air-001 | 40           | [product image URL] | 74410.00  |
-| 8   | 4          | Apple-MacBook-Air-002 | 45           | [product image URL] | 81751.00  |
-| 9   | 5          | Asus-VivoBook-15-001  | 50           | [product image URL] | 55822.50  |
-| 10  | 5          | Asus-VivoBook-15-002  | 55           | [product image URL] | 59448.00  |
+| id | product_id | model               | brand  | processor         | ram   | storage  | display_size | graphics_card        | os           | qty_in_stock | product_image        | price_INR |
+|----|------------|---------------------|--------|-------------------|-------|----------|--------------|----------------------|--------------|--------------|----------------------|-----------|
+| 1  | 1          | Pavilion 15         | HP     | Intel Core i5     | 8GB   | 1TB HDD  | 15.6 inch    | NVIDIA GeForce MX130 | Windows 10   | 10           | [product image URL]  | 59448.00  |
+| 2  | 2          | Inspiron 14         | Dell   | Intel Core i3     | 4GB   | 256GB SSD| 14 inch      | Intel UHD Graphics   | Windows 10   | 15           | [product image URL]  | 52047.00  |
+| 3  | 3          | IdeaPad 3           | Lenovo | AMD Ryzen 5       | 8GB   | 512GB SSD| 15.6 inch    | AMD Radeon Graphics  | Windows 10   | 30           | [product image URL]  | 44646.00  |
+| 4  | 4          | MacBook Air         | Apple  | Apple M1          | 8GB   | 256GB SSD| 13.3 inch    | Apple M1             | macOS        | 40           | [product image URL]  | 74410.00  |
+| 5  | 5          | VivoBook 15         | Asus   | Intel Core i5     | 8GB   | 512GB SSD| 15.6 inch    | NVIDIA GeForce MX330 | Windows 10   | 50           | [product image URL]  | 55822.50  |
 
 
-## Table: variation
-
-| Id  | Category_id | name         |
-|-----|-------------| ------------ |
-| 1   | 1           | Color        |
-| 2   | 1           | RAM          |
-| 3   | 1           | Storage      |
-
-## Table: variation_option
-
-| Id  | Variation_id | Value  |
-|-----|--------------|--------|
-| 2   | 1            | Silver |
-| 3   | 2            | 4GB    |
-| 4   | 2            | 8GB    |
-| 5   | 2            | 16GB   |
-| 6   | 3            | 256GB  |
-| 7   | 3            | 512GB  |
-| 8   | 3            | 1TB    |
-
-## Table: product_configuration
-
-| Product_item_id | Variation_option_id |
-| --------------- |---------------------|
-| 1               | 1                   |
-| 1               | 4                   |
-| 1               | 6                   |
-| 2               | 2                   |
-| 2               | 4                   |
-| 2               | 7                   |
-| 3               | 1                   |
-| 3               | 5                   |
-| 3               | 8                   |
-| 4               | 2                   |
-| 4               | 6                   |
-| 4               | 7                   |
 
 ## Table: shopping_cart
-
 | Id  | User_id | total |
 |-----| ------- | ----- |
 | 1   | 1       | 1250  |
@@ -224,7 +179,6 @@ tset rest
 | 10  | 10      | 1820  |
 
 ## Table: shopping_cart_item
-
 | Id  | Cart_id | Product_item_id | quantity |
 |-----| ------- | --------------- | -------- |
 | 1   | 1       | 1               | 2        |
@@ -245,7 +199,6 @@ tset rest
 
 
 ## Table: Shop_order
-
 | Id  | User_id | Order_date       | payment_method_id | Shipping_address | Shipping_method | order_total | order_status |
 |-----| ------- | ---------------- | ----------------- | ---------------- | --------------- | ----------- | ------------ |
 | 1   | 1       | 2022-02-28 10:30 | 1                 | 1                | 1               | 1120.00     | 1            |
@@ -260,7 +213,6 @@ tset rest
 | 10  | 10      | 2022-02-28 19:30 | 1                 | 10               | 2               | 1820.00     | 1            |
 
 ## Table: Shipping_method
-
 | Id  | Name                | price  |
 |-----|---------------------|--------|
 | 1   | Standard Shipping   | 50.00  |
@@ -268,7 +220,6 @@ tset rest
 | 3   | Same Day Delivery   | 200.00 |
 
 ## Table: Order_status
-
 | Id  | Status        |
 |-----| ------------- |
 | 1   | Pending       |
@@ -278,21 +229,20 @@ tset rest
 | 5   | Cancelled     |
 
 ## Table: order_line
+| Id  | Product_item_id | Order_id     | Quantity | price    |
+|-----|-----------------|--------------|---------|----------|
+| 1   | 1               | 1            | 2       | 450.00   |
+| 2   | 3               | 1            | 1       | 370.00   |
+| 3   | 5               | 1            | 1       | 300.00   |
+| 4   | 2               | 2            | 1       | 850.00   |
+| 5   | 4               | 2            | 	3	     | 350.00   |
+| 6   | 6	              | 3            | 2	      | 495.00   |
+| 7   | 7	              | 3	           | 1	      | 775.00   |
+| 8   | 10              | 	3           |	3	      | 600.00   |
+| 9   | 8	              | 4	           | 1	      | 410.00   |
+| 10  | 9	              | 4	           | 2	      | 1475.00  |
 
-| Id  | Product_item_id | Order_id | Quantity | price     |
-|-----|-----------------|----------|----------|-----------|
-| 1   | 1               | 1        | 2        | 450.00    |
-| 2   | 3               | 1        | 1        | 370.00    |
-| 3   | 5               | 1        | 1        | 300.00    |
-| 4   | 2               | 2        | 1        | 850.00    |
-| 5   | 4               | 2        | 	3	      | 350.00    |
-| 6   | 6	              | 3       | 2	       | 495.00    |
-| 7   | 7	              | 3	     |  1	      | 775.00    |
-| 8   | 10              | 	3       | 	3	      | 600.00    |
-| 9   | 8	              | 4	       | 1	       | 410.00    |
-| 10  | 9	              | 4	       | 2	       | 1475.00   |
-
-
+## Table: admins
 | id | username   | password | email                  | isSuperAdmin | isBlocked | created_at          | updated_at          |
 |----|------------|----------|------------------------|--------------|-----------|---------------------|---------------------|
 | 1  | superadmin | *******  | superadmin@example.com | true         | false     | 2022-01-01 12:00:00 | 2022-01-01 12:00:00 |
