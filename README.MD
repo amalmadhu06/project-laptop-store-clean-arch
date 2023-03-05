@@ -45,18 +45,30 @@ tset rest
 
 
 ## site_user
-| id  | email_address           | phone_number   | password| created_at |
-|----|-------------------------|----------------|----------|------------|
-| 1  | john.doe@example.com    | 123-456-7890   | abc123   |            |
-| 2  | jane.doe1@example.com   | 456-789-0123   | xyz456   |            |
-| 3  | johndoe123@example.com  | 555-555-5555   | qwerty   |            |
-| 4  | janedoe456@example.com  | 222-222-2222   | asdfgh   |            |
-| 5  | johndoe456@example.com  | 333-333-3333   | zxcvbn   |            |
-| 6  | janedoe123@example.com  | 444-444-4444   | 123qwe   |            |
-| 7  | testuser@example.com    | 555-123-4567   | 456asd   |            |
-| 8  | user123@example.com     | 123-555-7890   | qwe123   |            |
-| 9  | exampleuser@example.com | 999-999-9999   | test123  |            |
-| 10 | testuser123@example.com | 111-111-1111   | test456  |            |
+| id   | f_name  | l_name | email                    | phone        | password  | created_at |
+|------|---------|--------|--------------------------|--------------|-----------|------------|
+| 1    | f_name  | l_name | john.doe@example.com     | 123-456-7890 | abc123    |            |
+| 2    | f_name  | l_name | jane.doe1@example.com    | 456-789-0123 | xyz456    |            |
+| 3    | f_name  | l_name | johndoe123@example.com   | 555-555-5555 | qwerty    |            |
+| 4    | f_name  | l_name | janedoe456@example.com   | 222-222-2222 | asdfgh    |            |
+| 5    | f_name  | l_name | johndoe456@example.com   | 333-333-3333 | zxcvbn    |            |
+| 6    | f_name  | l_name | janedoe123@example.com   | 444-444-4444 | 123qwe    |            |
+| 7    | f_name  | l_name | testuser@example.com     | 555-123-4567 | 456asd    |            |
+| 8    | f_name  | l_name | user123@example.com      | 123-555-7890 | qwe123    |            |
+| 9    | f_name  | l_name | exampleuser@example.com  | 999-999-9999 | test123   |            |
+| 10   | f_name  | l_name | testuser123@example.com  | 111-111-1111 | test456   |            |
+
+
+## user_info
+| id  | userID | isBlocked | blockedAt           | blockedBy | reasonForBlocking | isVerified |verifiedAt |
+|-----| ------ |-----------|---------------------|-----------|-------------------|------------|-----------|
+| 1   | 1      | false     | null                | null      | null              | true       |           |
+| 2   | 2      | true      | 2022-02-28 10:30:00 | 1         | Abusive behavior  | true       |           |
+| 3   | 3      | false     | null                | null      | null              | true       |           |
+| 4   | 4      | false     | null                | null      | null              | true       |           |
+| 5   | 5      | true      | 2022-02-28 12:30:00 | 1         | Spamming          | true       |           |
+
+
 
 ## user_address
 | user_id | address_id | is_default |
@@ -71,16 +83,6 @@ tset rest
 | 4       | 8          | 0          |
 | 5       | 9          | 1          |
 | 5       | 10         | 0          |
-
-## user_info
-
-| id  | userID | first_name | last_name | isBlocked | blockedAt           | blockedBy | reasonForBlocking | isVerified |
-|-----| ------ |------------|-----------|-----------|---------------------|-----------|-------------------|------------|
-| 1   | 1      | sample     | user1     | false     | null                | null      | null              | true       |
-| 2   | 2      | sample     | user2     | true      | 2022-02-28 10:30:00 | 1         | Abusive behavior  | true       |
-| 3   | 3      | sample     | user3     | false     | null                | null      | null              | true       |
-| 4   | 4      | sample     | user4     | false     | null                | null      | null              | true       |
-| 5   | 5      | sample     | user5     | true      | 2022-02-28 12:30:00 | 1         | Spamming          | true       |
 
 
 ## address
@@ -120,48 +122,53 @@ tset rest
 | 3  | PayPal      |
 | 4  | Google Pay  |
 | 5  | Apple Pay   |
-| 6  | Bitcoin     |
-| 7  | Ethereum    |
-| 8  | Litecoin    |
-| 9  | Dogecoin    |
-| 10 | Dash        |
+
+         
+## Table: product_category
+| Id  | Category_name          |
+|-----|------------------------|
+| 2   | Productivity Laptops   |
+| 3   | Ultrabooks             |
+| 4   | Gaming Laptops         |
+| 5   | Workstations           |
+| 6   | Chromebooks            |
+| 7   | MacBook                |
+
+## Table : product_brand
+| id  | brand  |
+|-----|--------|
+| 1   | HP     |
+| 2   | Dell   |
+| 3   | Lenovo |
+| 4   | Apple  |
+| 5   | Asus   |
 
 
-## Table: product_item
-
-| id  | product_id | Sku                   | Qty_in_stock | Product_image        | Price |
-|-----|------------|-----------------------| ------------ |----------------------| ----- |
-| 1   | 1          | HP-Pavilion-15-001    | 10           | [product image URL]  | 800   |
-| 2   | 1          | HP-Pavilion-15-002    | 15           | [product image URL]  | 850   |
-| 3   | 2          | Dell-Inspiron-14-001  | 20           | [product image URL]  | 700   |
-| 4   | 2          | Dell-Inspiron-14-002  | 25           | [product image URL]  | 750   |
-| 5   | 3          | Lenovo-IdeaPad-3-001  | 30           | [product image URL]  | 600   |
-| 6   | 3          | Lenovo-IdeaPad-3-002  | 35           | [product image URL]  | 650   |
-| 7   | 4          | Apple-MacBook-Air-001 | 40           | [product image URL]  | 1000  |
-| 8   | 4          | Apple-MacBook-Air-002 | 45           | [product image URL]  | 1100  |
-| 9   | 5          | Asus-VivoBook-15-001  | 50           | [product image URL]  | 750   |
-| 10  | 5          | Asus-VivoBook-15-002  | 55           | [product image URL]  | 800   |
 
 ## Table: product
 
-| Id  | category_id | name                | Description                                                                                                       | Product_image        |
-|-----|-------------| ------------------- |-------------------------------------------------------------------------------------------------------------------|----------------------|
-| 1   | 1           | HP Pavilion 15      | This laptop is ideal for work and entertainment. It comes with a 10th Gen Intel Core i5 processor and 8GB of RAM. | [product image URL]  |
-| 2   | 1           | Dell Inspiron 14    | This laptop is perfect for everyday use. It has a 10th Gen Intel Core i3 processor and 4GB of RAM.                | [product image URL]  |
-| 3   | 1           | Lenovo IdeaPad 3    | This laptop is great for both work and play. It comes with a 10th Gen Intel Core i7 processor and 16GB of RAM.    | [product image URL]  |
-| 4   | 2           | Apple MacBook Air   | This laptop is designed for Apple enthusiasts. It comes with an M1 chip and 8GB of RAM.                           | [product image URL]  |
-| 5   | 3           | Asus VivoBook 15    | This laptop is ideal for students and professionals. It comes with an AMD Ryzen 5 processor and 8GB of RAM.       | [product image URL]  |
+| Id  | category_id | name            | brand_id | Description                                                                                                       | Product_image         |
+|-----|-------------|-----------------|----------|-------------------------------------------------------------------------------------------------------------------|-----------------------|
+| 1   | 5           | Pavilion 15     | 1        | This laptop is ideal for work and entertainment. It comes with a 10th Gen Intel Core i5 processor and 8GB of RAM. | [product image URL]   |
+| 2   | 5           | Inspiron 14     | 2        | This laptop is perfect for everyday use. It has a 10th Gen Intel Core i3 processor and 4GB of RAM.                | [product image URL]   |
+| 3   | 5           | IdeaPad 3       | 3        | This laptop is great for both work and play. It comes with a 10th Gen Intel Core i7 processor and 16GB of RAM.    | [product image URL]   |
+| 4   | 7           | MacBook Air     | 4        | This laptop is designed for Apple enthusiasts. It comes with an M1 chip and 8GB of RAM.                           | [product image URL]   |
+| 5   | 6           | VivoBook 15     | 5        | This laptop is ideal for students and professionals. It comes with an AMD Ryzen 5 processor and 8GB of RAM.       | [product image URL]   |
 
-## Table: product_category
 
-| Id  | Parent_category_id | Category_name |
-|-----|--------------------| ------------- |
-| 1   | NULL               | Laptops       |
-| 2   | 1                  | Apple         |
-| 3   | 1                  | Asus          |
-| 4   | 1                  | Dell          |
-| 5   | 1                  | HP            |
-| 6   | 1                  | Lenovo        |
+## Table: product_item
+| id  | product_id | sku                   | qty_in_stock | product_image       | price_INR |
+|-----|------------|-----------------------|--------------|---------------------|-----------|
+| 1   | 1          | HP-Pavilion-15-001    | 10           | [product image URL] | 59448.00  |
+| 2   | 1          | HP-Pavilion-15-002    | 15           | [product image URL] | 63323.50  |
+| 3   | 2          | Dell-Inspiron-14-001  | 20           | [product image URL] | 52047.00  |
+| 4   | 2          | Dell-Inspiron-14-002  | 25           | [product image URL] | 55822.50  |
+| 5   | 3          | Lenovo-IdeaPad-3-001  | 30           | [product image URL] | 44646.00  |
+| 6   | 3          | Lenovo-IdeaPad-3-002  | 35           | [product image URL] | 48421.50  |
+| 7   | 4          | Apple-MacBook-Air-001 | 40           | [product image URL] | 74410.00  |
+| 8   | 4          | Apple-MacBook-Air-002 | 45           | [product image URL] | 81751.00  |
+| 9   | 5          | Asus-VivoBook-15-001  | 50           | [product image URL] | 55822.50  |
+| 10  | 5          | Asus-VivoBook-15-002  | 55           | [product image URL] | 59448.00  |
 
 
 ## Table: variation
@@ -272,18 +279,19 @@ tset rest
 
 ## Table: order_line
 
-| Id | Product_item_id | Order_id  | Quantity | price   |
-|----|-----------------|-----------|----------|---------|
-| 1  | 1               | 1         | 2        | 450.00  |
-| 2  | 3               | 1         | 1        | 370.00  |
-| 3  | 5               | 1         | 1        | 300.00  |
-| 4  | 2               | 2         | 1        | 850.00  |
-| 5  | 4               | 2         | 	3	      | 350.00  |
-| 6	 | 6	              | 3	        | 2	       | 495.00  |
-| 7	 | 7	              | 3	        | 1	       | 775.00  |
-| 8	 | 10              | 	3        | 	3	      | 600.00  |
-| 9	 | 8	              | 4	        | 1	       | 410.00  |
-| 10	 | 9	              | 4	        | 2	       | 1475.00 |
+| Id  | Product_item_id | Order_id | Quantity | price     |
+|-----|-----------------|----------|----------|-----------|
+| 1   | 1               | 1        | 2        | 450.00    |
+| 2   | 3               | 1        | 1        | 370.00    |
+| 3   | 5               | 1        | 1        | 300.00    |
+| 4   | 2               | 2        | 1        | 850.00    |
+| 5   | 4               | 2        | 	3	      | 350.00    |
+| 6   | 6	              | 3       | 2	       | 495.00    |
+| 7   | 7	              | 3	     |  1	      | 775.00    |
+| 8   | 10              | 	3       | 	3	      | 600.00    |
+| 9   | 8	              | 4	       | 1	       | 410.00    |
+| 10  | 9	              | 4	       | 2	       | 1475.00   |
+
 
 | id | username   | password | email                  | isSuperAdmin | isBlocked | created_at          | updated_at          |
 |----|------------|----------|------------------------|--------------|-----------|---------------------|---------------------|
