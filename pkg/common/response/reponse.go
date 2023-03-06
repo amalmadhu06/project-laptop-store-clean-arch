@@ -7,6 +7,10 @@ type Response struct {
 	Errors     interface{} `json:"errors,omitempty"`
 }
 
+func (r *Response) SuccessResponse(data interface{}) {
+
+}
+
 type UserData struct {
 	ID    uint
 	Email string

@@ -7,6 +7,8 @@ import (
 
 func UserAuth(c *gin.Context) {
 	tokenString, err := c.Cookie("UserAuth")
+	//Todo : check if user is blocked in database
+
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return

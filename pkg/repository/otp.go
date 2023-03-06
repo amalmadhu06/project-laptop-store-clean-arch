@@ -17,21 +17,33 @@ func NewOtpRepository(DB *gorm.DB) interfaces.OtpRepository {
 }
 
 func (c *otpDatabase) UpdateAsVerified(ctx context.Context, phone string) error {
-	updateVerifyQuery := "UPDATE user_infos SET is_verified = true, verified_at = NOW() WHERE users_id IN ( SELECT id FROM users WHERE phone = $1);"
+	updateVerifyQuery := `	UPDATE user_infos 
+							SET is_verified = true, verified_at = NOW() 
+							WHERE users_id IN ( 
+									SELECT id 
+									FROM users 
+									WHERE phone = $1);`
 	err := c.DB.Exec(updateVerifyQuery, phone).Error
 	return err
 }
 
 func (c *otpDatabase) CheckWithMobile(ctx context.Context, phone string) (bool, error) {
 	var isPresent bool
-	findQuery := "SELECT EXISTS(SELECT 1 FROM users WHERE phone = $1);"
+	findQuery := `SELECT EXISTS(
+						SELECT 1 
+						FROM users 
+						WHERE phone = $1);`
 	err := c.DB.Raw(findQuery, phone).Scan(&isPresent).Error
 	return isPresent, err
 }
 
 func (c *otpDatabase) FindByPhone(ctx context.Context, phone string) (modelHelper.UserLoginVerifier, error) {
 	var userData modelHelper.UserLoginVerifier
-	findUserQuery := "SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone = $1;"
+	findUserQuery := `	SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified 
+						FROM users as users 
+						FULL OUTER JOIN user_infos as infos 
+						ON users.id = infos.users_id 	
+						WHERE users.phone = $1;`
 	//Todo : Context Cancelling
 	err := c.DB.Raw(findUserQuery, phone).Scan(&userData).Error
 	fmt.Println("printing user data from db", userData)

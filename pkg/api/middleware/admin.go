@@ -7,6 +7,9 @@ import (
 
 func AdminAuth(c *gin.Context) {
 	tokenString, err := c.Cookie("AdminAuth")
+
+	//Todo : check if admin is blocked in database
+
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return

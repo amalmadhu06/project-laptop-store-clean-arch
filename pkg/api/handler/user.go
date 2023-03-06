@@ -62,7 +62,6 @@ func (cr UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 	//Return a 201 Created response if the user is successfully created.
-	c.Status(http.StatusCreated)
 	c.JSON(http.StatusCreated, response.Response{
 		StatusCode: 201,
 		Message:    "User created successfully",
@@ -110,7 +109,7 @@ func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 	}
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("UserAuth", ss, 3600*24*30, "", "", false, true)
-	// Return a 201 Created response if the user is successfully logged in.
+	// Return a 200 success ok response if the user is successfully logged in.
 	c.JSON(http.StatusOK, response.Response{
 		StatusCode: 200,
 		Message:    "Successfully logged in",
@@ -185,167 +184,3 @@ func (cr *UserHandler) UserLogout(c *gin.Context) {
 	c.SetCookie("UserAuth", "", -1, "", "", false, true)                          //Immediately by setting the maxAge to -1, and marks the cookie as secure and HTTP-only
 	c.Status(http.StatusOK)
 }
-
-// @Summary Find by user ID
-// @ID find-by-id
-// @Description Find user details by user ID.
-// @Tags Admin
-// @Accept json
-// @Produce json
-// @Param id path integer true "User ID"
-// @Success 200 {object} domain.Users
-// @Failure 400 {object} response.Response
-// @Failure 404 {object} response.Response
-// @Failure 500 {object} response.Response
-// @Router /adminpanel/users/:id [get]
-//func (cr *UserHandler) FindByID(c *gin.Context) {
-//	paramsID := c.Param("id")
-//	id, err := strconv.Atoi(paramsID)
-//
-//	// Return error response if user ID is not a valid integer
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, response.Response{
-//			StatusCode: 500,
-//			Errors:     err.Error(),
-//			Message:    "Failed to parse user id",
-//			Data:       nil,
-//		})
-//		return
-//	}
-//
-//	// Retrieve user details by ID using FindByID method from user use case
-//	user, err := cr.userUseCase.FindByID(c.Request.Context(), uint(id))
-//	// Return error response if user is not found
-//	if err != nil {
-//		c.JSON(http.StatusNotFound, response.Response{
-//			StatusCode: 404,
-//			Errors:     err.Error(),
-//			Message:    "No user found",
-//			Data:       nil,
-//		})
-//		return
-//	}
-//	// Return user details as a successful response
-//	c.JSON(http.StatusOK, user)
-//}
-
-// @Summary Find all users
-// @ID find-all
-// @Description Retrieve a list of all users registered in the system.
-// @Tags Admin
-// @Accept json
-// @Produce json
-// @Success 200 {array} domain.Users
-// @Failure 500 {object} response.Response
-// @Router /adminpanel/users [get]
-//func (cr *UserHandler) FindAll(c *gin.Context) {
-//	users, err := cr.userUseCase.FindAll(c.Request.Context())
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, response.Response{
-//			StatusCode: 500,
-//			Errors:     err.Error(),
-//			Message:    "Something went wrong/ Internal server error",
-//			Data:       nil,
-//		})
-//		return
-//	}
-//	c.JSON(http.StatusOK, users)
-//}
-
-// @Summary Block user with User ID
-// @ID block-user
-// @Description Block a user with user ID, which restricts the user from accessing the ecommerce platform
-// @Tags Admin
-// @Accept json
-// @Produce json
-// @Param user_id body string true "user id"
-// @Success 200 {object} response.Response
-// @Failure 400 {object} response.Response
-// @Failure 500 {object} response.Response
-// @Router /adminpanel/block [patch]
-//func (cr *UserHandler) BlockUser(c *gin.Context) {
-//	// Define a struct to represent the expected JSON request body
-//	var body struct {
-//		Email string
-//	}
-//	// Parse the JSON request body into the 'body' struct
-//	err := c.Bind(&body)
-//	if err != nil {
-//		// If the request body is malformed, return a bad request error
-//		c.JSON(http.StatusBadRequest, response.Response{
-//			StatusCode: 400,
-//			Errors:     err.Error(),
-//			Message:    "Invalid request body",
-//			Data:       nil,
-//		})
-//		return
-//	}
-//	// Call the 'BlockUser' function from the userUseCase
-//	user, err := cr.userUseCase.BlockUser(c.Request.Context(), body.Email)
-//	if err != nil {
-//		// If the 'BlockUser' function returns an error, return an internal server error
-//		c.JSON(http.StatusInternalServerError, response.Response{
-//			StatusCode: 500,
-//			Errors:     err.Error(),
-//			Message:    "Unable to block user",
-//			Data:       nil,
-//		})
-//		return
-//	}
-//	// If the 'BlockUser' function returns successfully, return an HTTP 200 OK response
-//	c.JSON(http.StatusOK, response.Response{
-//		StatusCode: 200,
-//		Errors:     nil,
-//		Message:    "Successfully blocked user",
-//		Data:       user.UserID,
-//	})
-//}
-
-// @Summary Unblock user with User ID
-// @ID unblock-user
-// @Description Unblock a user with user ID, which restores the access for user to the ecommerce platform
-// @Tags Admin
-// @Accept json
-// @Produce json
-// @Param user_id body string true "user id"
-// @Success 200 {object} response.Response
-// @Failure 500 {object} response.Response
-// @Router /adminpanel/unblock [patch]
-//func (cr *UserHandler) UnblockUser(c *gin.Context) {
-//	// define a struct to receive the values from request body
-//	var body struct {
-//		Email string
-//	}
-//	// Parse the JSON request body into the 'body' struct
-//	err := c.Bind(&body)
-//	if err != nil {
-//		// If the request body is malformed, return a bad request error
-//		c.JSON(http.StatusBadRequest, response.Response{
-//			StatusCode: 400,
-//			Errors:     err.Error(),
-//			Message:    "Invalid request body",
-//			Data:       nil,
-//		})
-//		return
-//	}
-//	// Call the UnblockUser method from userUseCase
-//	user, err := cr.userUseCase.UnblockUser(c.Request.Context(), body.Email)
-//
-//	if err != nil {
-//		// If the 'UnblockUser' function returns an error, return an internal server error
-//		c.JSON(http.StatusInternalServerError, response.Response{
-//			StatusCode: 500,
-//			Errors:     err.Error(),
-//			Message:    "Unable to unblock the user",
-//			Data:       nil,
-//		})
-//		return
-//	}
-//	// If the 'UnblockUser' function returns successfully, return an HTTP 200 OK response
-//	c.JSON(http.StatusOK, response.Response{
-//		StatusCode: 200,
-//		Errors:     nil,
-//		Message:    "Successfully unblocked user",
-//		Data:       user.UserID,
-//	})
-//}
