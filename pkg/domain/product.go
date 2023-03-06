@@ -13,10 +13,10 @@ type ProductBrand struct {
 type Product struct {
 	ID                uint            `gorm:"primaryKey" json:"id"`
 	ProductCategoryID uint            `gorm:"not null" json:"product_category_id" validate:"required"`
-	ProductCategory   ProductCategory `gorm:"foreignKey:ProductCategoryID"`
+	ProductCategory   ProductCategory `gorm:"foreignKey:ProductCategoryID" json:"_"`
 	Name              string          `gorm:"not null,uniqueIndex" json:"name" validate:"required"`
 	BrandID           uint            `gorm:"not null" json:"brand_id" validate:"required"`
-	ProductBrand      ProductBrand    `gorm:"foreignKey:BrandID"`
+	ProductBrand      ProductBrand    `gorm:"foreignKey:BrandID" json:"_"`
 	Description       string          `json:"description"`
 	ProductImage      string          `json:"product_image"`
 }
@@ -24,7 +24,7 @@ type Product struct {
 type ProductItem struct {
 	ID               uint    `gorm:"primaryKey" json:"id"`
 	ProductID        uint    `gorm:"not null" json:"product_id" validate:"required"`
-	Product          Product `gorm:"foreignKey:ProductID"`
+	Product          Product `gorm:"foreignKey:ProductID" json:"_"`
 	Model            string  `gorm:"not null" json:"model" validate:"required"`
 	Processor        string  `gorm:"not null" json:"processor" validate:"required"`
 	Ram              string  `gorm:"not null" json:"ram" validate:"required"`

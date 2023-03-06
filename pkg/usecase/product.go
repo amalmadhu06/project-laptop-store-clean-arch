@@ -47,3 +47,31 @@ func (c *productUseCase) DeleteCategory(ctx context.Context, categoryID int) (st
 	deleteCategoryName, err := c.productRepo.DeleteCategory(ctx, categoryID)
 	return deleteCategoryName, err
 }
+
+func (c *productUseCase) CreateProduct(ctx context.Context, newProduct domain.Product) (domain.Product, error) {
+	createdProduct, err := c.productRepo.CreateProduct(ctx, newProduct)
+	return createdProduct, err
+}
+
+func (c *productUseCase) ViewAllProducts(ctx context.Context) ([]domain.Product, error) {
+	allProducts, err := c.productRepo.ViewAllProducts(ctx)
+	return allProducts, err
+}
+
+func (c *productUseCase) FindProductByID(ctx context.Context, id int) (domain.Product, error) {
+	product, err := c.productRepo.FindProductByID(ctx, id)
+	if product.Name == "" {
+		return product, fmt.Errorf("invalid product id")
+	}
+	return product, err
+}
+
+func (c *productUseCase) UpdateProduct(ctx context.Context, info domain.Product) (domain.Product, error) {
+	updatedProduct, err := c.productRepo.UpdateProduct(ctx, info)
+	return updatedProduct, err
+}
+
+func (c *productUseCase) DeleteProduct(ctx context.Context, productID int) error {
+	err := c.productRepo.DeleteProduct(ctx, productID)
+	return err
+}

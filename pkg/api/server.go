@@ -41,6 +41,13 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			adminPanel.PUT("update-category", productHandler.UpdateCategory)
 			adminPanel.DELETE("delete-category", productHandler.DeleteCategory)
 
+			//	product management
+			adminPanel.POST("/create-product", productHandler.CreateProduct)
+			adminPanel.GET("/view-all-products", productHandler.ViewAllProducts)
+			adminPanel.GET("/view-product/:id", productHandler.FindProductByID)
+			adminPanel.PUT("update-product", productHandler.UpdateProduct)
+			adminPanel.DELETE("delete-product", productHandler.DeleteProduct)
+
 		}
 	}
 

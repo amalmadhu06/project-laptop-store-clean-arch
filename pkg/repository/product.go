@@ -88,3 +88,65 @@ func (c *productDatabase) DeleteCategory(ctx context.Context, categoryID int) (s
 	fmt.Println(categoryID)
 	return deletedCategory, err
 }
+
+func (c *productDatabase) CreateProduct(ctx context.Context, newProduct domain.Product) (domain.Product, error) {
+	var createdProduct domain.Product
+	productCreateQuery := `INSERT INTO products(product_category_id, name, brand_id, description, product_image)
+							VALUES($1,$2,$3,$4,$5)
+							RETURNING *`
+	err := c.DB.Raw(productCreateQuery, newProduct.ProductCategoryID, newProduct.Name, newProduct.BrandID, newProduct.Description, newProduct.ProductImage).Scan(&createdProduct).Error
+	return createdProduct, err
+}
+
+func (c *productDatabase) ViewAllProducts(ctx context.Context) ([]domain.Product, error) {
+	var allProducts []domain.Product
+
+	findAllQuery := `SELECT * FROM products;`
+	rows, err := c.DB.Raw(findAllQuery).Rows()
+	if err != nil {
+		return allProducts, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var product domain.Product
+
+		err := rows.Scan(&product.ID, &product.ProductCategoryID, &product.Name, &product.BrandID, &product.Description, &product.ProductImage)
+		if err != nil {
+			return allProducts, err
+		}
+		allProducts = append(allProducts, product)
+	}
+	return allProducts, nil
+}
+
+func (c *productDatabase) FindProductByID(ctx context.Context, id int) (domain.Product, error) {
+	var product domain.Product
+	fetchProductQuery := ` SELECT * FROM products
+							WHERE id = $1`
+	err := c.DB.Raw(fetchProductQuery, id).Scan(&product).Error
+	return product, err
+}
+
+func (c *productDatabase) UpdateProduct(ctx context.Context, info domain.Product) (domain.Product, error) {
+	var updatedProduct domain.Product
+	updateProductQuery := `	UPDATE products
+							SET 
+								product_category_id = $1,
+								name = $2,
+								brand_id = $3,
+								description = $4,
+								product_image = $5
+							WHERE id = $6
+							RETURNING id,product_category_id,name,brand_id,description,product_image`
+	//Todo : fix scanning bug
+	err := c.DB.Raw(updateProductQuery, info.ProductCategoryID, info.Name, info.BrandID, info.Description, info.ProductImage, info.ID).Scan(&updatedProduct).Error
+	return updatedProduct, err
+}
+
+func (c *productDatabase) DeleteProduct(ctx context.Context, productID int) error {
+	deleteProductQuery := `DELETE  FROM products
+							WHERE id = $1`
+	err := c.DB.Exec(deleteProductQuery, productID).Error
+	return err
+}

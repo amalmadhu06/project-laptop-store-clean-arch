@@ -7,3 +7,7 @@ type NewCategory struct {
 type CategoryID struct {
 	CategoryID int `json:"id"`
 }
+
+type ProductID struct {
+	ID int `json:"id"`
+}

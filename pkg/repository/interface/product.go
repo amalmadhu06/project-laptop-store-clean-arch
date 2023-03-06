@@ -11,4 +11,10 @@ type ProductRepository interface {
 	FindCategoryByID(ctx context.Context, id int) (domain.ProductCategory, error)
 	UpdateCategory(ctx context.Context, info domain.ProductCategory) (domain.ProductCategory, error)
 	DeleteCategory(ctx context.Context, categoryID int) (string, error)
+
+	CreateProduct(ctx context.Context, newProduct domain.Product) (domain.Product, error)
+	ViewAllProducts(ctx context.Context) ([]domain.Product, error)
+	FindProductByID(ctx context.Context, id int) (domain.Product, error)
+	UpdateProduct(ctx context.Context, info domain.Product) (domain.Product, error)
+	DeleteProduct(ctx context.Context, productID int) error
 }
