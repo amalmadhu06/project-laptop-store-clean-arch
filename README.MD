@@ -154,13 +154,13 @@ tset rest
 | 5   | 6           | VivoBook 15     | 5        | This laptop is ideal for students and professionals. It comes with an AMD Ryzen 5 processor and 8GB of RAM.       | [product image URL]   |
 
 ## Table: product_item
-| id | product_id | model               | brand  | processor         | ram   | storage  | display_size | graphics_card        | os           | qty_in_stock | product_image        | price_INR |
-|----|------------|---------------------|--------|-------------------|-------|----------|--------------|----------------------|--------------|--------------|----------------------|-----------|
-| 1  | 1          | Pavilion 15         | HP     | Intel Core i5     | 8GB   | 1TB HDD  | 15.6 inch    | NVIDIA GeForce MX130 | Windows 10   | 10           | [product image URL]  | 59448.00  |
-| 2  | 2          | Inspiron 14         | Dell   | Intel Core i3     | 4GB   | 256GB SSD| 14 inch      | Intel UHD Graphics   | Windows 10   | 15           | [product image URL]  | 52047.00  |
-| 3  | 3          | IdeaPad 3           | Lenovo | AMD Ryzen 5       | 8GB   | 512GB SSD| 15.6 inch    | AMD Radeon Graphics  | Windows 10   | 30           | [product image URL]  | 44646.00  |
-| 4  | 4          | MacBook Air         | Apple  | Apple M1          | 8GB   | 256GB SSD| 13.3 inch    | Apple M1             | macOS        | 40           | [product image URL]  | 74410.00  |
-| 5  | 5          | VivoBook 15         | Asus   | Intel Core i5     | 8GB   | 512GB SSD| 15.6 inch    | NVIDIA GeForce MX330 | Windows 10   | 50           | [product image URL]  | 55822.50  |
+| id | product_id | model               | processor     | ram   | storage  | display_size | graphics_card        | os           | qty_in_stock | product_image        | price_INR |
+|----|------------|---------------------|---------------|-------|----------|--------------|----------------------|--------------|--------------|----------------------|-----------|
+| 1  | 1          | Pavilion 15         | Intel Core i5 | 8GB   | 1TB HDD  | 15.6 inch    | NVIDIA GeForce MX130 | Windows 10   | 10           | [product image URL]  | 59448.00  |
+| 2  | 2          | Inspiron 14         | Intel Core i3 | 4GB   | 256GB SSD| 14 inch      | Intel UHD Graphics   | Windows 10   | 15           | [product image URL]  | 52047.00  |
+| 3  | 3          | IdeaPad 3           | AMD Ryzen 5   | 8GB   | 512GB SSD| 15.6 inch    | AMD Radeon Graphics  | Windows 10   | 30           | [product image URL]  | 44646.00  |
+| 4  | 4          | MacBook Air         | Apple M1      | 8GB   | 256GB SSD| 13.3 inch    | Apple M1             | macOS        | 40           | [product image URL]  | 74410.00  |
+| 5  | 5          | VivoBook 15         | Intel Core i5 | 8GB   | 512GB SSD| 15.6 inch    | NVIDIA GeForce MX330 | Windows 10   | 50           | [product image URL]  | 55822.50  |
 
 
 
