@@ -1,5 +1,28 @@
 basePath: /
 definitions:
+  modelHelper.AdminLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  modelHelper.NewAdminInfo:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+    required:
+    - email
+    - password
+    - user_name
+    type: object
   modelHelper.OTPData:
     properties:
       phone:
@@ -79,6 +102,68 @@ info:
   title: Ecommerce Web API
   version: "1.0"
 paths:
+  /adminPanel/create-admin:
+    post:
+      consumes:
+      - application/json
+      description: Super admin can create a new admin from admin panel.
+      operationId: create-admin
+      parameters:
+      - description: New Admin details
+        in: body
+        name: admin_details
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.NewAdminInfo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create a new admin from admin panel
+      tags:
+      - Admin
+  /adminPanel/login:
+    post:
+      consumes:
+      - application/json
+      description: Admin login
+      operationId: admin-login
+      parameters:
+      - description: Admin login credentials
+        in: body
+        name: admin_credentials
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.AdminLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin Login
+      tags:
+      - Admin
   /login-email:
     post:
       consumes:
@@ -157,6 +242,37 @@ paths:
         "500":
           description: Internal Server Error
       summary: User Logout
+      tags:
+      - Users
+  /sendOTP:
+    post:
+      consumes:
+      - application/json
+      description: Send OTP to use's mobile
+      operationId: send-otp
+      parameters:
+      - description: User mobile number
+        in: body
+        name: user_mobile
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.OTPData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send OTP to user's mobile
       tags:
       - Users
   /signup:
