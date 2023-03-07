@@ -20,6 +20,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		//user tables
 		&domain.Users{},
 		&domain.UserInfo{},
+		&domain.Address{},
 
 		//admin tables
 		&domain.Admin{},
@@ -34,6 +35,8 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		//&domain.ProductConfiguration{},
 
 		//cart tables
+		&domain.Cart{},
+		&domain.CartItems{},
 		//Order tables
 	)
 	if err != nil {

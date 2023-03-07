@@ -12,7 +12,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.AdminHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.AdminHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler) *ServerHTTP {
 	engine := gin.New()
 
 	// logger middleware logs following info for each request : http method, req URL, remote address of the client, res status code, elapsed time
@@ -80,6 +80,11 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 
 		//User routes that require middleware checking
 		user.Use(middleware.UserAuth)
+
+		{
+			user.POST("/add-to-cart/:product_item_id", cartHandler.AddToCart)
+			user.DELETE("/remove-from-cart/:product_item_id", cartHandler.RemoveFromCart)
+		}
 
 	}
 	return &ServerHTTP{engine: engine}

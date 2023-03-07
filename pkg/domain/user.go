@@ -25,3 +25,15 @@ type UserInfo struct {
 	UsersID           uint   `json:"users_id"`
 	Users             Users  `gorm:"foreignKey:UsersID"`
 }
+
+type Address struct {
+	ID          uint   `json:"id"`
+	UserID      uint   `json:"user_id"`
+	Users       Users  `gorm:"foreignKey:UserID" json:"omitempty"`
+	HouseNumber string `json:"house_number"`
+	Street      string `json:"street"`
+	City        string `json:"city"`
+	District    string `json:"district"`
+	Pincode     string `json:"pincode"`
+	Landmark    string `json:"landmark"`
+}
