@@ -48,6 +48,13 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			adminPanel.PUT("update-product", productHandler.UpdateProduct)
 			adminPanel.DELETE("delete-product", productHandler.DeleteProduct)
 
+			//	product item management
+			adminPanel.POST("/create-product-item", productHandler.CreateProductItem)
+			adminPanel.GET("/view-all-product-items", productHandler.ViewAllProductItems)
+			adminPanel.GET("/view-product-item/:id", productHandler.FindProductItemByID)
+			adminPanel.PUT("update-product-item", productHandler.UpdateProductItem)
+			adminPanel.DELETE("delete-product-item", productHandler.DeleteProductItem)
+
 		}
 	}
 
@@ -60,6 +67,16 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		user.POST("login-phone", userHandler.LoginWithPhone)
 		user.POST("sendOTP", otpHandler.SendOtp)
 		user.POST("verifyOTP", otpHandler.ValidateOtp)
+
+		//Todo : write separate handlers
+		user.GET("/view-all-categories", productHandler.ViewAllCategories)
+		user.GET("/view-category/:id", productHandler.FindCategoryByID)
+
+		user.GET("/view-all-products", productHandler.ViewAllProducts)
+		user.GET("/view-product/:id", productHandler.FindProductByID)
+
+		user.GET("/view-all-product-items", productHandler.ViewAllProductItems)
+		user.GET("/view-product-item/:id", productHandler.FindProductItemByID)
 
 		//User routes that require middleware checking
 		user.Use(middleware.UserAuth)

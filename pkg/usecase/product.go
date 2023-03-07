@@ -48,6 +48,10 @@ func (c *productUseCase) DeleteCategory(ctx context.Context, categoryID int) (st
 	return deleteCategoryName, err
 }
 
+//Todo : brand management
+
+//Product Management
+
 func (c *productUseCase) CreateProduct(ctx context.Context, newProduct domain.Product) (domain.Product, error) {
 	createdProduct, err := c.productRepo.CreateProduct(ctx, newProduct)
 	return createdProduct, err
@@ -73,5 +77,35 @@ func (c *productUseCase) UpdateProduct(ctx context.Context, info domain.Product)
 
 func (c *productUseCase) DeleteProduct(ctx context.Context, productID int) error {
 	err := c.productRepo.DeleteProduct(ctx, productID)
+	return err
+}
+
+//Product Item Management
+
+func (c *productUseCase) CreateProductItem(ctx context.Context, newProductItem domain.ProductItem) (domain.ProductItem, error) {
+	createdProductItem, err := c.productRepo.CreateProductItem(ctx, newProductItem)
+	return createdProductItem, err
+}
+
+func (c *productUseCase) ViewAllProductItems(ctx context.Context) ([]domain.ProductItem, error) {
+	allProductItems, err := c.productRepo.ViewAllProductItems(ctx)
+	return allProductItems, err
+}
+
+func (c *productUseCase) FindProductItemByID(ctx context.Context, id int) (domain.ProductItem, error) {
+	productItem, err := c.productRepo.FindProductItemByID(ctx, id)
+	if productItem.Model == "" {
+		return productItem, fmt.Errorf("invalid product item id")
+	}
+	return productItem, err
+}
+
+func (c *productUseCase) UpdateProductItem(ctx context.Context, info domain.ProductItem) (domain.ProductItem, error) {
+	updatedProductItem, err := c.productRepo.UpdateProductItem(ctx, info)
+	return updatedProductItem, err
+}
+
+func (c *productUseCase) DeleteProductItem(ctx context.Context, productItemID int) error {
+	err := c.productRepo.DeleteProductItem(ctx, productItemID)
 	return err
 }

@@ -16,6 +16,8 @@ func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 	return &productDatabase{DB}
 }
 
+//product category management
+
 func (c *productDatabase) CreateCategory(ctx context.Context, newCategory string) (domain.ProductCategory, error) {
 	var createdCategory domain.ProductCategory
 	categoryCreateQuery := `INSERT INTO product_categories(category_name)
@@ -25,7 +27,6 @@ func (c *productDatabase) CreateCategory(ctx context.Context, newCategory string
 	return createdCategory, err
 }
 
-// ViewAllCategories fetches all the product categories from the database and returns them as an array of ProductCategory structs.
 func (c *productDatabase) ViewAllCategories(ctx context.Context) ([]domain.ProductCategory, error) {
 	// Declare an empty array to store all the product categories.
 	var allCategories []domain.ProductCategory
@@ -89,6 +90,11 @@ func (c *productDatabase) DeleteCategory(ctx context.Context, categoryID int) (s
 	return deletedCategory, err
 }
 
+//brand management
+//Todo : brand management
+
+//product management
+
 func (c *productDatabase) CreateProduct(ctx context.Context, newProduct domain.Product) (domain.Product, error) {
 	var createdProduct domain.Product
 	productCreateQuery := `INSERT INTO products(product_category_id, name, brand_id, description, product_image)
@@ -148,5 +154,76 @@ func (c *productDatabase) DeleteProduct(ctx context.Context, productID int) erro
 	deleteProductQuery := `DELETE  FROM products
 							WHERE id = $1`
 	err := c.DB.Exec(deleteProductQuery, productID).Error
+	return err
+}
+
+//product item management
+
+func (c *productDatabase) CreateProductItem(ctx context.Context, newProductItem domain.ProductItem) (domain.ProductItem, error) {
+	var createdProductItem domain.ProductItem
+	productItemCreateQuery := `INSERT INTO product_items(product_id, model, processor, ram, storage, display_size, graphics_card, os, sku, qnty_in_stock, product_item_image, price)
+							VALUES( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+							RETURNING *`
+	err := c.DB.Raw(productItemCreateQuery, newProductItem.ProductID, newProductItem.Model, newProductItem.Processor, newProductItem.Ram, newProductItem.Storage, newProductItem.DisplaySize, newProductItem.GraphicsCard, newProductItem.OS, newProductItem.SKU, newProductItem.QntyInStock, newProductItem.ProductItemImage, newProductItem.Price).Scan(&createdProductItem).Error
+	return createdProductItem, err
+}
+
+func (c *productDatabase) ViewAllProductItems(ctx context.Context) ([]domain.ProductItem, error) {
+	var allProductItems []domain.ProductItem
+
+	findAllQuery := `SELECT * FROM product_items;`
+	rows, err := c.DB.Raw(findAllQuery).Rows()
+	if err != nil {
+		return allProductItems, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var productItem domain.ProductItem
+
+		err := rows.Scan(&productItem.ID, &productItem.ProductID, &productItem.Model, &productItem.Processor, &productItem.Ram, &productItem.Storage, &productItem.DisplaySize, &productItem.GraphicsCard, &productItem.OS, &productItem.SKU, &productItem.QntyInStock, &productItem.ProductItemImage, &productItem.Price)
+		if err != nil {
+			return allProductItems, err
+		}
+		allProductItems = append(allProductItems, productItem)
+	}
+	return allProductItems, nil
+}
+
+func (c *productDatabase) FindProductItemByID(ctx context.Context, id int) (domain.ProductItem, error) {
+	var productItem domain.ProductItem
+	fetchProductItemQuery := ` SELECT * FROM product_items
+							WHERE id = $1`
+	err := c.DB.Raw(fetchProductItemQuery, id).Scan(&productItem).Error
+	return productItem, err
+}
+
+func (c *productDatabase) UpdateProductItem(ctx context.Context, info domain.ProductItem) (domain.ProductItem, error) {
+	var updatedProductItem domain.ProductItem
+	updateProductItemQuery := `	UPDATE product_items
+								SET
+									product_id = $1,
+									model = $2, 
+									processor = $3, 
+									ram = $4, 
+									storage = $5, 
+									display_size = $6, 
+									graphics_card = $7, 
+									os = $8,
+									sku = $9, 
+									qnty_in_stock = $10, 
+									product_item_image = $11, 
+									price = $12
+								WHERE id = $13
+								RETURNING id, product_id, model, processor, ram, storage, display_size, graphics_card, os, sku, qnty_in_stock, product_item_image, price`
+	//Todo : fix scanning bug
+	err := c.DB.Raw(updateProductItemQuery, info.ProductID, info.Model, info.Processor, info.Ram, info.Storage, info.DisplaySize, info.GraphicsCard, info.OS, info.SKU, info.QntyInStock, info.ProductItemImage, info.Price, info.ID).Scan(&updatedProductItem).Error
+	return updatedProductItem, err
+}
+
+func (c *productDatabase) DeleteProductItem(ctx context.Context, productItemID int) error {
+	deleteProductItemQuery := `DELETE  FROM product_items
+							WHERE id = $1`
+	err := c.DB.Exec(deleteProductItemQuery, productItemID).Error
 	return err
 }

@@ -11,3 +11,7 @@ type CategoryID struct {
 type ProductID struct {
 	ID int `json:"id"`
 }
+
+type ProductItemID struct {
+	ID int `json:"id"`
+}

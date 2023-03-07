@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
@@ -21,6 +22,7 @@ func NewProductHandler(usecase services.ProductUseCase) *ProductHandler {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+//Category management
 
 // CreateCategory
 // @Summary Create new product category
@@ -221,6 +223,10 @@ func (cr *ProductHandler) DeleteCategory(c *gin.Context) {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+//Todo : brand management
+
+//----------------------------------------------------------------------------------------------------------------------
+//product management
 
 // CreateProduct
 // @Summary
@@ -295,7 +301,7 @@ func (cr *ProductHandler) ViewAllProducts(c *gin.Context) {
 	})
 }
 
-// ViewProductByID
+// FindProductByID
 // @Summary
 // @ID
 // @Description
@@ -420,3 +426,201 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
+//Product Item Management
+
+// CreateProductItem
+// @Summary
+// @ID
+// @Description
+// @Tags
+// @Accept json
+// @Produce json
+// @Param
+// @Success
+// @Failure
+// @Failure
+func (cr *ProductHandler) CreateProductItem(c *gin.Context) {
+	var newProductItem domain.ProductItem
+	if err := c.Bind(&newProductItem); err != nil {
+		// Return a 422 Bad request response if the request body is malformed.
+		c.JSON(http.StatusUnprocessableEntity, response.Response{
+			StatusCode: 422,
+			Message:    "unable to process the request",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	createdProductItem, err := cr.productUseCase.CreateProductItem(c.Request.Context(), newProductItem)
+	fmt.Println(createdProductItem)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "failed to add new product item",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.Response{
+		StatusCode: 201,
+		Message:    "Successfully added new product item",
+		Data:       createdProductItem,
+		Errors:     nil,
+	})
+}
+
+// ViewAllProductItems
+// @Summary
+// @ID
+// @Description
+// @Tags
+// @Accept json
+// @Produce json
+// @Param
+// @Success
+// @Failure
+// @Failure
+func (cr *ProductHandler) ViewAllProductItems(c *gin.Context) {
+	productItems, err := cr.productUseCase.ViewAllProductItems(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: 500,
+			Message:    "failed to fetch product items",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    "Successfully fetched all product items",
+		Data:       productItems,
+		Errors:     nil,
+	})
+}
+
+// FindProductItemByID
+// @Summary
+// @ID
+// @Description
+// @Tags
+// @Accept json
+// @Produce json
+// @Param
+// @Success
+// @Failure
+// @Failure
+func (cr *ProductHandler) FindProductItemByID(c *gin.Context) {
+	paramsID := c.Param("id")
+	id, err := strconv.Atoi(paramsID)
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{
+			StatusCode: 422,
+			Message:    "failed to parse product item id",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+
+	productItem, err := cr.productUseCase.FindProductItemByID(c.Request.Context(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: 500,
+			Message:    "unable to find product item",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: 200,
+		Message:    "Successfully fetched product item",
+		Data:       productItem,
+		Errors:     nil,
+	})
+
+}
+
+// UpdateProductItem
+// @Summary
+// @ID
+// @Description
+// @Tags
+// @Accept json
+// @Produce json
+// @Param
+// @Success
+// @Failure
+// @Failure
+func (cr *ProductHandler) UpdateProductItem(c *gin.Context) {
+	var updateInfo domain.ProductItem
+	if err := c.Bind(&updateInfo); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{
+			StatusCode: 422,
+			Message:    "failed to read request body",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	updatedProductItem, err := cr.productUseCase.UpdateProductItem(c.Request.Context(), updateInfo)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 400,
+			Message:    "unable to update product item",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusAccepted, response.Response{
+		StatusCode: 202,
+		Message:    "Successfully updated product item",
+		Data:       updatedProductItem,
+		Errors:     nil,
+	})
+}
+
+// DeleteProductItem
+// @Summary
+// @ID
+// @Description
+// @Tags
+// @Accept json
+// @Produce json
+// @Param
+// @Success
+// @Failure
+// @Failure
+func (cr *ProductHandler) DeleteProductItem(c *gin.Context) {
+	var productItem modelHelper.ProductItemID
+	if err := c.Bind(&productItem); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{
+			StatusCode: 422,
+			Message:    "failed to read request body",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	err := cr.productUseCase.DeleteProductItem(c.Request.Context(), productItem.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: 401,
+			Message:    "unable to delete product item",
+			Data:       nil,
+			Errors:     err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusAccepted, response.Response{
+		StatusCode: 202,
+		Message:    "Successfully deleted product item",
+		Data:       nil,
+		Errors:     nil,
+	})
+}
