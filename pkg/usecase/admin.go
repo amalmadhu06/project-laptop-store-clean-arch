@@ -23,7 +23,6 @@ func NewAdminUseCase(repo interfaces.AdminRepository) services.AdminUseCase {
 }
 
 func (c *adminUseCase) CreateAdmin(ctx context.Context, newAdmin modelHelper.NewAdminInfo, adminID int) (domain.Admin, error) {
-
 	isSuperAdmin, err := c.adminRepo.IsSuperAdmin(ctx, adminID)
 	if err != nil {
 		return domain.Admin{}, err
@@ -43,9 +42,7 @@ func (c *adminUseCase) CreateAdmin(ctx context.Context, newAdmin modelHelper.New
 }
 
 func (c *adminUseCase) AdminLogin(ctx context.Context, input modelHelper.AdminLogin) (string, modelHelper.AdminDataOutput, error) {
-
 	var adminData modelHelper.AdminDataOutput
-
 	// 1. Find the adminData with given email
 	adminInfo, err := c.adminRepo.FindAdmin(ctx, input.Email)
 	if err != nil {
@@ -108,4 +105,37 @@ func (c *adminUseCase) FindAdminID(ctx context.Context, cookie string) (int, err
 	id := int(value)
 
 	return id, nil
+}
+
+func (c *adminUseCase) BlockAdmin(ctx context.Context, blockID int, cookie string) (domain.Admin, error) {
+	//verify the request is sent by a super admin
+	adminID, err := c.FindAdminID(ctx, cookie)
+	if err != nil {
+		return domain.Admin{}, err
+	}
+
+	//check if the extracted id belongs to super admin
+	isSuper, err := c.adminRepo.IsSuperAdmin(ctx, adminID)
+	if err != nil || isSuper == false {
+		return domain.Admin{}, err
+	}
+
+	blockedAdmin, err := c.adminRepo.BlockAdmin(ctx, blockID)
+	return blockedAdmin, err
+}
+func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, cookie string) (domain.Admin, error) {
+	//verify the request is sent by a super admin
+	adminID, err := c.FindAdminID(ctx, cookie)
+	if err != nil {
+		return domain.Admin{}, err
+	}
+
+	//check if the extracted id belongs to super admin
+	isSuper, err := c.adminRepo.IsSuperAdmin(ctx, adminID)
+	if err != nil || isSuper == false {
+		return domain.Admin{}, err
+	}
+
+	unblockedAdmin, err := c.adminRepo.UnblockAdmin(ctx, unblockID)
+	return unblockedAdmin, err
 }
