@@ -31,8 +31,9 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		//	Admin routes that requires middleware checking
 		adminPanel.Use(middleware.AdminAuth)
 		{
-
 			adminPanel.POST("/create-admin", adminHandler.CreateAdmin)
+			adminPanel.PUT("/block-admin/:admin-id", adminHandler.BlockAdmin)
+			adminPanel.PUT("/unblock-admin/:admin-id", adminHandler.UnblockAdmin)
 
 			//	category management
 			adminPanel.POST("/create-category", productHandler.CreateCategory)
@@ -65,6 +66,7 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		user.POST("signup", userHandler.CreateUser)
 		user.POST("login-email", userHandler.LoginWithEmail)
 		user.POST("login-phone", userHandler.LoginWithPhone)
+		user.GET("logout", userHandler.UserLogout)
 		user.POST("sendOTP", otpHandler.SendOtp)
 		user.POST("verifyOTP", otpHandler.ValidateOtp)
 
@@ -82,8 +84,12 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 		user.Use(middleware.UserAuth)
 
 		{
+			user.POST("/add-address", userHandler.AddAddress)
+			//user.PUT("/update-address", userHandler.UpdateAddress)
 			user.POST("/add-to-cart/:product_item_id", cartHandler.AddToCart)
 			user.DELETE("/remove-from-cart/:product_item_id", cartHandler.RemoveFromCart)
+			user.GET("view-cart", cartHandler.ViewCart)
+			user.DELETE("/empty-cart", cartHandler.EmptyCart)
 		}
 
 	}

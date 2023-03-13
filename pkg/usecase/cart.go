@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
@@ -21,7 +22,7 @@ func NewCartUseCase(repo interfaces.CartRepository) services.CartUseCases {
 
 func (c *cartUseCase) AddToCart(ctx context.Context, cookie string, productItemID int) (domain.CartItems, error) {
 	var addedProduct domain.CartItems
-	userID, err := findUserID(cookie)
+	userID, err := FindUserID(cookie)
 	if err != nil {
 		return addedProduct, err
 	}
@@ -30,7 +31,7 @@ func (c *cartUseCase) AddToCart(ctx context.Context, cookie string, productItemI
 }
 
 func (c *cartUseCase) RemoveFromCart(ctx context.Context, cookie string, productItemID int) error {
-	userID, err := findUserID(cookie)
+	userID, err := FindUserID(cookie)
 	if err != nil {
 		return err
 	}
@@ -38,17 +39,26 @@ func (c *cartUseCase) RemoveFromCart(ctx context.Context, cookie string, product
 	return err
 }
 
-//func (c *cartUseCase) ViewCart(ctx context.Context, cookie string) (modelHelper.ViewCart, error) {
-//	var cart modelHelper.ViewCart
-//	userID, err := findUserID(cookie)
-//	if err != nil {
-//		return cart, err
-//	}
-//	cart, err = c.cartRepo.ViewCart(ctx, userID)
-//	return cart, err
-//}
+func (c *cartUseCase) ViewCart(ctx context.Context, cookie string) (modelHelper.ViewCart, error) {
+	var cart modelHelper.ViewCart
+	userID, err := FindUserID(cookie)
+	if err != nil {
+		return cart, err
+	}
+	cart, err = c.cartRepo.ViewCart(ctx, userID)
+	return cart, err
+}
 
-func findUserID(cookie string) (int, error) {
+func (c *cartUseCase) EmptyCart(ctx context.Context, cookie string) error {
+	userID, err := FindUserID(cookie)
+	if err != nil {
+		return err
+	}
+	err = c.cartRepo.EmptyCart(ctx, userID)
+	return err
+}
+
+func FindUserID(cookie string) (int, error) {
 	//parses, validates, verifies the signature and returns the parsed token
 	token, err := jwt.Parse(cookie, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {

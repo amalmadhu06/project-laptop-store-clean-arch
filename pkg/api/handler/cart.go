@@ -19,57 +19,38 @@ func NewCartHandler(usecase services.CartUseCases) *CartHandler {
 }
 
 // AddToCart
-// @Summary Add a product item to the cart
+// @Summary User can add a product item to the cart
 // @ID add-to-cart
-// @Description User's can add product to cart
+// @Description User can add product item to the cart
 // @Tags Cart
 // @Accept json
 // @Produce json
-// @Param
-// @Success
-// @Failure
-// @Failure
-// @Router /user/add-to-cart [post]
+// @Param product_item_id path string true "product_item_id"
+// @Success 201 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 401 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /add-to-cart/{product_item_id} [post]
 func (cr *CartHandler) AddToCart(c *gin.Context) {
 	paramsID := c.Param("product_item_id")
 	productItemID, err := strconv.Atoi(paramsID)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, response.Response{
-			StatusCode: 422,
-			Message:    "unable to process the request",
-			Data:       nil,
-			Errors:     err.Error(),
-		})
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
 		return
 	}
 
 	cookie, err := c.Cookie("UserAuth")
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{
-			StatusCode: 401,
-			Message:    "unable to fetch cookie",
-			Data:       nil,
-			Errors:     err.Error(),
-		})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
 		return
 	}
 
 	cartItem, err := cr.cartUseCase.AddToCart(c.Request.Context(), cookie, productItemID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: 400,
-			Message:    "failed to add product to the cart",
-			Data:       nil,
-			Errors:     err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to add product to the cart", Data: nil, Errors: err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, response.Response{
-		StatusCode: 201,
-		Message:    "Successfully added product item to the cart",
-		Data:       cartItem,
-		Errors:     nil,
-	})
+	c.JSON(http.StatusCreated, response.Response{StatusCode: 201, Message: "Successfully added product item to the cart", Data: cartItem, Errors: nil})
 }
 
 // RemoveFromCart
@@ -79,90 +60,81 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 // @Tags Cart
 // @Accept json
 // @Produce json
-// @Param
-// @Success
-// @Failure
-// @Failure
-// @Router /user/remove-from-cart [delete]
+// @Param product_item_id path string true "product_item_id"
+// @Success 204 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 401 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /remove-from-cart/{product_item_id} [delete]
 func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 	paramsID := c.Param("product_item_id")
 	productItemID, err := strconv.Atoi(paramsID)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, response.Response{
-			StatusCode: 422,
-			Message:    "unable to process the request",
-			Data:       nil,
-			Errors:     err.Error(),
-		})
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
 		return
 	}
 
 	cookie, err := c.Cookie("UserAuth")
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{
-			StatusCode: 401,
-			Message:    "unable to fetch cookie",
-			Data:       nil,
-			Errors:     err.Error(),
-		})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
 		return
 	}
 
 	err = cr.cartUseCase.RemoveFromCart(c.Request.Context(), cookie, productItemID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{
-			StatusCode: 400,
-			Message:    "failed to remove product from the cart",
-			Data:       nil,
-			Errors:     err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to remove product from the cart", Data: nil, Errors: err.Error()})
 		return
 	}
-	c.JSON(http.StatusNoContent, response.Response{
-		StatusCode: 204,
-		Message:    "Successfully removed product from the cart",
-		Data:       nil,
-		Errors:     nil,
-	})
+	c.JSON(http.StatusNoContent, response.Response{StatusCode: 204, Message: "Successfully removed product from the cart", Data: nil, Errors: nil})
 }
 
 // ViewCart
-// @Summary
-// @ID
-// @Description
-// @Tags
+// @Summary User can view cart items and total
+// @ID view-cart
+// @Description User can view cart and cart items
+// @Tags Cart
 // @Accept json
 // @Produce json
-// @Param
-// @Success
-// @Failure
-// @Failure
-//func (cr *CartHandler) ViewCart(c *gin.Context) {
-//	cookie, err := c.Cookie("UserAuth")
-//	if err != nil {
-//		c.JSON(http.StatusUnauthorized, response.Response{
-//			StatusCode: 401,
-//			Message:    "unable to fetch cookie",
-//			Data:       nil,
-//			Errors:     err.Error(),
-//		})
-//		return
-//	}
-//
-//	cart, err := cr.cartUseCase.ViewCart(c.Request.Context(), cookie)
-//	if err != nil {
-//		c.JSON(http.StatusInternalServerError, response.Response{
-//			StatusCode: 500,
-//			Message:    "failed to cart details",
-//			Data:       nil,
-//			Errors:     err.Error(),
-//		})
-//		return
-//	}
-//	c.JSON(http.StatusOK, response.Response{
-//		StatusCode: 200,
-//		Message:    "Successfully fetched cart",
-//		Data:       cart,
-//		Errors:     nil,
-//	})
-//}
+// @Success 200 {object} response.Response
+// @Failure 401 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /view-cart [get]
+func (cr *CartHandler) ViewCart(c *gin.Context) {
+	cookie, err := c.Cookie("UserAuth")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	cart, err := cr.cartUseCase.ViewCart(c.Request.Context(), cookie)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to cart details", Data: nil, Errors: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "Successfully fetched cart", Data: cart, Errors: nil})
+}
+
+// EmptyCart
+// @Summary Remove everything from cart
+// @ID empty-cart
+// @Description User can remove everything from cart at once
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 401 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /empty-cart [delete]
+func (cr *CartHandler) EmptyCart(c *gin.Context) {
+	cookie, err := c.Cookie("UserAuth")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		return
+	}
+	err = cr.cartUseCase.EmptyCart(c.Request.Context(), cookie)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to empty cart", Data: nil, Errors: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "Successfully emptied cart", Data: nil, Errors: nil})
+}
