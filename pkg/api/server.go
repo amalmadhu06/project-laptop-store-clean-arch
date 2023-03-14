@@ -12,7 +12,14 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.AdminHandler, otpHandler *handler.OtpHandler, productHandler *handler.ProductHandler, cartHandler *handler.CartHandler) *ServerHTTP {
+func NewServerHTTP(
+	userHandler *handler.UserHandler,
+	adminHandler *handler.AdminHandler,
+	otpHandler *handler.OtpHandler,
+	productHandler *handler.ProductHandler,
+	cartHandler *handler.CartHandler,
+	orderHandler *handler.OrderHandler,
+) *ServerHTTP {
 	engine := gin.New()
 
 	// logger middleware logs following info for each request : http method, req URL, remote address of the client, res status code, elapsed time
@@ -90,6 +97,12 @@ func NewServerHTTP(userHandler *handler.UserHandler, adminHandler *handler.Admin
 			user.DELETE("/remove-from-cart/:product_item_id", cartHandler.RemoveFromCart)
 			user.GET("view-cart", cartHandler.ViewCart)
 			user.DELETE("/empty-cart", cartHandler.EmptyCart)
+
+			user.POST("/buy-product-item", orderHandler.BuyProductItem)
+			user.POST("/cart/buy-all", orderHandler.BuyAll)
+			user.GET("/view-order-by-id/:order_id", orderHandler.ViewOrderByID)
+			user.GET("/view-all-orders", orderHandler.ViewAllOrders)
+			user.PUT("/cancel-order/:order_id", orderHandler.CancelOrder)
 		}
 
 	}

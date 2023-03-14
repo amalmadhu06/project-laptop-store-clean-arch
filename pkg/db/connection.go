@@ -30,14 +30,16 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		&domain.ProductBrand{},
 		&domain.Product{},
 		&domain.ProductItem{},
-		//&domain.Variation{},
-		//&domain.VariationOption{},
-		//&domain.ProductConfiguration{},
 
 		//cart tables
 		&domain.Cart{},
 		&domain.CartItems{},
+
 		//Order tables
+		&domain.Order{},
+		&domain.OrderLine{},
+		&domain.PaymentMethod{},
+		&domain.OrderStatus{},
 	)
 	if err != nil {
 		return nil, err
