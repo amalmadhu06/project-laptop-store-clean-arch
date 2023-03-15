@@ -48,7 +48,30 @@ func (c *productUseCase) DeleteCategory(ctx context.Context, categoryID int) (st
 	return deleteCategoryName, err
 }
 
-//Todo : brand management
+func (c *productUseCase) CreateBrand(ctx context.Context, newBrand domain.ProductBrand) (domain.ProductBrand, error) {
+	createdBrand, err := c.productRepo.CreateBrand(ctx, newBrand)
+	return createdBrand, err
+}
+
+func (c *productUseCase) UpdateBrand(ctx context.Context, brandInfo domain.ProductBrand) (domain.ProductBrand, error) {
+	updatedBrand, err := c.productRepo.UpdateBrand(ctx, brandInfo)
+	return updatedBrand, err
+}
+
+func (c *productUseCase) DeleteBrand(ctx context.Context, brandID int) (domain.ProductBrand, error) {
+	deletedBrand, err := c.productRepo.DeleteBrand(ctx, brandID)
+	return deletedBrand, err
+}
+
+func (c *productUseCase) ViewAllBrands(ctx context.Context) ([]domain.ProductBrand, error) {
+	allBrands, err := c.productRepo.ViewAllBrands(ctx)
+	return allBrands, err
+}
+
+func (c *productUseCase) ViewBrandByID(ctx context.Context, brandID int) (domain.ProductBrand, error) {
+	brand, err := c.productRepo.ViewBrandByID(ctx, brandID)
+	return brand, err
+}
 
 //Product Management
 

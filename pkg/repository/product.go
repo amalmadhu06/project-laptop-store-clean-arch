@@ -91,7 +91,49 @@ func (c *productDatabase) DeleteCategory(ctx context.Context, categoryID int) (s
 }
 
 //brand management
-//Todo : brand management
+
+func (c *productDatabase) CreateBrand(ctx context.Context, newBrand domain.ProductBrand) (domain.ProductBrand, error) {
+	var createdBrand domain.ProductBrand
+	createBrandQuery := `INSERT INTO product_brands (brand) VALUES($1) RETURNING *;`
+	err := c.DB.Raw(createBrandQuery, newBrand.Brand).Scan(&createdBrand).Error
+	return createdBrand, err
+}
+
+func (c *productDatabase) UpdateBrand(ctx context.Context, brandInfo domain.ProductBrand) (domain.ProductBrand, error) {
+	var updatedBrand domain.ProductBrand
+	updateBrandQuery := `UPDATE product_brands SET brand = $1 WHERE id = $2 RETURNING *;`
+	err := c.DB.Raw(updateBrandQuery, brandInfo.Brand, brandInfo.ID).Scan(&updatedBrand).Error
+	return updatedBrand, err
+}
+
+func (c *productDatabase) DeleteBrand(ctx context.Context, brandID int) (domain.ProductBrand, error) {
+	var deletedBrand domain.ProductBrand
+	selectBrandQuery := `SELECT * FROM product_brands WHERE id = $1;`
+	err := c.DB.Raw(selectBrandQuery, brandID).Scan(&deletedBrand).Error
+	if deletedBrand.ID == 0 || err != nil {
+		return domain.ProductBrand{}, fmt.Errorf("no brand found")
+	}
+	deleteBrandQuery := `DELETE FROM product_brands WHERE id = $1`
+	err = c.DB.Exec(deleteBrandQuery, brandID).Error
+	return deletedBrand, err
+}
+
+func (c *productDatabase) ViewAllBrands(ctx context.Context) ([]domain.ProductBrand, error) {
+	var allBrands []domain.ProductBrand
+	fetchBrandsQuery := `SELECT * FROM product_brands;`
+	err := c.DB.Raw(fetchBrandsQuery).Scan(&allBrands).Error
+	return allBrands, err
+}
+
+func (c *productDatabase) ViewBrandByID(ctx context.Context, brandID int) (domain.ProductBrand, error) {
+	var brand domain.ProductBrand
+	fetchBrandQuery := `SELECT * FROM product_brands WHERE id = $1;`
+	err := c.DB.Raw(fetchBrandQuery, brandID).Scan(&brand).Error
+	if brand.ID == 0 {
+		return domain.ProductBrand{}, fmt.Errorf("no brand found")
+	}
+	return brand, err
+}
 
 //product management
 

@@ -19,6 +19,7 @@ func NewServerHTTP(
 	productHandler *handler.ProductHandler,
 	cartHandler *handler.CartHandler,
 	orderHandler *handler.OrderHandler,
+	paymentHanlder *handler.PaymentHandler,
 ) *ServerHTTP {
 	engine := gin.New()
 
@@ -49,6 +50,13 @@ func NewServerHTTP(
 			adminPanel.PUT("update-category", productHandler.UpdateCategory)
 			adminPanel.DELETE("delete-category", productHandler.DeleteCategory)
 
+			//brand management
+			adminPanel.POST("/create-brand", productHandler.CreateBrand)
+			adminPanel.GET("/view-all-brands", productHandler.ViewAllBrands)
+			adminPanel.GET("/view-brand-by-id/:id", productHandler.ViewBrandByID)
+			adminPanel.PUT("/update-brand", productHandler.UpdateBrand)
+			adminPanel.DELETE("/delete-brand/:id", productHandler.DeleteBrand)
+
 			//	product management
 			adminPanel.POST("/create-product", productHandler.CreateProduct)
 			adminPanel.GET("/view-all-products", productHandler.ViewAllProducts)
@@ -60,9 +68,11 @@ func NewServerHTTP(
 			adminPanel.POST("/create-product-item", productHandler.CreateProductItem)
 			adminPanel.GET("/view-all-product-items", productHandler.ViewAllProductItems)
 			adminPanel.GET("/view-product-item/:id", productHandler.FindProductItemByID)
-			adminPanel.PUT("update-product-item", productHandler.UpdateProductItem)
-			adminPanel.DELETE("delete-product-item", productHandler.DeleteProductItem)
+			adminPanel.PUT("/update-product-item", productHandler.UpdateProductItem)
+			adminPanel.DELETE("/delete-product-item", productHandler.DeleteProductItem)
 
+			//	order management
+			adminPanel.PUT("/update-order", orderHandler.UpdateOrder)
 		}
 	}
 
@@ -80,6 +90,9 @@ func NewServerHTTP(
 		//Todo : write separate handlers
 		user.GET("/view-all-categories", productHandler.ViewAllCategories)
 		user.GET("/view-category/:id", productHandler.FindCategoryByID)
+
+		user.GET("/view-all-brands", productHandler.ViewAllBrands)
+		user.GET("/view-brand-by-id/:id", productHandler.ViewBrandByID)
 
 		user.GET("/view-all-products", productHandler.ViewAllProducts)
 		user.GET("/view-product/:id", productHandler.FindProductByID)
@@ -103,6 +116,9 @@ func NewServerHTTP(
 			user.GET("/view-order-by-id/:order_id", orderHandler.ViewOrderByID)
 			user.GET("/view-all-orders", orderHandler.ViewAllOrders)
 			user.PUT("/cancel-order/:order_id", orderHandler.CancelOrder)
+
+			user.GET("/order/razorpay/:order_id", paymentHanlder.CreateRazorpayPayment)
+
 		}
 
 	}
@@ -110,6 +126,7 @@ func NewServerHTTP(
 }
 
 func (sh *ServerHTTP) Start() {
+	sh.engine.LoadHTMLGlob("template/*.html")
 	err := sh.engine.Run(":3000")
 	if err != nil {
 		return

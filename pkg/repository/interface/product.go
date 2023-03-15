@@ -13,6 +13,11 @@ type ProductRepository interface {
 	DeleteCategory(ctx context.Context, categoryID int) (string, error)
 
 	//Todo : brand management
+	CreateBrand(ctx context.Context, newBrand domain.ProductBrand) (domain.ProductBrand, error)
+	UpdateBrand(ctx context.Context, brandInfo domain.ProductBrand) (domain.ProductBrand, error)
+	DeleteBrand(ctx context.Context, brandID int) (domain.ProductBrand, error)
+	ViewAllBrands(ctx context.Context) ([]domain.ProductBrand, error)
+	ViewBrandByID(ctx context.Context, brandID int) (domain.ProductBrand, error)
 
 	CreateProduct(ctx context.Context, newProduct domain.Product) (domain.Product, error)
 	ViewAllProducts(ctx context.Context) ([]domain.Product, error)
