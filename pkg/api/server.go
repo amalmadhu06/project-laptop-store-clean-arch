@@ -39,6 +39,12 @@ func NewServerHTTP(
 		//	Admin routes that requires middleware checking
 		adminPanel.Use(middleware.AdminAuth)
 		{
+
+			adminPanel.GET("/users", userHandler.ListAllUsers)
+			adminPanel.GET("/users/:id", userHandler.FindUserByID)
+			adminPanel.PUT("/users/block-user", userHandler.BlockUser)
+			adminPanel.PUT("users/unblock-user/:id", userHandler.UnblockUser)
+
 			adminPanel.POST("/create-admin", adminHandler.CreateAdmin)
 			adminPanel.PUT("/block-admin/:admin-id", adminHandler.BlockAdmin)
 			adminPanel.PUT("/unblock-admin/:admin-id", adminHandler.UnblockAdmin)
@@ -105,7 +111,7 @@ func NewServerHTTP(
 
 		{
 			user.POST("/add-address", userHandler.AddAddress)
-			//user.PUT("/update-address", userHandler.UpdateAddress)
+			user.PUT("/update-address", userHandler.UpdateAddress)
 			user.POST("/add-to-cart/:product_item_id", cartHandler.AddToCart)
 			user.DELETE("/remove-from-cart/:product_item_id", cartHandler.RemoveFromCart)
 			user.GET("view-cart", cartHandler.ViewCart)

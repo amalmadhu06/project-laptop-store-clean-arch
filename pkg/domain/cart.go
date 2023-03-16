@@ -10,8 +10,8 @@ type Cart struct {
 type CartItems struct {
 	ID            uint        `json:"id"`
 	CartID        uint        `json:"cart_id"`
-	Cart          Cart        `gorm:"foreignKey:CartID" json:"_"`
+	Cart          Cart        `gorm:"foreignKey:CartID" json:"-"`
 	ProductItemID uint        `json:"product_item_id"`
-	ProductItem   ProductItem `json:"_"`
+	ProductItem   ProductItem `json:"-"`
 	Quantity      uint        `json:"quantity"`
 }

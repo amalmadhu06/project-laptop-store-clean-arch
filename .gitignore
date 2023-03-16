@@ -31,3 +31,17 @@ go.sum
 
 # Code Coverage
 code-coverage.*
+
+
+# Air files
+.air.toml
+tmp
+cmd/api/tmp
+
+pkg/api/server.txt
+pkg/api/handler/payment.go
+pkg/usecase/payment.go
+pkg/usecase/interface/payment.go
+pkg/repository/payment.go
+pkg/repository/interface/payment.go
+pkg/domain/payment.go

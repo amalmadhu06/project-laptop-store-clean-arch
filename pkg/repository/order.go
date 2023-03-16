@@ -104,7 +104,6 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 	createOrderQuery := `	INSERT INTO orders (user_id, order_date, payment_method_id, shipping_address_id, order_total, order_status_id)
 							VALUES($1, NOW(), $2, $3, $4,1) RETURNING *;`
 	err = tx.Raw(createOrderQuery, userID, orderInfo.PaymentMethodID, orderInfo.ShippingAddressID, cartDetails.Total).Scan(&createdOrder).Error
-	fmt.Println("createdOrder: ", createdOrder)
 	if err != nil {
 		tx.Rollback()
 		return domain.Order{}, err
@@ -199,9 +198,10 @@ func (c *orderDatabase) CancelOrder(ctx context.Context, userID int, orderID int
 	if orderStatus == 0 {
 		return domain.Order{}, fmt.Errorf("no such order found")
 	}
-	
+
 	//if order is in pending status
 	if orderStatus == 1 {
+
 		var cancelledOrder domain.Order
 		cancelOrderQuery := `UPDATE orders SET order_status_id = 2 WHERE user_id = $1 AND id = $2 RETURNING *;`
 		err := tx.Raw(cancelOrderQuery, userID, orderID).Scan(&cancelledOrder).Error
@@ -209,13 +209,44 @@ func (c *orderDatabase) CancelOrder(ctx context.Context, userID int, orderID int
 			tx.Rollback()
 			return domain.Order{}, err
 		}
+
+		//increase the quantity in product items table
+		var orderLineItems []domain.OrderLine
+		findOrderLineQuery := `SELECT * FROM order_lines WHERE order_id = $1;`
+		err = tx.Raw(findOrderLineQuery, orderID).Scan(&orderLineItems).Error
+		if err != nil {
+			tx.Rollback()
+			return domain.Order{}, err
+		}
+
+		qntyUpdateQuery := `UPDATE product_items SET qnty_in_stock = qnty_in_stock + $1 WHERE id = $2`
+		for i := range orderLineItems {
+			err := tx.Exec(qntyUpdateQuery, orderLineItems[i].Quantity, orderLineItems[i].ProductItemID).Error
+			if err != nil {
+				return domain.Order{}, err
+			}
+		}
+
 		tx.Commit()
 		return cancelledOrder, nil
 	}
+	//if order is already cancelled
 	if orderStatus == 2 {
+		tx.Rollback()
 		return domain.Order{}, fmt.Errorf("order already cancelled")
 	}
-
+	tx.Rollback()
 	return domain.Order{}, fmt.Errorf("order processed, cannot cancel")
+}
 
+func (c *orderDatabase) UpdateOrder(ctx context.Context, orderInfo modelHelper.UpdateOrder) (domain.Order, error) {
+	var updatedOrder domain.Order
+	updateStatusQuery := `UPDATE orders SET order_status_id = $1 WHERE id = $2 RETURNING *`
+	err := c.DB.Raw(updateStatusQuery, orderInfo.OrderStatusID, orderInfo.OrderID).Scan(&updatedOrder).Error
+
+	if updatedOrder.ID == 0 {
+		return domain.Order{}, fmt.Errorf("no order found")
+	}
+
+	return updatedOrder, err
 }

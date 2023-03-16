@@ -58,7 +58,11 @@ func (c *otpUseCase) ValidateOtp(ctx context.Context, data modelHelper.VerifyDat
 	params.SetTo("+91" + data.Phone.Phone)
 	params.SetCode(data.Otp)
 	resp, err := client.VerifyV2.CreateVerificationCheck(c.cfg.TWILIOSERVICESID, params)
-
+	if err != nil {
+		return resp, userData, "", err
+	}
+	fmt.Println("response", resp)
+	fmt.Println("err", err)
 	//update database on successful phone number verification
 	fmt.Println("No error till approving otp")
 	if *resp.Status == "approved" {

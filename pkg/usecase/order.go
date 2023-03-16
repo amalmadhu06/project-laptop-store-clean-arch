@@ -66,3 +66,8 @@ func (c *orderUseCase) CancelOrder(ctx context.Context, orderID int, cookie stri
 	order, err := c.orderRepo.CancelOrder(ctx, userID, orderID)
 	return order, err
 }
+
+func (c *orderUseCase) UpdateOrder(ctx context.Context, orderInfo modelHelper.UpdateOrder) (domain.Order, error) {
+	order, err := c.orderRepo.UpdateOrder(ctx, orderInfo)
+	return order, err
+}

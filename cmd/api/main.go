@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "github.com/amalmadhu06/project-laptop-store-clean-arch/cmd/api/docs"
-
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/config"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/di"
 	"log"

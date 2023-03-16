@@ -10,8 +10,12 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, user modelHelper.UserDataInput) (modelHelper.UserDataOutput, error)
 	FindByEmail(ctx context.Context, email string) (modelHelper.UserLoginVerifier, error)
 	FindByPhone(ctx context.Context, phone string) (modelHelper.UserLoginVerifier, error)
-	FindAll(ctx context.Context) ([]domain.Users, error)
-	FindByID(ctx context.Context, id uint) (domain.Users, error)
-	Save(ctx context.Context, user domain.Users) (domain.Users, error)
-	Delete(ctx context.Context, user domain.Users) error
+
+	AddAddress(ctx context.Context, userID int, newAddress modelHelper.AddressInput) (domain.Address, error)
+	UpdateAddress(ctx context.Context, userID int, address modelHelper.AddressInput) (domain.Address, error)
+
+	ListAllUsers(ctx context.Context) ([]domain.Users, error)
+	FindUserByID(ctx context.Context, userID int) (domain.Users, error)
+	BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, adminID int) (domain.UserInfo, error)
+	UnblockUser(ctx context.Context, userID int) (domain.UserInfo, error)
 }

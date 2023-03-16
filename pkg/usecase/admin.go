@@ -53,9 +53,9 @@ func (c *adminUseCase) AdminLogin(ctx context.Context, input modelHelper.AdminLo
 	}
 
 	// 2. Compare and hash the password
-	//if err := bcrypt.CompareHashAndPassword([]byte(adminInfo.Password), []byte(input.Password)); err != nil {
-	//	return "", adminData, err
-	//}
+	if err := bcrypt.CompareHashAndPassword([]byte(adminInfo.Password), []byte(input.Password)); err != nil {
+		return "", adminData, err
+	}
 
 	// 3. Check whether the adminData is blocked by admin
 	if adminInfo.IsBlocked {
@@ -76,7 +76,7 @@ func (c *adminUseCase) AdminLogin(ctx context.Context, input modelHelper.AdminLo
 	// 4. Send back the created token
 
 	//adminInfo data for sending back as response
-	adminData.ID, adminData.UserName, adminData.Email = adminInfo.ID, adminInfo.UserName, adminInfo.Email
+	adminData.ID, adminData.UserName, adminData.Email, adminData.IsSuperAdmin = adminInfo.ID, adminInfo.UserName, adminInfo.Email, adminInfo.IsSuperAdmin
 	return ss, adminData, err
 }
 
@@ -123,6 +123,7 @@ func (c *adminUseCase) BlockAdmin(ctx context.Context, blockID int, cookie strin
 	blockedAdmin, err := c.adminRepo.BlockAdmin(ctx, blockID)
 	return blockedAdmin, err
 }
+
 func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, cookie string) (domain.Admin, error) {
 	//verify the request is sent by a super admin
 	adminID, err := c.FindAdminID(ctx, cookie)
@@ -138,4 +139,30 @@ func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, cookie s
 
 	unblockedAdmin, err := c.adminRepo.UnblockAdmin(ctx, unblockID)
 	return unblockedAdmin, err
+}
+
+func FindAdminID(cookie string) (int, error) {
+	//parses, validates, verifies the signature and returns the parsed token
+	token, err := jwt.Parse(cookie, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
+		//secret was used for signing the string
+		return []byte("secret"), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	var parsedID interface{}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		parsedID = claims["id"]
+	}
+	//type assertion
+	value, ok := parsedID.(float64)
+	if !ok {
+		return 0, fmt.Errorf("expected an int value, but got %T", parsedID)
+	}
+
+	id := int(value)
+	return id, nil
 }

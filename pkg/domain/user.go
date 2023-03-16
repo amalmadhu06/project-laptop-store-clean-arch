@@ -21,15 +21,16 @@ type UserInfo struct {
 	IsBlocked         bool `json:"is_blocked"`
 	BlockedAt         time.Time
 	BlockedBy         uint   `json:"blocked_by"`
+	Admin             Admin  `gorm:"foreignKey:BlockedBy" json:"-"`
 	ReasonForBlocking string `json:"reason_for_blocking"`
-	UsersID           uint   `json:"users_id"`
-	Users             Users  `gorm:"foreignKey:UsersID"`
+	UsersID           uint   `json:"users_id" json:"-"`
+	Users             Users  `gorm:"foreignKey:UsersID" json:"-"`
 }
 
 type Address struct {
 	ID          uint   `json:"id"`
 	UserID      uint   `json:"user_id"`
-	Users       Users  `gorm:"foreignKey:UserID" json:"omitempty"`
+	Users       Users  `gorm:"foreignKey:UserID" json:"-"`
 	HouseNumber string `json:"house_number"`
 	Street      string `json:"street"`
 	City        string `json:"city"`

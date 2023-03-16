@@ -25,6 +25,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 		handler.NewProductHandler,
 		handler.NewCartHandler,
 		handler.NewOrderHandler,
+		handler.NewPaymentHandler,
 
 		//database queries
 		repository.NewAdminRepository,
@@ -41,6 +42,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 		usecase.NewProductUseCase,
 		usecase.NewCartUseCase,
 		usecase.NewOrderUseCase,
+		usecase.NewPaymentUseCase,
 
 		//server connection
 		http.NewServerHTTP)

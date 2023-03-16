@@ -283,7 +283,7 @@ func (cr *ProductHandler) ViewBrandByID(c *gin.Context) {
 
 	category, err := cr.productUseCase.ViewBrandByID(c.Request.Context(), id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "unable to find category", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "unable to find brand", Data: nil, Errors: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "Successfully fetched category", Data: category, Errors: nil})
@@ -382,7 +382,7 @@ func (cr *ProductHandler) FindProductByID(c *gin.Context) {
 // @Success 202 {object} response.Response "Successfully updated product"
 // @Failure 400 {object} response.Response "Unable to update product"
 // @Failure 422 {object} response.Response "Failed to read request body"
-// @Router adminPanel/update-product [put]
+// @Router /adminPanel/update-product [put]
 func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 	var updateInfo domain.Product
 	if err := c.Bind(&updateInfo); err != nil {

@@ -1,8 +1,17 @@
 package modelHelper
 
-import "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
+type DisplayCart struct {
+	ProductItemID    uint
+	Brand            string
+	Name             string
+	Model            string
+	Quantity         uint
+	ProductItemImage string
+	Price            float64
+	Total            float64
+}
 
 type ViewCart struct {
-	cartItems []domain.CartItems
-	Total     float64
+	CartItems []DisplayCart
+	CartTotal float64
 }

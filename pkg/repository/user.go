@@ -62,29 +62,80 @@ func (c *userDatabase) FindByPhone(ctx context.Context, phone string) (modelHelp
 	return userData, err
 }
 
-func (c *userDatabase) FindAll(ctx context.Context) ([]domain.Users, error) {
-	//time.Sleep(60 * time.Second) // sleep for 15 seconds
-	var users []domain.Users
-	err := c.DB.Find(&users).Error
+func (c *userDatabase) AddAddress(ctx context.Context, userID int, newAddress modelHelper.AddressInput) (domain.Address, error) {
+	var existingAddress, addedAddress domain.Address
+	findAddressQuery := `SELECT * FROM addresses WHERE user_id = $1`
+	err := c.DB.Raw(findAddressQuery, userID).Scan(&existingAddress).Error
+	if err != nil {
+		return domain.Address{}, err
+	}
+	if existingAddress.ID == 0 || existingAddress.UserID == 0 {
+		//no address is found in user table, so insert query
+		insertAddressQuery := `	INSERT INTO addresses(
+								user_id, house_number, street, city, district, pincode, landmark) 
+								VALUES($1,$2,$3,$4,$5,$6, $7) RETURNING *`
+		err := c.DB.Raw(insertAddressQuery, userID, newAddress.HouseNumber, newAddress.Street, newAddress.City, newAddress.District, newAddress.Pincode, newAddress.Landmark).Scan(&addedAddress).Error
+		return addedAddress, err
+	} else {
+		//	address is already there, update it
+		updateAddressQuery := `	UPDATE addresses SET
+								house_number = $1, street = $2, city = $3, district = $4, pincode = $5, landmark = $6
+								WHERE user_id = $7
+								RETURNING *`
+		err := c.DB.Raw(updateAddressQuery, newAddress.HouseNumber, newAddress.Street, newAddress.City, newAddress.District, newAddress.Pincode, newAddress.Landmark, userID).Scan(&addedAddress).Error
+		return addedAddress, err
+	}
+}
 
+func (c *userDatabase) UpdateAddress(ctx context.Context, userID int, address modelHelper.AddressInput) (domain.Address, error) {
+	var updatedAddress domain.Address
+	updateQuery := `UPDATE addresses SET house_number = $1, street = $2, city = $3, district = $4, pincode = $5, landmark = $6 WHERE user_id = $7 RETURNING *`
+	err := c.DB.Raw(updateQuery, address.HouseNumber, address.Street, address.City, address.District, address.Pincode, address.Landmark, userID).Scan(&updatedAddress).Error
+
+	if updatedAddress.ID == 0 {
+		return domain.Address{}, fmt.Errorf("failed to update address")
+	}
+	return updatedAddress, err
+}
+
+func (c *userDatabase) ListAllUsers(ctx context.Context) ([]domain.Users, error) {
+	var users []domain.Users
+	fetchAllQuery := `SELECT * FROM users;`
+	err := c.DB.Raw(fetchAllQuery).Scan(&users).Error
+	if len(users) == 0 {
+		return users, fmt.Errorf("no users found")
+	}
 	return users, err
 }
 
-func (c *userDatabase) FindByID(ctx context.Context, id uint) (domain.Users, error) {
+func (c *userDatabase) FindUserByID(ctx context.Context, userID int) (domain.Users, error) {
 	var user domain.Users
-	err := c.DB.First(&user, id).Error
-
+	findUser := `SELECT * FROM users WHERE id = $1;`
+	err := c.DB.Raw(findUser, userID).Scan(&user).Error
+	if user.ID == 0 {
+		return domain.Users{}, fmt.Errorf("no user found")
+	}
 	return user, err
 }
 
-func (c *userDatabase) Save(ctx context.Context, user domain.Users) (domain.Users, error) {
-	err := c.DB.Save(&user).Error
+func (c *userDatabase) BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, adminID int) (domain.UserInfo, error) {
+	var userInfo domain.UserInfo
+	blockQuery := `UPDATE user_infos SET is_blocked = 'true', blocked_at = NOW(), blocked_by = $1, reason_for_blocking = $2 WHERE users_id = $3 RETURNING *;`
+	err := c.DB.Raw(blockQuery, adminID, blockInfo.Reason, blockInfo.UserID).Scan(&userInfo).Error
 
-	return user, err
+	if userInfo.UsersID == 0 {
+		return domain.UserInfo{}, fmt.Errorf("user not found")
+	}
+
+	return userInfo, err
 }
 
-func (c *userDatabase) Delete(ctx context.Context, user domain.Users) error {
-	err := c.DB.Delete(&user).Error
-
-	return err
+func (c *userDatabase) UnblockUser(ctx context.Context, userID int) (domain.UserInfo, error) {
+	var userInfo domain.UserInfo
+	unblockQuery := `UPDATE user_infos SET is_blocked = 'false', reason_for_blocking = '' WHERE users_id = $1 RETURNING *;`
+	err := c.DB.Raw(unblockQuery, userID).Scan(&userInfo).Error
+	if userInfo.UsersID == 0 {
+		return domain.UserInfo{}, fmt.Errorf("no user found")
+	}
+	return userInfo, err
 }

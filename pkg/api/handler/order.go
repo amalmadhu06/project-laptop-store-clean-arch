@@ -182,3 +182,31 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully cancelled order", Data: order, Errors: nil})
 }
+
+// UpdateOrder allows admins to update order status
+// @Summary Admin can update order status of any order using order_id
+// @ID update-order
+// @Description Endpoint for updating order status
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Param order_info body modelHelper.UpdateOrder true "Details of the order to be updated"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /adminPanel/update-order [put]
+func (cr *OrderHandler) UpdateOrder(c *gin.Context) {
+	var body modelHelper.UpdateOrder
+
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request bod", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	order, err := cr.orderUseCase.UpdateOrder(c.Request.Context(), body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to update order", Data: nil, Errors: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully updated order", Data: order, Errors: nil})
+}
