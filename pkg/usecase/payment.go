@@ -71,6 +71,8 @@ func (cr *paymentUseCase) UpdatePaymentDetails(ctx context.Context, paymentVerif
 		return err
 	}
 
+	fmt.Println("payment details in usecase :", paymentDetails)
+
 	if paymentDetails.ID == 0 {
 		return fmt.Errorf("no order found")
 	}
@@ -79,7 +81,14 @@ func (cr *paymentUseCase) UpdatePaymentDetails(ctx context.Context, paymentVerif
 		return fmt.Errorf("payment amount and order amount does not match")
 	}
 
-	// check if it matches with the received info
-	//	if yes, update payment table. else return err
+	updatedPayment, err := cr.paymentRepo.UpdatePaymentDetails(ctx, paymentVerifier.OrderID, paymentVerifier.PaymentRef)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("updated payment in usecase ", updatedPayment)
+	if updatedPayment.ID == 0 {
+		return fmt.Errorf("failed to update payment details")
+	}
 	return nil
 }

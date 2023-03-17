@@ -22,9 +22,10 @@ func (c *paymentDatabase) ViewPaymentDetails(ctx context.Context, orderID int) (
 	return paymentDetails, err
 }
 
-func (c *paymentDatabase) UpdatePaymentDetails(ctx context.Context, orderID int, paymentRef string) error {
-
-	// update payment table
-
-	return nil
+func (c *paymentDatabase) UpdatePaymentDetails(ctx context.Context, orderID int, paymentRef string) (domain.PaymentDetails, error) {
+	var updatedPayment domain.PaymentDetails
+	updatePaymentQuery := `	UPDATE payment_details SET payment_method_id = 2, payment_status_id = 2, payment_ref = $1, updated_at = NOW()
+							WHERE order_id = $2 RETURNING *;`
+	err := c.DB.Raw(updatePaymentQuery, paymentRef, orderID).Scan(&updatedPayment).Error
+	return updatedPayment, err
 }

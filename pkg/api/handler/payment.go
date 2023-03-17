@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type PaymentHandler struct {
@@ -60,16 +61,29 @@ func (cr *PaymentHandler) CreateRazorpayPayment(c *gin.Context) {
 //
 //	&signature=${res.razorpay_signature}&id=${orderid}&total=${total}`,
 func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
-	paymentRef := c.Query("paymentid")
+	//user_id
+	//payment_ref
+	//order_id
+	//id
 
-	id := c.Query("order_id")
-	orderID, err := strconv.Atoi(id)
+	paymentRef := c.Query("payment_ref")
+	fmt.Println("paymentRef from query :", paymentRef)
+
+	idStr := c.Query("order_id")
+	fmt.Print("order id from query _:", idStr)
+
+	idStr = strings.ReplaceAll(idStr, " ", "")
+
+	orderID, err := strconv.Atoi(idStr)
+	fmt.Println("_converted order  id from query :", orderID)
 
 	uID := c.Query("user_id")
 	userID, err := strconv.Atoi(uID)
 
 	t := c.Query("total")
+	fmt.Println("total from query :", t)
 	total, err := strconv.ParseFloat(t, 32)
+	fmt.Println("total from query converted:", total)
 
 	if err != nil {
 		//	handle err
@@ -85,11 +99,12 @@ func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
 		Total:      total,
 	}
 
-	paymentVerifier.
-		err = cr.paymentUseCase.UpdatePaymentDetails(c.Request.Context(), paymentVerifier)
+	fmt.Println("payment verifier in handler : ", paymentVerifier)
+	//paymentVerifier.
+	err = cr.paymentUseCase.UpdatePaymentDetails(c.Request.Context(), paymentVerifier)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to update payment details", Data: false, Errors: err.Error()})
+		return
 	}
-
 	c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "payment success", Data: true, Errors: nil})
 }

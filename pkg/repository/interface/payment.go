@@ -7,4 +7,5 @@ import (
 
 type PaymentRepository interface {
 	ViewPaymentDetails(ctx context.Context, orderID int) (domain.PaymentDetails, error)
+	UpdatePaymentDetails(ctx context.Context, orderID int, paymentRef string) (domain.PaymentDetails, error)
 }
