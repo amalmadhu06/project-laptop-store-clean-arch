@@ -81,5 +81,7 @@ func FindUserID(cookie string) (int, error) {
 	}
 
 	id := int(value)
+	fmt.Println("find user id : ", id)
+
 	return id, nil
 }

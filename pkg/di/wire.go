@@ -34,6 +34,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 		repository.NewProductRepository,
 		repository.NewCartRepository,
 		repository.NewOrderRepository,
+		repository.NewPaymentRepository,
 
 		//use case
 		usecase.NewAdminUseCase,

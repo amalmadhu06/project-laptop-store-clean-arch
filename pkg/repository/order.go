@@ -70,6 +70,16 @@ func (c *orderDatabase) BuyProductItem(ctx context.Context, userID int, orderInf
 		tx.Rollback()
 		return domain.Order{}, err
 	}
+
+	//create an entry in the payment_details table
+	createPaymentEntry := `	INSERT INTO payment_details (order_id, order_total,payment_method_id, payment_status_id, updated_at) 	
+							VALUES ($1, $2,$3, 1,NOW());`
+	err = tx.Exec(createPaymentEntry, orderDetails.ID, orderDetails.OrderTotal, orderDetails.PaymentMethodID).Error
+	if err != nil {
+		tx.Rollback()
+		return domain.Order{}, err
+	}
+
 	tx.Commit()
 	return orderDetails, nil
 }
@@ -111,8 +121,10 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 
 	//update carts table
 	updateCartQuery := `UPDATE carts SET total = 0 WHERE user_id = $1`
+	fmt.Println("user id in repository for buy all : ", userID)
 	err = tx.Exec(updateCartQuery, userID).Error
 	if err != nil {
+		tx.Rollback()
 		return domain.Order{}, err
 	}
 
@@ -120,6 +132,16 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 	deleteCartItemRowsQuery := `DELETE FROM cart_items WHERE cart_id = $1;`
 	err = tx.Exec(deleteCartItemRowsQuery, cartDetails.ID).Error
 	if err != nil {
+		tx.Rollback()
+		return domain.Order{}, err
+	}
+
+	//create an entry in the payment_details table
+	createPaymentEntry := `	INSERT INTO payment_details (order_id, order_total,payment_method_id, payment_status_id, updated_at) 	
+							VALUES ($1, $2,$3, 1,NOW());`
+	err = tx.Exec(createPaymentEntry, createdOrder.ID, createdOrder.OrderTotal, createdOrder.PaymentMethodID).Error
+	if err != nil {
+		tx.Rollback()
 		return domain.Order{}, err
 	}
 
@@ -166,13 +188,16 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 }
 
 func (c *orderDatabase) ViewOrderById(ctx context.Context, userID int, orderID int) (domain.Order, error) {
+	fmt.Println("user id :", userID, "order id  :", orderID)
 	var order domain.Order
 	viewOrderQuery := `SELECT * FROM orders WHERE user_id = $1 AND id = $2;`
 	err := c.DB.Raw(viewOrderQuery, userID, orderID).Scan(&order).Error
+	fmt.Println("order in repo : ", order)
 	//if no order is found
 	if order.ID == 0 {
 		return domain.Order{}, fmt.Errorf("no order found")
 	}
+
 	return order, err
 }
 

@@ -55,6 +55,7 @@ func (c *adminDatabase) BlockAdmin(ctx context.Context, blockID int) (domain.Adm
 	blockedAdmin.Password = ""
 	return blockedAdmin, err
 }
+
 func (c *adminDatabase) UnblockAdmin(ctx context.Context, unblockID int) (domain.Admin, error) {
 	var unblockedAdmin domain.Admin
 	unblockQuery := `	UPDATE admins

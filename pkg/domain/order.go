@@ -26,11 +26,6 @@ type OrderLine struct {
 	Price         float64
 }
 
-type PaymentMethod struct {
-	ID            uint `gorm:"primaryKey"`
-	PaymentMethod string
-}
-
 type OrderStatus struct {
 	ID          uint `gorm:"primaryKey"`
 	OrderStatus string

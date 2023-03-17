@@ -40,6 +40,10 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		&domain.OrderLine{},
 		&domain.PaymentMethod{},
 		&domain.OrderStatus{},
+
+		//	payment details
+		&domain.PaymentStatus{},
+		&domain.PaymentDetails{},
 	)
 	if err != nil {
 		return nil, err

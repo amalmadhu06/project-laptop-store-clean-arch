@@ -124,6 +124,7 @@ func NewServerHTTP(
 			user.PUT("/cancel-order/:order_id", orderHandler.CancelOrder)
 
 			user.GET("/order/razorpay/:order_id", paymentHanlder.CreateRazorpayPayment)
+			user.GET("/payment-handler", paymentHanlder.PaymentSuccess)
 
 		}
 
