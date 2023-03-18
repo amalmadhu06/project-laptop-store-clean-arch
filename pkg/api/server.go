@@ -112,6 +112,8 @@ func NewServerHTTP(
 		user.Use(middleware.UserAuth)
 
 		{
+			user.GET("profile", userHandler.UserProfile)
+
 			user.POST("/add-address", userHandler.AddAddress)
 			user.PUT("/update-address", userHandler.UpdateAddress)
 			user.POST("/add-to-cart/:product_item_id", cartHandler.AddToCart)

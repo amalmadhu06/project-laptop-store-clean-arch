@@ -13,6 +13,7 @@ type UserRepository interface {
 
 	AddAddress(ctx context.Context, userID int, newAddress modelHelper.AddressInput) (domain.Address, error)
 	UpdateAddress(ctx context.Context, userID int, address modelHelper.AddressInput) (domain.Address, error)
+	ViewAddress(ctx context.Context, userID int) (domain.Address, error)
 
 	ListAllUsers(ctx context.Context) ([]domain.Users, error)
 	FindUserByID(ctx context.Context, userID int) (domain.Users, error)

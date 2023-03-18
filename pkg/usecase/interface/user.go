@@ -18,4 +18,6 @@ type UserUseCase interface {
 	FindUserByID(ctx context.Context, userID int) (domain.Users, error)
 	BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, cookie string) (domain.UserInfo, error)
 	UnblockUser(ctx context.Context, userID int) (domain.UserInfo, error)
+
+	UserProfile(ctx context.Context, userID int) (modelHelper.UserProfile, error)
 }

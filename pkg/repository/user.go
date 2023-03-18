@@ -98,6 +98,13 @@ func (c *userDatabase) UpdateAddress(ctx context.Context, userID int, address mo
 	return updatedAddress, err
 }
 
+func (c *userDatabase) ViewAddress(ctx context.Context, userID int) (domain.Address, error) {
+	var address domain.Address
+	fetchAddressQuery := `SELECT * FROM addresses WHERE user_id = $1`
+	err := c.DB.Raw(fetchAddressQuery, userID).Scan(&address).Error
+	return address, err
+}
+
 func (c *userDatabase) ListAllUsers(ctx context.Context) ([]domain.Users, error) {
 	var users []domain.Users
 	fetchAllQuery := `SELECT * FROM users;`

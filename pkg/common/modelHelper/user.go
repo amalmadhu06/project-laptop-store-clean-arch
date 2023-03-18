@@ -1,5 +1,7 @@
 package modelHelper
 
+import "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
+
 type UserDataInput struct {
 	FName    string `json:"f_name"`
 	LName    string `json:"l_name"`
@@ -49,4 +51,10 @@ type AddressInput struct {
 type BlockUser struct {
 	UserID int    `json:"user_id"`
 	Reason string `json:"reason"`
+}
+
+type UserProfile struct {
+	UserInfo UserDataOutput
+	Address  domain.Address
+	Orders   []domain.Order
 }

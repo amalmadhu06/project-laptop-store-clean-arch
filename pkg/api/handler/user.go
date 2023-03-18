@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
@@ -359,4 +360,32 @@ func (cr *UserHandler) UnblockUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully unblocked user", Data: unblockedUser, Errors: nil})
+}
+
+// UserProfile
+// @Summary User can view their profile
+// @ID user-profile
+// @Description Users can visit their profile
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /profile [get]
+func (cr *UserHandler) UserProfile(c *gin.Context) {
+	uID := c.Value("userID")
+	//convert uID to int
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", uID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch user id", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	userProfile, err := cr.userUseCase.UserProfile(c.Request.Context(), userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to fetch user profile data", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully fetched user profile", Data: userProfile, Errors: nil})
 }

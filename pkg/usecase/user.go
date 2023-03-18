@@ -13,12 +13,14 @@ import (
 )
 
 type userUseCase struct {
-	userRepo interfaces.UserRepository
+	userRepo  interfaces.UserRepository
+	orderRepo interfaces.OrderRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository) services.UserUseCase {
+func NewUserUseCase(userRepo interfaces.UserRepository, orderRepo interfaces.OrderRepository) services.UserUseCase {
 	return &userUseCase{
-		userRepo: repo,
+		userRepo:  userRepo,
+		orderRepo: orderRepo,
 	}
 }
 
@@ -160,4 +162,39 @@ func (c *userUseCase) BlockUser(ctx context.Context, blockInfo modelHelper.Block
 func (c *userUseCase) UnblockUser(ctx context.Context, userID int) (domain.UserInfo, error) {
 	unblockedUser, err := c.userRepo.UnblockUser(ctx, userID)
 	return unblockedUser, err
+}
+
+func (c *userUseCase) UserProfile(ctx context.Context, userID int) (modelHelper.UserProfile, error) {
+
+	// fetch user details from users_table
+	userInfoRetrieved, err := c.userRepo.FindUserByID(ctx, userID)
+	if err != nil {
+		return modelHelper.UserProfile{}, err
+	}
+	userInfo := modelHelper.UserDataOutput{
+		ID:    userInfoRetrieved.ID,
+		FName: userInfoRetrieved.FName,
+		LName: userInfoRetrieved.LName,
+		Email: userInfoRetrieved.Email,
+		Phone: userInfoRetrieved.Phone,
+	}
+
+	// fetch address from address table
+	address, err := c.userRepo.ViewAddress(ctx, userID)
+	if err != nil {
+		return modelHelper.UserProfile{}, err
+	}
+
+	// fetch orders from orders table
+	orders, err := c.orderRepo.ViewAllOrders(ctx, userID)
+	if err != nil {
+		return modelHelper.UserProfile{}, err
+	}
+
+	var userProfile modelHelper.UserProfile
+	userProfile.UserInfo = userInfo
+	userProfile.Address = address
+	userProfile.Orders = orders
+
+	return userProfile, nil
 }
