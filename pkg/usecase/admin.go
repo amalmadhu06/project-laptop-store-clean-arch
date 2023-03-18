@@ -141,6 +141,11 @@ func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, cookie s
 	return unblockedAdmin, err
 }
 
+func (c *adminUseCase) AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error) {
+	dashboardData, err := c.adminRepo.AdminDashboard(ctx)
+	return dashboardData, err
+}
+
 func FindAdminID(cookie string) (int, error) {
 	//parses, validates, verifies the signature and returns the parsed token
 	token, err := jwt.Parse(cookie, func(t *jwt.Token) (interface{}, error) {

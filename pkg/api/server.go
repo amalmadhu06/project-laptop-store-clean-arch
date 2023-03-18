@@ -40,6 +40,8 @@ func NewServerHTTP(
 		adminPanel.Use(middleware.AdminAuth)
 		{
 
+			adminPanel.GET("dashboard", adminHandler.AdminDashboard)
+
 			adminPanel.GET("/users", userHandler.ListAllUsers)
 			adminPanel.GET("/users/:id", userHandler.FindUserByID)
 			adminPanel.PUT("/users/block-user", userHandler.BlockUser)

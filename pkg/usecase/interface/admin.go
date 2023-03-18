@@ -12,4 +12,5 @@ type AdminUseCase interface {
 	AdminLogin(ctx context.Context, input modelHelper.AdminLogin) (string, modelHelper.AdminDataOutput, error)
 	BlockAdmin(ctx context.Context, blockID int, cookie string) (domain.Admin, error)
 	UnblockAdmin(ctx context.Context, unblockID int, cookie string) (domain.Admin, error)
+	AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error)
 }

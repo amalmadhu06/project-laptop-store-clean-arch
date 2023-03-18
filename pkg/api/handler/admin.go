@@ -182,3 +182,22 @@ func (cr *AdminHandler) UnblockAdmin(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully unblocked admin", Data: unblockedAdmin, Errors: nil})
 }
+
+// AdminDashboard
+// @Summary Admin Dashboard
+// @ID admin-dashboard
+// @Description Admin can access dashboard and view details regarding orders, users, products, etc.
+// @Tags Admin
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /adminPanel/dashboard [get]
+func (cr *AdminHandler) AdminDashboard(c *gin.Context) {
+	dashboard, err := cr.adminUseCase.AdminDashboard(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to fetch admin dashboard data", Data: nil, Errors: err})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully fetched dashboard", Data: dashboard, Errors: nil})
+}

@@ -67,3 +67,43 @@ func (c *adminDatabase) UnblockAdmin(ctx context.Context, unblockID int) (domain
 	unblockedAdmin.Password = ""
 	return unblockedAdmin, err
 }
+
+func (c *adminDatabase) AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error) {
+	var dashboardData modelHelper.AdminDashboard
+	fetchOrdersSummaryQuery := `SELECT 
+								  COUNT(CASE WHEN order_status_id = 4 THEN id END) AS completed_orders,
+								  COUNT(CASE WHEN order_status_id = 1 THEN id END) AS pending_orders,
+								  COUNT(CASE WHEN order_status_id = 2 OR order_status_id = 3 THEN id END) AS cancelled_orders,
+								  COUNT(id) AS total_orders,
+								  SUM(CASE WHEN o.order_status_id != 2 AND o.order_status_id != 3 THEN o.order_total ELSE 0 END) AS order_value,
+								  COUNT(DISTINCT o.user_id) AS ordered_users
+								FROM orders o;`
+
+	err := c.DB.Raw(fetchOrdersSummaryQuery).Scan(&dashboardData).Error
+	if err != nil {
+		return dashboardData, err
+	}
+
+	totalOrderedItemsQuery := `SELECT count(id) AS total_order_items FROM order_lines;`
+	err = c.DB.Raw(totalOrderedItemsQuery).Scan(&dashboardData.TotalOrderItems).Error
+	if err != nil {
+		return dashboardData, err
+	}
+
+	creditedAmountQuery := `SELECT sum(order_total) as credited_amount FROM payment_details WHERE payment_status_id = 2`
+	err = c.DB.Raw(creditedAmountQuery).Scan(&dashboardData.CreditedAmount).Error
+	if err != nil {
+		return dashboardData, err
+	}
+
+	dashboardData.PendingAmount = dashboardData.OrderValue - dashboardData.CreditedAmount
+
+	userCountQuery := `SELECT 
+						  COUNT(*) AS total_users, 
+						  COUNT(CASE WHEN is_verified = true THEN 1 END) AS verified_users
+						FROM user_infos;`
+
+	err = c.DB.Raw(userCountQuery).Scan(&dashboardData).Error
+
+	return dashboardData, err
+}

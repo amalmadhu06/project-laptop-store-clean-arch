@@ -12,4 +12,5 @@ type AdminRepository interface {
 	FindAdmin(ctx context.Context, email string) (domain.Admin, error)
 	BlockAdmin(ctx context.Context, blockID int) (domain.Admin, error)
 	UnblockAdmin(ctx context.Context, unblockID int) (domain.Admin, error)
+	AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error)
 }

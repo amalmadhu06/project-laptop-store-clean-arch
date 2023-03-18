@@ -57,15 +57,7 @@ func (cr *PaymentHandler) CreateRazorpayPayment(c *gin.Context) {
 	//c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "successfully completed payment using razorpay", Data: nil, Errors: nil})
 }
 
-// url: `/payment-handler?user_id=${userid}&payment_ref=${res.razorpay_payment_id}&order_id=${orderData}
-//
-//	&signature=${res.razorpay_signature}&id=${orderid}&total=${total}`,
 func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
-	//user_id
-	//payment_ref
-	//order_id
-	//id
-
 	paymentRef := c.Query("payment_ref")
 	fmt.Println("paymentRef from query :", paymentRef)
 
