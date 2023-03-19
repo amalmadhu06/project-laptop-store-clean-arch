@@ -11,11 +11,13 @@ import (
 
 type orderUseCase struct {
 	orderRepo interfaces.OrderRepository
+	userRepo  interfaces.UserRepository
 }
 
-func NewOrderUseCase(repo interfaces.OrderRepository) services.OrderUseCases {
+func NewOrderUseCase(orderRepo interfaces.OrderRepository, userRepo interfaces.UserRepository) services.OrderUseCases {
 	return &orderUseCase{
-		orderRepo: repo,
+		orderRepo: orderRepo,
+		userRepo:  userRepo,
 	}
 }
 
@@ -25,6 +27,16 @@ func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderI
 	if err != nil {
 		return domain.Order{}, fmt.Errorf("failed to fetch user id")
 	}
+
+	//check if user has added address. If not, return error
+	address, err := c.userRepo.ViewAddress(ctx, userID)
+	if err != nil {
+		return domain.Order{}, err
+	}
+	if address.ID == 0 {
+		return domain.Order{}, fmt.Errorf("cannot place order without adding address")
+	}
+
 	order, err := c.orderRepo.BuyProductItem(ctx, userID, orderInfo)
 	return order, err
 }
@@ -34,6 +46,16 @@ func (c *orderUseCase) BuyAll(ctx context.Context, cookie string, orderInfo mode
 	if err != nil {
 		return domain.Order{}, fmt.Errorf("failed to fetch user id")
 	}
+
+	//check if user has added address. If not, return error
+	address, err := c.userRepo.ViewAddress(ctx, userID)
+	if err != nil {
+		return domain.Order{}, err
+	}
+	if address.ID == 0 {
+		return domain.Order{}, fmt.Errorf("cannot place order without adding address")
+	}
+
 	orders, err := c.orderRepo.BuyAll(ctx, userID, orderInfo)
 
 	return orders, err

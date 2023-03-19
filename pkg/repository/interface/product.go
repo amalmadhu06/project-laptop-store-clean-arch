@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"context"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 )
 
@@ -30,4 +31,10 @@ type ProductRepository interface {
 	FindProductItemByID(ctx context.Context, id int) (domain.ProductItem, error)
 	UpdateProductItem(ctx context.Context, info domain.ProductItem) (domain.ProductItem, error)
 	DeleteProductItem(ctx context.Context, productItemID int) error
+
+	CreateCoupon(ctx context.Context, newCoupon modelHelper.CreateCoupon) (domain.Coupon, error)
+	UpdateCoupon(ctx context.Context, couponInfo modelHelper.UpdateCoupon) (domain.Coupon, error)
+	DeleteCoupon(ctx context.Context, couponID int) error
+	ViewCouponByID(ctx context.Context, couponID int) (domain.Coupon, error)
+	ViewAllCoupons(ctx context.Context) ([]domain.Coupon, error)
 }

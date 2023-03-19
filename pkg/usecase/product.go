@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
@@ -131,4 +132,59 @@ func (c *productUseCase) UpdateProductItem(ctx context.Context, info domain.Prod
 func (c *productUseCase) DeleteProductItem(ctx context.Context, productItemID int) error {
 	err := c.productRepo.DeleteProductItem(ctx, productItemID)
 	return err
+}
+
+// Coupon Management
+
+func (c *productUseCase) CreateCoupon(ctx context.Context, newCoupon modelHelper.CreateCoupon) (domain.Coupon, error) {
+	createdCoupon, err := c.productRepo.CreateCoupon(ctx, newCoupon)
+	if err != nil {
+		return domain.Coupon{}, err
+	}
+	if createdCoupon.ID == 0 {
+		return domain.Coupon{}, fmt.Errorf("failed to create new coupon")
+	}
+	return createdCoupon, nil
+}
+
+func (c *productUseCase) UpdateCoupon(ctx context.Context, couponInfo modelHelper.UpdateCoupon) (domain.Coupon, error) {
+	updatedCoupon, err := c.productRepo.UpdateCoupon(ctx, couponInfo)
+
+	if err != nil {
+		return domain.Coupon{}, err
+	}
+	if updatedCoupon.ID == 0 {
+		return domain.Coupon{}, fmt.Errorf("failed to update the coupon")
+	}
+
+	return updatedCoupon, nil
+}
+
+func (c *productUseCase) DeleteCoupon(ctx context.Context, couponID int) error {
+	err := c.productRepo.DeleteCoupon(ctx, couponID)
+	return err
+}
+
+func (c *productUseCase) ViewCouponByID(ctx context.Context, couponID int) (domain.Coupon, error) {
+	coupon, err := c.productRepo.ViewCouponByID(ctx, couponID)
+	if err != nil {
+		return domain.Coupon{}, err
+	}
+	if coupon.ID == 0 {
+		return domain.Coupon{}, fmt.Errorf("failed to fetch coupon")
+	}
+	return coupon, nil
+
+}
+
+func (c *productUseCase) ViewAllCoupons(ctx context.Context) ([]domain.Coupon, error) {
+	var allCoupons []domain.Coupon
+	allCoupons, err := c.productRepo.ViewAllCoupons(ctx)
+	if err != nil {
+		return allCoupons, err
+	}
+	if len(allCoupons) == 0 {
+		return allCoupons, fmt.Errorf("no coupons to show")
+	}
+	return allCoupons, nil
 }

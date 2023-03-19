@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"context"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 )
 
@@ -12,7 +13,6 @@ type ProductUseCase interface {
 	UpdateCategory(ctx context.Context, info domain.ProductCategory) (domain.ProductCategory, error)
 	DeleteCategory(ctx context.Context, categoryID int) (string, error)
 
-	//Todo : brand management
 	CreateBrand(ctx context.Context, newBrand domain.ProductBrand) (domain.ProductBrand, error)
 	UpdateBrand(ctx context.Context, brandInfo domain.ProductBrand) (domain.ProductBrand, error)
 	DeleteBrand(ctx context.Context, brandID int) (domain.ProductBrand, error)
@@ -30,4 +30,10 @@ type ProductUseCase interface {
 	FindProductItemByID(ctx context.Context, id int) (domain.ProductItem, error)
 	UpdateProductItem(ctx context.Context, info domain.ProductItem) (domain.ProductItem, error)
 	DeleteProductItem(ctx context.Context, productItemID int) error
+
+	CreateCoupon(ctx context.Context, newCoupon modelHelper.CreateCoupon) (domain.Coupon, error)
+	UpdateCoupon(ctx context.Context, couponInfo modelHelper.UpdateCoupon) (domain.Coupon, error)
+	DeleteCoupon(ctx context.Context, couponID int) error
+	ViewCouponByID(ctx context.Context, couponID int) (domain.Coupon, error)
+	ViewAllCoupons(ctx context.Context) ([]domain.Coupon, error)
 }

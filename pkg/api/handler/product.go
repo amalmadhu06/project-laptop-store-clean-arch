@@ -537,7 +537,7 @@ func (cr *ProductHandler) UpdateProductItem(c *gin.Context) {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Param product_it path string true "ID of the product item to be deleted"
+// @Param product_item_id path string true "ID of the product item to be deleted"
 // @Success 202 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
@@ -556,4 +556,142 @@ func (cr *ProductHandler) DeleteProductItem(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "Successfully deleted product item", Data: nil, Errors: nil})
+}
+
+//Coupon Management
+
+// CreateCoupon
+// @Summary Admin can create new coupon
+// @ID create-coupon
+// @Description Admin can create new coupons
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param new_coupon_details body modelHelper.CouponInput true "details of new coupon to be created"
+// @Success 201 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /adminPanel/create-coupon [post]
+func (cr *ProductHandler) CreateCoupon(c *gin.Context) {
+	var newCoupon modelHelper.CreateCoupon
+
+	if err := c.Bind(&newCoupon); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request body", Data: nil, Errors: err})
+		return
+	}
+
+	createdCoupon, err := cr.productUseCase.CreateCoupon(c.Request.Context(), newCoupon)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to create new coupon", Data: nil, Errors: err})
+		return
+	}
+
+	c.JSON(http.StatusCreated, response.Response{StatusCode: 201, Message: "successfully created new coupon", Data: createdCoupon, Errors: nil})
+}
+
+// UpdateCoupon
+// @Summary Admin can update existing coupon
+// @ID update-coupon
+// @Description Admin can update existing coupon
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param coupon_details body modelHelper.CouponInput true "details of coupon to be updated"
+// @Success 202 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /adminPanel/update-coupon [put]
+func (cr *ProductHandler) UpdateCoupon(c *gin.Context) {
+	var updateCoupon modelHelper.UpdateCoupon
+	if err := c.Bind(&updateCoupon); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request body", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	updatedCoupon, err := cr.productUseCase.UpdateCoupon(c.Request.Context(), updateCoupon)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to update the coupon", Data: nil, Errors: err})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "successfully updated coupon", Data: updatedCoupon, Errors: nil})
+
+}
+
+// DeleteCoupon
+// @Summary Admin can delete existing coupon
+// @ID delete-coupon
+// @Description Admin can delete existing coupon
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param coupon_details body modelHelper.CouponInput true "details of coupon to be updated"
+// @Success 202 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /adminPanel/delete-coupon/{coupon_id} [delete]
+func (cr *ProductHandler) DeleteCoupon(c *gin.Context) {
+	paramsID := c.Param("coupon_id")
+	couponID, err := strconv.Atoi(paramsID)
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to parse coupon id", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	err = cr.productUseCase.DeleteCoupon(c.Request.Context(), couponID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to delete the coupon", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "successfully deleted coupon", Data: nil, Errors: nil})
+
+}
+
+// ViewCouponByID
+// @Summary Admins and users can see coupon with coupon id
+// @ID view-coupon-by-id
+// @Description Admins and users can see coupon with id
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param coupon_id path string true "coupon_id"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /adminPanel/coupons/{coupon_id} [get]
+func (cr *ProductHandler) ViewCouponByID(c *gin.Context) {
+	paramsID := c.Param("coupon_id")
+	couponID, err := strconv.Atoi(paramsID)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to parse coupon id", Data: nil, Errors: err.Error()})
+		return
+	}
+	coupon, err := cr.productUseCase.ViewCouponByID(c.Request.Context(), couponID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch coupon details", Data: nil, Errors: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully deleted coupon", Data: coupon, Errors: nil})
+
+}
+
+// ViewAllCoupons
+// @Summary Admins and users can see all available coupons
+// @ID view-coupons
+// @Description Admins and users can see all available coupons
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /adminPanel/coupons [get]
+func (cr *ProductHandler) ViewAllCoupons(c *gin.Context) {
+	coupons, err := cr.productUseCase.ViewAllCoupons(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to fetch coupons", Data: nil, Errors: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully fetched coupons", Data: coupons, Errors: nil})
 }

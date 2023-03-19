@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	"gorm.io/gorm"
@@ -268,4 +269,86 @@ func (c *productDatabase) DeleteProductItem(ctx context.Context, productItemID i
 							WHERE id = $1`
 	err := c.DB.Exec(deleteProductItemQuery, productItemID).Error
 	return err
+}
+
+// coupon management
+
+func (c *productDatabase) CreateCoupon(ctx context.Context, newCoupon modelHelper.CreateCoupon) (domain.Coupon, error) {
+	var createdCoupon domain.Coupon
+	createCouponQuery := `	INSERT INTO coupons(code, min_order_value, discount_percent, discount_max_amount, valid_till) 
+							VALUES($1, $2, $3, $4, $5) 
+							RETURNING *;`
+	err := c.DB.Raw(createCouponQuery, newCoupon.Code, newCoupon.MinOrderValue, newCoupon.DiscountPercent, newCoupon.DiscountMaxAmount, newCoupon.ValidTill).Scan(&createdCoupon).Error
+	if err != nil {
+		return domain.Coupon{}, err
+	}
+	if createdCoupon.ID == 0 {
+		return domain.Coupon{}, fmt.Errorf("failed to create new coupon")
+	}
+	return createdCoupon, nil
+}
+
+func (c *productDatabase) UpdateCoupon(ctx context.Context, couponInfo modelHelper.UpdateCoupon) (domain.Coupon, error) {
+	var updatedCoupon domain.Coupon
+	updateCouponQuery := `	UPDATE coupons SET 
+								code = $1,
+								min_order_value = $2,
+								discount_percent = $3,
+								discount_max_amount = $4,
+								valid_till = $5
+							WHERE id = $6
+							RETURNING *;`
+	err := c.DB.Raw(updateCouponQuery, couponInfo.Code, couponInfo.MinOrderValue, couponInfo.DiscountPercent, couponInfo.DiscountMaxAmount, couponInfo.ValidTill, couponInfo.ID).Scan(&updatedCoupon).Error
+
+	if err != nil {
+		return domain.Coupon{}, err
+	}
+
+	if updatedCoupon.ID == 0 {
+		return domain.Coupon{}, fmt.Errorf("no product found")
+	}
+	return updatedCoupon, nil
+}
+
+func (c *productDatabase) DeleteCoupon(ctx context.Context, couponID int) error {
+	var fetchedID int
+	findCouponQuery := `SELECT id FROM coupons WHERE id = $1`
+	err := c.DB.Raw(findCouponQuery, couponID).Scan(&fetchedID).Error
+	if err != nil {
+		return err
+	}
+	if fetchedID == 0 {
+		return fmt.Errorf("no such coupon found")
+	}
+
+	deleteCouponQuery := `DELETE FROM coupons WHERE id = $1;`
+	err = c.DB.Exec(deleteCouponQuery, couponID).Error
+	return err
+
+}
+
+func (c *productDatabase) ViewCouponByID(ctx context.Context, couponID int) (domain.Coupon, error) {
+	var coupon domain.Coupon
+	fetchCouponQuery := `SELECT * FROM coupons WHERE id = $1;`
+	err := c.DB.Raw(fetchCouponQuery, couponID).Scan(&coupon).Error
+	if err != nil {
+		return domain.Coupon{}, err
+	}
+	if coupon.ID == 0 {
+		return domain.Coupon{}, fmt.Errorf("no coupon found")
+	}
+	return coupon, nil
+}
+
+func (c *productDatabase) ViewAllCoupons(ctx context.Context) ([]domain.Coupon, error) {
+	var allCoupons []domain.Coupon
+	fetchAllCouponsQuery := `SELECT * FROM coupons WHERE valid_till > NOW();`
+	err := c.DB.Raw(fetchAllCouponsQuery).Scan(&allCoupons).Error
+	if err != nil {
+		return allCoupons, err
+	}
+	if len(allCoupons) == 0 {
+		return allCoupons, fmt.Errorf("no coupons found")
+	}
+	return allCoupons, err
 }

@@ -79,6 +79,13 @@ func NewServerHTTP(
 			adminPanel.PUT("/update-product-item", productHandler.UpdateProductItem)
 			adminPanel.DELETE("/delete-product-item", productHandler.DeleteProductItem)
 
+			//coupon management
+			adminPanel.POST("/create-coupon", productHandler.CreateCoupon)
+			adminPanel.PUT("/update-coupon", productHandler.UpdateCoupon)
+			adminPanel.DELETE("/delete-coupon/:coupon_id", productHandler.DeleteCoupon)
+			adminPanel.GET("coupons", productHandler.ViewAllCoupons)
+			adminPanel.GET("coupons/:coupon_id", productHandler.ViewCouponByID)
+
 			//	order management
 			adminPanel.PUT("/update-order", orderHandler.UpdateOrder)
 		}
@@ -120,6 +127,9 @@ func NewServerHTTP(
 			user.DELETE("/remove-from-cart/:product_item_id", cartHandler.RemoveFromCart)
 			user.GET("view-cart", cartHandler.ViewCart)
 			user.DELETE("/empty-cart", cartHandler.EmptyCart)
+
+			user.GET("coupons", productHandler.ViewAllCoupons)
+			user.GET("coupons/:coupon_id", productHandler.ViewCouponByID)
 
 			user.POST("/buy-product-item", orderHandler.BuyProductItem)
 			user.POST("/cart/buy-all", orderHandler.BuyAll)
