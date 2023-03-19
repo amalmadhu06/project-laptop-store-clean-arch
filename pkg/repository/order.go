@@ -35,10 +35,29 @@ func (c *orderDatabase) BuyProductItem(ctx context.Context, userID int, orderInf
 	}
 
 	//if stock is empty
-
 	if productItem.QntyInStock < 1 {
 		tx.Rollback()
 		return domain.Order{}, fmt.Errorf("product item out of stock")
+	}
+
+	//fetch coupon details
+	var couponInfo domain.Coupon
+	fetchCouponQuery := `SELECT * FROM coupons WHERE id = $1;`
+	err = tx.Raw(fetchCouponQuery, orderInfo.CouponID).Scan(&couponInfo).Error
+
+	if err != nil {
+		tx.Rollback()
+		return domain.Order{}, err
+	}
+
+	if productItem.Price < couponInfo.MinOrderValue {
+		tx.Rollback()
+		return domain.Order{}, fmt.Errorf("cannot apply coupon as order values is less than required")
+	}
+
+	discountAmount := productItem.Price * (couponInfo.DiscountPercent / 100)
+	if discountAmount > couponInfo.DiscountMaxAmount {
+		discountAmount = couponInfo.DiscountMaxAmount
 	}
 
 	var orderDetails domain.Order
@@ -46,7 +65,7 @@ func (c *orderDatabase) BuyProductItem(ctx context.Context, userID int, orderInf
 	createOrderQuery := `	INSERT INTO orders (user_id,order_date,payment_method_id,shipping_address_id,order_total,order_status_id)
 							VALUES($1, NOW(), $2, $3, $4, 1) RETURNING *;`
 
-	err = tx.Raw(createOrderQuery, userID, orderInfo.PaymentMethodID, orderInfo.ShippingAddressID, productItem.Price).Scan(&orderDetails).Error
+	err = tx.Raw(createOrderQuery, userID, orderInfo.PaymentMethodID, orderInfo.ShippingAddressID, productItem.Price-discountAmount).Scan(&orderDetails).Error
 	if err != nil {
 		tx.Rollback()
 		return domain.Order{}, err

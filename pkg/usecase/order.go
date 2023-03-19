@@ -7,17 +7,20 @@ import (
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"time"
 )
 
 type orderUseCase struct {
-	orderRepo interfaces.OrderRepository
-	userRepo  interfaces.UserRepository
+	orderRepo   interfaces.OrderRepository
+	userRepo    interfaces.UserRepository
+	productRepo interfaces.ProductRepository
 }
 
-func NewOrderUseCase(orderRepo interfaces.OrderRepository, userRepo interfaces.UserRepository) services.OrderUseCases {
+func NewOrderUseCase(orderRepo interfaces.OrderRepository, userRepo interfaces.UserRepository, productRepo interfaces.ProductRepository) services.OrderUseCases {
 	return &orderUseCase{
-		orderRepo: orderRepo,
-		userRepo:  userRepo,
+		orderRepo:   orderRepo,
+		userRepo:    userRepo,
+		productRepo: productRepo,
 	}
 }
 
@@ -35,6 +38,35 @@ func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderI
 	}
 	if address.ID == 0 {
 		return domain.Order{}, fmt.Errorf("cannot place order without adding address")
+	}
+
+	//check if coupon is valid, applicable
+	var appliedCoupon domain.Coupon
+
+	//if user applied a coupon
+	if orderInfo.CouponID != 0 {
+
+		appliedCoupon, err = c.productRepo.ViewCouponByID(ctx, orderInfo.CouponID)
+		if err != nil {
+			return domain.Order{}, fmt.Errorf("failed to fetch coupon details")
+		}
+		currentTime := time.Now()
+		if appliedCoupon.ValidTill.Before(currentTime) {
+			return domain.Order{}, fmt.Errorf("expired coupon")
+		}
+
+		productInfo, err := c.productRepo.FindProductItemByID(ctx, orderInfo.ProductItemID)
+		if err != nil {
+			return domain.Order{}, err
+		}
+		if productInfo.ID == 0 {
+			return domain.Order{}, fmt.Errorf("failed to fetch product item details")
+		}
+
+		//	check is product is eligible for coupon discount
+		if productInfo.Price < appliedCoupon.MinOrderValue {
+			return domain.Order{}, fmt.Errorf("cannot apply coupon as order total is less than required")
+		}
 	}
 
 	order, err := c.orderRepo.BuyProductItem(ctx, userID, orderInfo)
