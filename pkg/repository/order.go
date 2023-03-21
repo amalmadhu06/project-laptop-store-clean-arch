@@ -59,13 +59,14 @@ func (c *orderDatabase) BuyProductItem(ctx context.Context, userID int, orderInf
 	if discountAmount > couponInfo.DiscountMaxAmount {
 		discountAmount = couponInfo.DiscountMaxAmount
 	}
+	orderTotal := productItem.Price - discountAmount
 
 	var orderDetails domain.Order
 
-	createOrderQuery := `	INSERT INTO orders (user_id,order_date,payment_method_id,shipping_address_id,order_total,order_status_id)
-							VALUES($1, NOW(), $2, $3, $4, 1) RETURNING *;`
+	createOrderQuery := `	INSERT INTO orders (user_id,order_date,payment_method_id,shipping_address_id,order_total,order_status_id, coupon_id)
+							VALUES($1, NOW(), $2, $3, $4, 1, $5) RETURNING *;`
 
-	err = tx.Raw(createOrderQuery, userID, orderInfo.PaymentMethodID, orderInfo.ShippingAddressID, productItem.Price-discountAmount).Scan(&orderDetails).Error
+	err = tx.Raw(createOrderQuery, userID, orderInfo.PaymentMethodID, orderInfo.ShippingAddressID, orderTotal, orderInfo.CouponID).Scan(&orderDetails).Error
 	if err != nil {
 		tx.Rollback()
 		return domain.Order{}, err
@@ -179,8 +180,8 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 			tx.Rollback()
 			return domain.Order{}, err
 		}
-		//if product is out of stock
 
+		//if product is out of stock
 		if productDetails.QntyInStock < int(cartItems[i].Quantity) {
 			tx.Rollback()
 			return domain.Order{}, fmt.Errorf("product item out of stock for id : %v ", cartItems[i].ProductItemID)

@@ -46,6 +46,15 @@ func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderI
 	//if user applied a coupon
 	if orderInfo.CouponID != 0 {
 
+		//check if coupon is already used
+		isUsed, err := c.productRepo.CouponUsed(ctx, userID, orderInfo.CouponID)
+		if err != nil {
+			return domain.Order{}, err
+		}
+		if isUsed {
+			return domain.Order{}, fmt.Errorf("coupon already used")
+		}
+
 		appliedCoupon, err = c.productRepo.ViewCouponByID(ctx, orderInfo.CouponID)
 		if err != nil {
 			return domain.Order{}, fmt.Errorf("failed to fetch coupon details")

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/gin-gonic/gin"
@@ -137,4 +138,40 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "Successfully emptied cart", Data: nil, Errors: nil})
+}
+
+// AddCouponToCart
+// @Summary User can add a coupon to the cart
+// @ID add-coupon-to-cart
+// @Description User can add coupon to the cart
+// @Tags Cart
+// @Accept json
+// @Produce json
+// @Param coupon_id path string true "coupon_id"
+// @Success 202 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 422 {object} response.Response
+// @Router /add-coupon-to-cart/{coupon_id} [post]
+func (cr *CartHandler) AddCouponToCart(c *gin.Context) {
+	uID := c.Value("userID")
+	//convert uID to int
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", uID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch user id", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	paramsID := c.Param("coupon_id")
+	couponID, err := strconv.Atoi(paramsID)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to fetch coupon id", Data: nil, Errors: "failed to fetch coupon id from request"})
+		return
+	}
+
+	cart, err := cr.cartUseCase.AddCouponToCart(c.Request.Context(), userID, couponID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to add coupon to the cart", Data: nil, Errors: err.Error()})
+		return
+	}
+	c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "successfully added coupon to the cart", Data: cart, Errors: nil})
 }

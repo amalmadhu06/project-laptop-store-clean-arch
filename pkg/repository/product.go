@@ -352,3 +352,15 @@ func (c *productDatabase) ViewAllCoupons(ctx context.Context) ([]domain.Coupon, 
 	}
 	return allCoupons, err
 }
+
+func (c *productDatabase) CouponUsed(ctx context.Context, userID, couponID int) (bool, error) {
+	var isUsed bool
+	checkQuery := `	SELECT 
+					EXISTS(
+							SELECT 1 FROM orders 
+							WHERE user_id = $1 AND 
+							coupon_id = $2
+					);`
+	err := c.DB.Raw(checkQuery, userID, couponID).Scan(&isUsed).Error
+	return isUsed, err
+}

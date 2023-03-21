@@ -71,6 +71,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/add-coupon-to-cart/{coupon_id}": {
+            "post": {
+                "description": "User can add coupon to the cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "User can add a coupon to the cart",
+                "operationId": "add-coupon-to-cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "coupon_id",
+                        "name": "coupon_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/add-to-cart/{product_item_id}": {
             "post": {
                 "description": "User can add product item to the cart",
@@ -160,6 +205,81 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/adminPanel/coupons": {
+            "get": {
+                "description": "Admins and users can see all available coupons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admins and users can see all available coupons",
+                "operationId": "view-coupons",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/adminPanel/coupons/{coupon_id}": {
+            "get": {
+                "description": "Admins and users can see coupon with id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admins and users can see coupon with coupon id",
+                "operationId": "view-coupon-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "coupon_id",
+                        "name": "coupon_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -308,6 +428,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/adminPanel/create-coupon": {
+            "post": {
+                "description": "Admin can create new coupons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can create new coupon",
+                "operationId": "create-coupon",
+                "parameters": [
+                    {
+                        "description": "details of new coupon to be created",
+                        "name": "new_coupon_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.CreateCoupon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/adminPanel/create-product": {
             "post": {
                 "description": "Admins can create new product listings",
@@ -402,6 +569,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/adminPanel/dashboard": {
+            "get": {
+                "description": "Admin can access dashboard and view details regarding orders, users, products, etc.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin Dashboard",
+                "operationId": "admin-dashboard",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/adminPanel/delete-brand/{id}": {
             "delete": {
                 "description": "Admin can delete a brand",
@@ -447,6 +644,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/adminPanel/delete-coupon/{coupon_id}": {
+            "delete": {
+                "description": "Admin can delete existing coupon",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can delete existing coupon",
+                "operationId": "delete-coupon",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "details of coupon to be updated",
+                        "name": "coupon_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/adminPanel/delete-product-item/{id}": {
             "delete": {
                 "description": "Deletes a product item from the system",
@@ -465,7 +707,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "ID of the product item to be deleted",
-                        "name": "product_it",
+                        "name": "product_item_id",
                         "in": "path",
                         "required": true
                     }
@@ -737,6 +979,53 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/adminPanel/update-coupon": {
+            "put": {
+                "description": "Admin can update existing coupon",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can update existing coupon",
+                "operationId": "update-coupon",
+                "parameters": [
+                    {
+                        "description": "details of coupon to be updated",
+                        "name": "coupon_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.UpdateCoupon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1080,7 +1369,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order Cart"
+                    "Order"
                 ],
                 "summary": "Buy product item",
                 "operationId": "buy-product-item",
@@ -1133,7 +1422,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart Order"
+                    "Order"
                 ],
                 "summary": "Cancels a specific order for the currently logged in user",
                 "operationId": "cancel-order",
@@ -1178,7 +1467,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart Order"
+                    "Order"
                 ],
                 "summary": "Buy all items from the user's cart",
                 "operationId": "buyAll",
@@ -1423,42 +1712,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/orders": {
-            "get": {
-                "description": "Endpoint for getting all orders associated with a user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Cart Order"
-                ],
-                "summary": "Retrieves all orders of currently logged in user",
-                "operationId": "view-all-orders",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/orders/{order_id}": {
             "get": {
                 "description": "This function handles requests for retrieving the details of a specific order identified by its order ID. The user must be authorized with a valid cookie to view the order details.",
@@ -1469,7 +1722,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Cart Order"
+                    "Order"
                 ],
                 "summary": "Retrieves order details for a given order ID, if authorized.",
                 "operationId": "view-order-by-id",
@@ -1503,6 +1756,36 @@ const docTemplate = `{
                     },
                     "422": {
                         "description": "Failed to read order ID from path",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile": {
+            "get": {
+                "description": "Users can visit their profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User can view their profile",
+                "operationId": "user-profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1571,7 +1854,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Otp"
                 ],
                 "summary": "Send OTP to user's mobile",
                 "operationId": "send-otp",
@@ -1712,7 +1995,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Otp"
                 ],
                 "summary": "Validate the OTP to user's mobile",
                 "operationId": "validate-otp",
@@ -1802,6 +2085,42 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/view-all-orders": {
+            "get": {
+                "description": "Endpoint for getting all orders associated with a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Retrieves all orders of currently logged in user",
+                "operationId": "view-all-orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -2164,6 +2483,26 @@ const docTemplate = `{
                 }
             }
         },
+        "modelHelper.CreateCoupon": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "discount_max_amount": {
+                    "type": "number"
+                },
+                "discount_percent": {
+                    "type": "number"
+                },
+                "min_order_value": {
+                    "type": "number"
+                },
+                "valid_till": {
+                    "type": "string"
+                }
+            }
+        },
         "modelHelper.NewAdminInfo": {
             "type": "object",
             "required": [
@@ -2216,6 +2555,9 @@ const docTemplate = `{
         "modelHelper.PlaceOrder": {
             "type": "object",
             "properties": {
+                "coupon_id": {
+                    "type": "integer"
+                },
                 "payment_method_id": {
                     "type": "integer"
                 },
@@ -2224,6 +2566,29 @@ const docTemplate = `{
                 },
                 "shipping_address_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "modelHelper.UpdateCoupon": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "discount_max_amount": {
+                    "type": "number"
+                },
+                "discount_percent": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "min_order_value": {
+                    "type": "number"
+                },
+                "valid_till": {
+                    "type": "string"
                 }
             }
         },

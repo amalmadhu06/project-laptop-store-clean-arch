@@ -8,15 +8,18 @@ import (
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/golang-jwt/jwt/v4"
+	"time"
 )
 
 type cartUseCase struct {
-	cartRepo interfaces.CartRepository
+	cartRepo    interfaces.CartRepository
+	productRepo interfaces.ProductRepository
 }
 
-func NewCartUseCase(repo interfaces.CartRepository) services.CartUseCases {
+func NewCartUseCase(cartRepo interfaces.CartRepository, productRepo interfaces.ProductRepository) services.CartUseCases {
 	return &cartUseCase{
-		cartRepo: repo,
+		cartRepo:    cartRepo,
+		productRepo: productRepo,
 	}
 }
 
@@ -56,6 +59,46 @@ func (c *cartUseCase) EmptyCart(ctx context.Context, cookie string) error {
 	}
 	err = c.cartRepo.EmptyCart(ctx, userID)
 	return err
+}
+
+func (c *cartUseCase) AddCouponToCart(ctx context.Context, userID int, couponID int) (modelHelper.ViewCart, error) {
+
+	//checking is coupon is already used
+	isUsed, err := c.productRepo.CouponUsed(ctx, userID, couponID)
+	if err != nil {
+		return modelHelper.ViewCart{}, err
+	}
+	if isUsed {
+		return modelHelper.ViewCart{}, fmt.Errorf("user already used the coupon")
+	}
+
+	//fetching coupon details
+	couponInfo, err := c.productRepo.ViewCouponByID(ctx, couponID)
+	if err != nil {
+		return modelHelper.ViewCart{}, err
+	}
+	//if no coupon found
+	if couponInfo.ID == 0 {
+		return modelHelper.ViewCart{}, fmt.Errorf("invalid coupon id")
+	}
+	//checking coupon validity
+	currentTime := time.Now()
+	if couponInfo.ValidTill.Before(currentTime) {
+		return modelHelper.ViewCart{}, fmt.Errorf("coupon expired")
+	}
+
+	//	fetch cart total
+	cartInfo, err := c.cartRepo.ViewCart(ctx, userID)
+
+	fmt.Println("cart sub total ", cartInfo.SubTotal, "coupon min order value", couponInfo.MinOrderValue)
+
+	if cartInfo.SubTotal < couponInfo.MinOrderValue {
+		return modelHelper.ViewCart{}, fmt.Errorf("cart total not enogh for applying the coupon")
+	}
+
+	//	add coupon to the cart
+	cart, err := c.cartRepo.AddCouponToCart(ctx, userID, couponID)
+	return cart, err
 }
 
 func FindUserID(cookie string) (int, error) {

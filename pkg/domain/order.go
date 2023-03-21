@@ -14,6 +14,7 @@ type Order struct {
 	OrderTotal        float64
 	OrderStatusID     uint
 	OrderStatus       OrderStatus `gorm:"foreignKey:OrderStatusID" json:"-"`
+	CouponID          uint
 }
 
 type OrderLine struct {

@@ -113,6 +113,19 @@ definitions:
       user_id:
         type: integer
     type: object
+  modelHelper.CreateCoupon:
+    properties:
+      code:
+        type: string
+      discount_max_amount:
+        type: number
+      discount_percent:
+        type: number
+      min_order_value:
+        type: number
+      valid_till:
+        type: string
+    type: object
   modelHelper.NewAdminInfo:
     properties:
       email:
@@ -147,12 +160,29 @@ definitions:
     type: object
   modelHelper.PlaceOrder:
     properties:
+      coupon_id:
+        type: integer
       payment_method_id:
         type: integer
       product_item_id:
         type: integer
       shipping_address_id:
         type: integer
+    type: object
+  modelHelper.UpdateCoupon:
+    properties:
+      code:
+        type: string
+      discount_max_amount:
+        type: number
+      discount_percent:
+        type: number
+      id:
+        type: integer
+      min_order_value:
+        type: number
+      valid_till:
+        type: string
     type: object
   modelHelper.UpdateOrder:
     properties:
@@ -264,6 +294,36 @@ paths:
       summary: User can add address
       tags:
       - Users
+  /add-coupon-to-cart/{coupon_id}:
+    post:
+      consumes:
+      - application/json
+      description: User can add coupon to the cart
+      operationId: add-coupon-to-cart
+      parameters:
+      - description: coupon_id
+        in: path
+        name: coupon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can add a coupon to the cart
+      tags:
+      - Cart
   /add-to-cart/{product_item_id}:
     post:
       consumes:
@@ -328,6 +388,56 @@ paths:
       summary: Block an admin
       tags:
       - Admin
+  /adminPanel/coupons:
+    get:
+      consumes:
+      - application/json
+      description: Admins and users can see all available coupons
+      operationId: view-coupons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admins and users can see all available coupons
+      tags:
+      - Product
+  /adminPanel/coupons/{coupon_id}:
+    get:
+      consumes:
+      - application/json
+      description: Admins and users can see coupon with id
+      operationId: view-coupon-by-id
+      parameters:
+      - description: coupon_id
+        in: path
+        name: coupon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admins and users can see coupon with coupon id
+      tags:
+      - Product
   /adminPanel/create-admin:
     post:
       consumes:
@@ -421,6 +531,37 @@ paths:
       summary: Create new product category
       tags:
       - Product
+  /adminPanel/create-coupon:
+    post:
+      consumes:
+      - application/json
+      description: Admin can create new coupons
+      operationId: create-coupon
+      parameters:
+      - description: details of new coupon to be created
+        in: body
+        name: new_coupon_details
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.CreateCoupon'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can create new coupon
+      tags:
+      - Product
   /adminPanel/create-product:
     post:
       consumes:
@@ -483,6 +624,27 @@ paths:
       summary: Creates a new product item
       tags:
       - Product
+  /adminPanel/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Admin can access dashboard and view details regarding orders, users,
+        products, etc.
+      operationId: admin-dashboard
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin Dashboard
+      tags:
+      - Admin
   /adminPanel/delete-brand/{id}:
     delete:
       consumes:
@@ -513,6 +675,36 @@ paths:
       summary: Admin can delete a brand
       tags:
       - Product
+  /adminPanel/delete-coupon/{coupon_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can delete existing coupon
+      operationId: delete-coupon
+      parameters:
+      - description: details of coupon to be updated
+        in: path
+        name: coupon_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can delete existing coupon
+      tags:
+      - Product
   /adminPanel/delete-product-item/{id}:
     delete:
       consumes:
@@ -522,7 +714,7 @@ paths:
       parameters:
       - description: ID of the product item to be deleted
         in: path
-        name: product_it
+        name: product_item_id
         required: true
         type: string
       produces:
@@ -712,6 +904,37 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Admin can update category details
+      tags:
+      - Product
+  /adminPanel/update-coupon:
+    put:
+      consumes:
+      - application/json
+      description: Admin can update existing coupon
+      operationId: update-coupon
+      parameters:
+      - description: details of coupon to be updated
+        in: body
+        name: coupon_details
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.UpdateCoupon'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can update existing coupon
       tags:
       - Product
   /adminPanel/update-order:
@@ -960,7 +1183,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Buy product item
       tags:
-      - Order Cart
+      - Order
   /cancel-order.{order_id}:
     put:
       consumes:
@@ -990,7 +1213,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Cancels a specific order for the currently logged in user
       tags:
-      - Cart Order
+      - Order
   /cart/buy-all:
     post:
       consumes:
@@ -1025,7 +1248,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Buy all items from the user's cart
       tags:
-      - Cart Order
+      - Order
   /empty-cart:
     delete:
       consumes:
@@ -1161,30 +1384,6 @@ paths:
       summary: User Logout
       tags:
       - Users
-  /orders:
-    get:
-      consumes:
-      - application/json
-      description: Endpoint for getting all orders associated with a user
-      operationId: view-all-orders
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Response'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Retrieves all orders of currently logged in user
-      tags:
-      - Cart Order
   /orders/{order_id}:
     get:
       consumes:
@@ -1220,7 +1419,27 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Retrieves order details for a given order ID, if authorized.
       tags:
-      - Cart Order
+      - Order
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Users can visit their profile
+      operationId: user-profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can view their profile
+      tags:
+      - Users
   /remove-from-cart/{product_item_id}:
     delete:
       consumes:
@@ -1285,7 +1504,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Send OTP to user's mobile
       tags:
-      - Users
+      - Otp
   /signup:
     post:
       consumes:
@@ -1378,7 +1597,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Validate the OTP to user's mobile
       tags:
-      - Users
+      - Otp
   /view-all-brands:
     get:
       consumes:
@@ -1419,6 +1638,30 @@ paths:
       summary: View all available categories
       tags:
       - Product
+  /view-all-orders:
+    get:
+      consumes:
+      - application/json
+      description: Endpoint for getting all orders associated with a user
+      operationId: view-all-orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieves all orders of currently logged in user
+      tags:
+      - Order
   /view-all-product-items:
     get:
       consumes:

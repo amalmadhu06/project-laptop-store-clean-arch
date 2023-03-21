@@ -23,7 +23,7 @@ func NewOrderHandler(usecase services.OrderUseCases) *OrderHandler {
 // @Summary Buy product item
 // @ID buy-product-item
 // @Description Buy a product item using product item ID.
-// @Tags Order Cart
+// @Tags Order
 // @Accept json
 // @Produce json
 // @Param order_details body modelHelper.PlaceOrder true "Order Details"
@@ -63,7 +63,7 @@ func (cr *OrderHandler) BuyProductItem(c *gin.Context) {
 // @Summary Buy all items from the user's cart
 // @ID buyAll
 // @Description This endpoint allows a user to purchase all items in their cart
-// @Tags Cart Order
+// @Tags Order
 // @Accept json
 // @Produce json
 // @Param order_details body modelHelper.PlaceAllOrders true "Order Details"
@@ -97,7 +97,7 @@ func (cr *OrderHandler) BuyAll(c *gin.Context) {
 // @Summary Retrieves order details for a given order ID, if authorized.
 // @ID view-order-by-id
 // @Description This function handles requests for retrieving the details of a specific order identified by its order ID. The user must be authorized with a valid cookie to view the order details.
-// @Tags Cart Order
+// @Tags Order
 // @Accept json
 // @Produce json
 // @Param order_id path int true "Order ID"
@@ -130,13 +130,13 @@ func (cr *OrderHandler) ViewOrderByID(c *gin.Context) {
 // @Summary Retrieves all orders of currently logged in user
 // @ID view-all-orders
 // @Description Endpoint for getting all orders associated with a user
-// @Tags Cart Order
+// @Tags Order
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
-// @Router  /orders [get]
+// @Router  /view-all-orders [get]
 func (cr *OrderHandler) ViewAllOrders(c *gin.Context) {
 	cookie, err := c.Cookie("UserAuth")
 	if err != nil {
@@ -155,7 +155,7 @@ func (cr *OrderHandler) ViewAllOrders(c *gin.Context) {
 // @Summary Cancels a specific order for the currently logged in user
 // @ID cancel-order
 // @Description Endpoint for cancelling an order associated with a user
-// @Tags Cart Order
+// @Tags Order
 // @Accept json
 // @Produce json
 // @Param order_id path int true "ID of the order to be cancelled"

@@ -123,8 +123,10 @@ func NewServerHTTP(
 
 			user.POST("/add-address", userHandler.AddAddress)
 			user.PUT("/update-address", userHandler.UpdateAddress)
+
 			user.POST("/add-to-cart/:product_item_id", cartHandler.AddToCart)
 			user.DELETE("/remove-from-cart/:product_item_id", cartHandler.RemoveFromCart)
+			user.POST("add-coupon-to-cart/:coupon_id", cartHandler.AddCouponToCart)
 			user.GET("view-cart", cartHandler.ViewCart)
 			user.DELETE("/empty-cart", cartHandler.EmptyCart)
 

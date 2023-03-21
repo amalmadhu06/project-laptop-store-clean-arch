@@ -11,4 +11,5 @@ type CartUseCases interface {
 	RemoveFromCart(ctx context.Context, cookie string, productItemID int) error
 	ViewCart(ctx context.Context, cookie string) (modelHelper.ViewCart, error)
 	EmptyCart(ctx context.Context, cookie string) error
+	AddCouponToCart(ctx context.Context, userID int, couponID int) (modelHelper.ViewCart, error)
 }

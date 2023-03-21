@@ -11,4 +11,5 @@ type CartRepository interface {
 	RemoveFromCart(ctx context.Context, userID int, productItemID int) error
 	ViewCart(ctx context.Context, userID int) (modelHelper.ViewCart, error)
 	EmptyCart(ctx context.Context, userID int) error
+	AddCouponToCart(ctx context.Context, userID, couponID int) (modelHelper.ViewCart, error)
 }

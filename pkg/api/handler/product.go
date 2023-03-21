@@ -567,7 +567,7 @@ func (cr *ProductHandler) DeleteProductItem(c *gin.Context) {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Param new_coupon_details body modelHelper.CouponInput true "details of new coupon to be created"
+// @Param new_coupon_details body modelHelper.CreateCoupon true "details of new coupon to be created"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
@@ -596,7 +596,7 @@ func (cr *ProductHandler) CreateCoupon(c *gin.Context) {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Param coupon_details body modelHelper.CouponInput true "details of coupon to be updated"
+// @Param coupon_details body modelHelper.UpdateCoupon true "details of coupon to be updated"
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
@@ -625,7 +625,7 @@ func (cr *ProductHandler) UpdateCoupon(c *gin.Context) {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Param coupon_details body modelHelper.CouponInput true "details of coupon to be updated"
+// @Param coupon_id path string true "details of coupon to be updated"
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response

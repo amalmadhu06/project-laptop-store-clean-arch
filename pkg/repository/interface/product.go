@@ -37,4 +37,5 @@ type ProductRepository interface {
 	DeleteCoupon(ctx context.Context, couponID int) error
 	ViewCouponByID(ctx context.Context, couponID int) (domain.Coupon, error)
 	ViewAllCoupons(ctx context.Context) ([]domain.Coupon, error)
+	CouponUsed(ctx context.Context, userID, couponID int) (bool, error)
 }

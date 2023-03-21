@@ -1,10 +1,13 @@
 package domain
 
 type Cart struct {
-	ID     uint    `json:"id"`
-	UserID uint    `json:"user_id"`
-	Users  Users   `gorm:"foreignKey:UserID" json:"_"`
-	Total  float64 `json:"total"`
+	ID       uint    `json:"id"`
+	UserID   uint    `json:"user_id"`
+	Users    Users   `gorm:"foreignKey:UserID" json:"_"`
+	CouponID int     `json:"coupon_id"`
+	SubTotal float64 `json:"sub_total"`
+	Discount float64 `json:"discount"`
+	Total    float64 `json:"total"`
 }
 
 type CartItems struct {
