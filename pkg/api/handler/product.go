@@ -406,7 +406,7 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 // @Produce json
 // @Param product_id path int true "Product ID to delete"
 // @Success 202 {object} response.Response "Successfully deleted product"
-// @Failure 401 {object} response.Response "Invalid product ID"
+// @Failure 400 {object} response.Response "Invalid product ID"
 // @Failure 422 {object} response.Response "Unable to delete product"
 // @Router /adminPanel/delete-product/{product_id} [delete]
 func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
@@ -418,7 +418,7 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 	}
 	err = cr.productUseCase.DeleteProduct(c.Request.Context(), id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 401, Message: "unable to delete product", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "unable to delete product", Data: nil, Errors: err.Error()})
 		return
 	}
 	c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "Successfully deleted product", Data: nil, Errors: nil})
