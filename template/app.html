@@ -77,9 +77,9 @@
         $.ajax({
 
             //passes details as url params
-            url: `/payment-handler?user_id=${userid}&payment_ref=${res.razorpay_payment_id}&order_id=${orderData}
+            url: `/payments/success?user_id=${userid}&payment_ref=${res.razorpay_payment_id}&order_id=${orderData}
       &signature=${res.razorpay_signature}&id=${orderid}&total=${total}`,
-            method: 'GET',
+            method: 'POST',
 
             success: (response) => {
                 console.log(response)
