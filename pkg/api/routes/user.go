@@ -15,15 +15,12 @@ func UserRoutes(
 	otpHandler *handler.OtpHandler,
 	paymentHandler *handler.PaymentHandler) {
 
-	user := api.Group("/users")
-	{
-		// User routes that don't require authentication
-		user.POST("/signup", userHandler.CreateUser)
-		user.POST("/login/email", userHandler.LoginWithEmail)
-		user.POST("/login/phone", userHandler.LoginWithPhone)
-		user.POST("/send-otp", otpHandler.SendOtp)
-		user.POST("/verify-otp", otpHandler.ValidateOtp)
-	}
+	// User routes that don't require authentication
+	api.POST("/signup", userHandler.CreateUser)
+	api.POST("/login/email", userHandler.LoginWithEmail)
+	api.POST("/login/phone", userHandler.LoginWithPhone)
+	api.POST("/send-otp", otpHandler.SendOtp)
+	api.POST("/verify-otp", otpHandler.ValidateOtp)
 
 	// Category routes
 	category := api.Group("/categories")
@@ -56,8 +53,8 @@ func UserRoutes(
 	// User routes that require authentication
 	api.Use(middleware.UserAuth)
 	{
-		user.GET("/profile", userHandler.UserProfile)
-		user.GET("/logout", userHandler.UserLogout)
+		api.GET("/profile", userHandler.UserProfile)
+		api.GET("/logout", userHandler.UserLogout)
 
 		// Address routes
 		address := api.Group("/addresses")
@@ -97,7 +94,7 @@ func UserRoutes(
 		payment := api.Group("/payments")
 		{
 			payment.GET("/razorpay/:order_id", paymentHandler.CreateRazorpayPayment)
-			payment.POST("/success", paymentHandler.PaymentSuccess)
+			payment.GET("/success", paymentHandler.PaymentSuccess)
 		}
 	}
 

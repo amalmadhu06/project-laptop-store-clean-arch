@@ -61,10 +61,7 @@ func (c *otpUseCase) ValidateOtp(ctx context.Context, data modelHelper.VerifyDat
 	if err != nil {
 		return resp, userData, "", err
 	}
-	fmt.Println("response", resp)
-	fmt.Println("err", err)
 	//update database on successful phone number verification
-	fmt.Println("No error till approving otp")
 	if *resp.Status == "approved" {
 		//update as user verified
 		err = c.otpRepo.UpdateAsVerified(ctx, data.Phone.Phone)

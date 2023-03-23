@@ -141,7 +141,6 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 
 	//update carts table
 	updateCartQuery := `UPDATE carts SET total = 0 WHERE user_id = $1`
-	fmt.Println("user id in repository for buy all : ", userID)
 	err = tx.Exec(updateCartQuery, userID).Error
 	if err != nil {
 		tx.Rollback()
@@ -208,11 +207,9 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 }
 
 func (c *orderDatabase) ViewOrderById(ctx context.Context, userID int, orderID int) (domain.Order, error) {
-	fmt.Println("user id :", userID, "order id  :", orderID)
 	var order domain.Order
 	viewOrderQuery := `SELECT * FROM orders WHERE user_id = $1 AND id = $2;`
 	err := c.DB.Raw(viewOrderQuery, userID, orderID).Scan(&order).Error
-	fmt.Println("order in repo : ", order)
 	//if no order is found
 	if order.ID == 0 {
 		return domain.Order{}, fmt.Errorf("no order found")

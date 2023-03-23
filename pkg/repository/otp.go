@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	"gorm.io/gorm"
@@ -46,6 +45,5 @@ func (c *otpDatabase) FindByPhone(ctx context.Context, phone string) (modelHelpe
 						WHERE users.phone = $1;`
 	//Todo : Context Cancelling
 	err := c.DB.Raw(findUserQuery, phone).Scan(&userData).Error
-	fmt.Println("printing user data from db", userData)
 	return userData, err
 }

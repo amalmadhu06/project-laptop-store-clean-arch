@@ -90,8 +90,6 @@ func (c *cartUseCase) AddCouponToCart(ctx context.Context, userID int, couponID 
 	//	fetch cart total
 	cartInfo, err := c.cartRepo.ViewCart(ctx, userID)
 
-	fmt.Println("cart sub total ", cartInfo.SubTotal, "coupon min order value", couponInfo.MinOrderValue)
-
 	if cartInfo.SubTotal < couponInfo.MinOrderValue {
 		return modelHelper.ViewCart{}, fmt.Errorf("cart total not enogh for applying the coupon")
 	}
@@ -124,7 +122,5 @@ func FindUserID(cookie string) (int, error) {
 	}
 
 	id := int(value)
-	fmt.Println("find user id : ", id)
-
 	return id, nil
 }

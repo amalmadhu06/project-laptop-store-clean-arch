@@ -36,6 +36,3 @@ code-coverage.*
 # Air files
 .air.toml
 tmp
-cmd/api/tmp
-
-pkg/api/server.txt

@@ -112,7 +112,6 @@ func (c *cartDatabase) AddToCart(ctx context.Context, userID int, productItemID 
 			tx.Rollback()
 			return domain.CartItems{}, err
 		}
-		fmt.Println("checkpoint 4")
 		discount := newSubTotal * (couponInfo.DiscountPercent / 100)
 		if discount > couponInfo.DiscountMaxAmount {
 			discount = couponInfo.DiscountMaxAmount
@@ -121,17 +120,12 @@ func (c *cartDatabase) AddToCart(ctx context.Context, userID int, productItemID 
 		updatedTotal := newTotal - discount
 
 		//update cart table
-		fmt.Println("checkpoint 5, discount", discount)
-
 		if err := tx.Exec("UPDATE carts SET discount = $1, total = $2 WHERE user_id = $3", discount, updatedTotal, userID).Error; err != nil {
 			tx.Rollback()
 			return domain.CartItems{}, err
 		}
-		fmt.Println("checkpoint 6")
 
 	}
-	fmt.Println("checkpoint 7")
-
 	// Commit transaction
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
@@ -208,7 +202,6 @@ func (c *cartDatabase) RemoveFromCart(ctx context.Context, userID int, productIt
 		if newSubTotal < couponInfo.MinOrderValue {
 			var updatedCart domain.Cart
 			err := tx.Raw("UPDATE carts SET coupon_id = 0, discount = 0, total = $1 WHERE id = $2 RETURNING *;", newSubTotal, cartID).Scan(&updatedCart).Error
-			fmt.Println("updated cart ", updatedCart)
 			if err != nil {
 				tx.Rollback()
 				return err
@@ -229,14 +222,10 @@ func (c *cartDatabase) RemoveFromCart(ctx context.Context, userID int, productIt
 		updatedTotal := newSubTotal - discount
 
 		//update cart table
-		fmt.Println("checkpoint 5, discount", discount)
-
 		if err := tx.Exec("UPDATE carts SET discount = $1, total = $2 WHERE user_id = $3", discount, updatedTotal, userID).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
-		fmt.Println("checkpoint 6")
-
 	}
 
 	if result.Error != nil {
@@ -322,7 +311,6 @@ func (c *cartDatabase) EmptyCart(ctx context.Context, userID int) error {
 	updateCartQuery := `UPDATE carts SET coupon_id = 0, sub_total = 0, discount = 0, total = 0 WHERE user_id = $1 RETURNING id;`
 
 	err := tx.Raw(updateCartQuery, userID).Scan(&cartID).Error
-	fmt.Println("fetched cart id :", cartID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -342,8 +330,6 @@ func (c *cartDatabase) EmptyCart(ctx context.Context, userID int) error {
 }
 
 func (c *cartDatabase) AddCouponToCart(ctx context.Context, userID, couponID int) (modelHelper.ViewCart, error) {
-	fmt.Println("user id received in repo: ", userID, "couponID :", couponID)
-
 	//fetch coupon details
 	var couponInfo domain.Coupon
 	fetchCouponQuery := `	SELECT * FROM coupons WHERE id = $1;`

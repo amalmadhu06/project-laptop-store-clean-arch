@@ -82,30 +82,22 @@ func (cr *PaymentHandler) CreateRazorpayPayment(c *gin.Context) {
 // @Router /payments/success/ [get]
 func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
 	paymentRef := c.Query("payment_ref")
-	fmt.Println("paymentRef from query :", paymentRef)
 
 	idStr := c.Query("order_id")
-	fmt.Print("order id from query _:", idStr)
 
 	idStr = strings.ReplaceAll(idStr, " ", "")
 
 	orderID, err := strconv.Atoi(idStr)
-	fmt.Println("_converted order  id from query :", orderID)
 
 	uID := c.Query("user_id")
 	userID, err := strconv.Atoi(uID)
 
 	t := c.Query("total")
-	fmt.Println("total from query :", t)
 	total, err := strconv.ParseFloat(t, 32)
-	fmt.Println("total from query converted:", total)
 
 	if err != nil {
-		//	handle err
-		fmt.Println("failed to fetch order id")
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch total from request", Data: nil, Errors: err.Error()})
 	}
-
-	//orderID := strings.Trim("orderid", " ")
 
 	paymentVerifier := modelHelper.PaymentVerification{
 		UserID:     userID,
@@ -114,7 +106,6 @@ func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
 		Total:      total,
 	}
 
-	//paymentVerifier.
 	err = cr.paymentUseCase.UpdatePaymentDetails(c.Request.Context(), paymentVerifier)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to update payment details", Data: false, Errors: err.Error()})

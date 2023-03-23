@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
@@ -446,7 +445,6 @@ func (cr *ProductHandler) CreateProductItem(c *gin.Context) {
 		return
 	}
 	createdProductItem, err := cr.productUseCase.CreateProductItem(c.Request.Context(), newProductItem)
-	fmt.Println(createdProductItem)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to add new product item", Data: nil, Errors: err.Error()})
 		return

@@ -45,7 +45,6 @@ func (c *userDatabase) FindByEmail(ctx context.Context, email string) (modelHelp
 						WHERE users.email = $1;`
 	//Todo : Context Cancelling
 	err := c.DB.Raw(findUserQuery, email).Scan(&userData).Error
-	fmt.Println("printing user data from db", userData)
 	return userData, err
 }
 
@@ -58,7 +57,6 @@ func (c *userDatabase) FindByPhone(ctx context.Context, phone string) (modelHelp
 					  WHERE users.phone = $1;`
 	//Todo : Context Cancelling
 	err := c.DB.Raw(findUserQuery, phone).Scan(&userData).Error
-	fmt.Println("printing user data from db", userData)
 	return userData, err
 }
 

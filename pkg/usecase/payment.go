@@ -43,8 +43,6 @@ func (cr *paymentUseCase) CreateRazorpayPayment(ctx context.Context, cookie stri
 	if order.ID == 0 {
 		return domain.Order{}, "", fmt.Errorf("no such order found")
 	}
-	fmt.Println("order :", order)
-	fmt.Println("order total in use case :", order.OrderTotal)
 	client := razorpay.NewClient(razorpayID, razorpaySecret)
 
 	data := map[string]interface{}{
@@ -71,8 +69,6 @@ func (cr *paymentUseCase) UpdatePaymentDetails(ctx context.Context, paymentVerif
 		return err
 	}
 
-	fmt.Println("payment details in usecase :", paymentDetails)
-
 	if paymentDetails.ID == 0 {
 		return fmt.Errorf("no order found")
 	}
@@ -86,7 +82,6 @@ func (cr *paymentUseCase) UpdatePaymentDetails(ctx context.Context, paymentVerif
 		return err
 	}
 
-	fmt.Println("updated payment in usecase ", updatedPayment)
 	if updatedPayment.ID == 0 {
 		return fmt.Errorf("failed to update payment details")
 	}

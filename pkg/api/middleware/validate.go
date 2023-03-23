@@ -5,17 +5,6 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-//
-//func ValidateToken(token string) error {
-//	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-//		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-//			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-//		}
-//		return []byte("secret"), nil
-//	})
-//	return err
-//}
-
 func ValidateToken(cookie string) (int, error) {
 	//parses, validates, verifies the signature and returns the parsed token
 	token, err := jwt.Parse(cookie, func(t *jwt.Token) (interface{}, error) {
