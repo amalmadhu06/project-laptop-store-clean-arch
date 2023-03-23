@@ -35,7 +35,7 @@ func NewOtpHandler(otpUsecase services.OtpUseCase) *OtpHandler {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /sendOTP [post]
+// @Router /send-otp [post]
 func (cr *OtpHandler) SendOtp(c *gin.Context) {
 	//declare a variable to receive data from request
 	var phone modelHelper.OTPData
@@ -81,7 +81,7 @@ func (cr *OtpHandler) SendOtp(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /verifyOTP [post]
+// @Router /verify-otp [post]
 func (cr *OtpHandler) ValidateOtp(c *gin.Context) {
 	//declare a variable to receive request data
 	var otpDetails modelHelper.VerifyData

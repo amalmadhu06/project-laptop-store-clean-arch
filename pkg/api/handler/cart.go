@@ -31,7 +31,7 @@ func NewCartHandler(usecase services.CartUseCases) *CartHandler {
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /add-to-cart/{product_item_id} [post]
+// @Router /cart/add/{product_item_id} [post]
 func (cr *CartHandler) AddToCart(c *gin.Context) {
 	paramsID := c.Param("product_item_id")
 	productItemID, err := strconv.Atoi(paramsID)
@@ -66,7 +66,7 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /remove-from-cart/{product_item_id} [delete]
+// @Router /cart/remove/{product_item_id} [delete]
 func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 	paramsID := c.Param("product_item_id")
 	productItemID, err := strconv.Atoi(paramsID)
@@ -99,7 +99,7 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /view-cart [get]
+// @Router /cart [get]
 func (cr *CartHandler) ViewCart(c *gin.Context) {
 	cookie, err := c.Cookie("UserAuth")
 	if err != nil {
@@ -125,7 +125,7 @@ func (cr *CartHandler) ViewCart(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /empty-cart [delete]
+// @Router /cart [delete]
 func (cr *CartHandler) EmptyCart(c *gin.Context) {
 	cookie, err := c.Cookie("UserAuth")
 	if err != nil {
@@ -151,7 +151,7 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /add-coupon-to-cart/{coupon_id} [post]
+// @Router /cart/coupon/{coupon_id} [post]
 func (cr *CartHandler) AddCouponToCart(c *gin.Context) {
 	uID := c.Value("userID")
 	//convert uID to int

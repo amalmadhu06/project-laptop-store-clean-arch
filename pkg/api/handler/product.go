@@ -35,7 +35,7 @@ func NewProductHandler(usecase services.ProductUseCase) *ProductHandler {
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/create-category [post]
+// @Router /admin/categories/ [post]
 func (cr *ProductHandler) CreateCategory(c *gin.Context) {
 	var category modelHelper.NewCategory
 	if err := c.Bind(&category); err != nil {
@@ -62,7 +62,7 @@ func (cr *ProductHandler) CreateCategory(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /view-all-categories [get]
+// @Router /admin/categories/ [get]
 func (cr *ProductHandler) ViewAllCategories(c *gin.Context) {
 	categories, err := cr.productUseCase.ViewAllCategories(c.Request.Context())
 	if err != nil {
@@ -84,7 +84,7 @@ func (cr *ProductHandler) ViewAllCategories(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /find-category-by-id/{id} [get]
+// @Router /admin/categories/{id} [get]
 func (cr *ProductHandler) FindCategoryByID(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -114,7 +114,7 @@ func (cr *ProductHandler) FindCategoryByID(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/update-category [put]
+// @Router /admin/categories/ [put]
 func (cr *ProductHandler) UpdateCategory(c *gin.Context) {
 	var updateInfo domain.ProductCategory
 	if err := c.Bind(&updateInfo); err != nil {
@@ -140,9 +140,8 @@ func (cr *ProductHandler) UpdateCategory(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
-// @ Router adminPanel/delete-category/{id}
+// @ Router /admin/categories/{id} [delete]
 func (cr *ProductHandler) DeleteCategory(c *gin.Context) {
-
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
 
@@ -172,7 +171,7 @@ func (cr *ProductHandler) DeleteCategory(c *gin.Context) {
 // @Success 201 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/create-brand [post]
+// @Router /admin/brands/ [post]
 func (cr *ProductHandler) CreateBrand(c *gin.Context) {
 	var newBrand domain.ProductBrand
 	if err := c.Bind(&newBrand); err != nil {
@@ -198,7 +197,7 @@ func (cr *ProductHandler) CreateBrand(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/update-brand [put]
+// @Router /admin/brands/ [put]
 func (cr *ProductHandler) UpdateBrand(c *gin.Context) {
 	var updateBrand domain.ProductBrand
 	if err := c.Bind(&updateBrand); err != nil {
@@ -224,7 +223,7 @@ func (cr *ProductHandler) UpdateBrand(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/delete-brand/{id} [delete]
+// @Router /admin/brands/{id} [delete]
 func (cr *ProductHandler) DeleteBrand(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -249,7 +248,7 @@ func (cr *ProductHandler) DeleteBrand(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /view-all-brands [get]
+// @Router /admin/brands/ [get]
 func (cr *ProductHandler) ViewAllBrands(c *gin.Context) {
 	brands, err := cr.productUseCase.ViewAllBrands(c.Request.Context())
 	if err != nil {
@@ -271,7 +270,7 @@ func (cr *ProductHandler) ViewAllBrands(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /view-brand-by-id/{id} [get]
+// @Router /admin/brands/{id} [get]
 func (cr *ProductHandler) ViewBrandByID(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -304,7 +303,7 @@ func (cr *ProductHandler) ViewBrandByID(c *gin.Context) {
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/create-product [post]
+// @Router /admin/products/ [post]
 func (cr *ProductHandler) CreateProduct(c *gin.Context) {
 	var newProduct domain.Product
 	if err := c.Bind(&newProduct); err != nil {
@@ -331,7 +330,7 @@ func (cr *ProductHandler) CreateProduct(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /view-all/products [get]
+// @Router /admin/products/ [get]
 func (cr *ProductHandler) ViewAllProducts(c *gin.Context) {
 	products, err := cr.productUseCase.ViewAllProducts(c.Request.Context())
 	if err != nil {
@@ -352,7 +351,7 @@ func (cr *ProductHandler) ViewAllProducts(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @ Router /find-product-by-id/{id} [get]
+// @ Router /admin/products/{id} [get]
 func (cr *ProductHandler) FindProductByID(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -382,7 +381,7 @@ func (cr *ProductHandler) FindProductByID(c *gin.Context) {
 // @Success 202 {object} response.Response "Successfully updated product"
 // @Failure 400 {object} response.Response "Unable to update product"
 // @Failure 422 {object} response.Response "Failed to read request body"
-// @Router /adminPanel/update-product [put]
+// @Router /admin/products/ [put]
 func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 	var updateInfo domain.Product
 	if err := c.Bind(&updateInfo); err != nil {
@@ -408,7 +407,7 @@ func (cr *ProductHandler) UpdateProduct(c *gin.Context) {
 // @Success 202 {object} response.Response "Successfully deleted product"
 // @Failure 400 {object} response.Response "Invalid product ID"
 // @Failure 422 {object} response.Response "Unable to delete product"
-// @Router /adminPanel/delete-product/{product_id} [delete]
+// @Router /admin/products/{product_id} [delete]
 func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -438,7 +437,7 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Success 201 {object} response.Response "Successfully added new product item"
 // @Failure 400 {object} response.Response "Failed to add new product item"
 // @Failure 422 {object} response.Response "Unable to process the request"
-// @Router /adminPanel/create-product-item [post]
+// @Router /admin/product-items/ [post]
 func (cr *ProductHandler) CreateProductItem(c *gin.Context) {
 	var newProductItem domain.ProductItem
 	if err := c.Bind(&newProductItem); err != nil {
@@ -464,7 +463,7 @@ func (cr *ProductHandler) CreateProductItem(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /view-all-product-items [get]
+// @Router /admin/product-items/ [get]
 func (cr *ProductHandler) ViewAllProductItems(c *gin.Context) {
 	productItems, err := cr.productUseCase.ViewAllProductItems(c.Request.Context())
 	if err != nil {
@@ -485,7 +484,7 @@ func (cr *ProductHandler) ViewAllProductItems(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /view-product-item/{id} [get]
+// @Router /admin/product-items/{id} [get]
 func (cr *ProductHandler) FindProductItemByID(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -515,7 +514,7 @@ func (cr *ProductHandler) FindProductItemByID(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/update-product-item [put]
+// @Router /admin/product-items/ [put]
 func (cr *ProductHandler) UpdateProductItem(c *gin.Context) {
 	var updateInfo domain.ProductItem
 	if err := c.Bind(&updateInfo); err != nil {
@@ -541,7 +540,7 @@ func (cr *ProductHandler) UpdateProductItem(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/delete-product-item/{id} [delete]
+// @Router /admin/product-items/{id} [delete]
 func (cr *ProductHandler) DeleteProductItem(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -571,7 +570,7 @@ func (cr *ProductHandler) DeleteProductItem(c *gin.Context) {
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/create-coupon [post]
+// @Router /admin/coupons/ [post]
 func (cr *ProductHandler) CreateCoupon(c *gin.Context) {
 	var newCoupon modelHelper.CreateCoupon
 
@@ -600,7 +599,7 @@ func (cr *ProductHandler) CreateCoupon(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/update-coupon [put]
+// @Router /admin/coupons/ [put]
 func (cr *ProductHandler) UpdateCoupon(c *gin.Context) {
 	var updateCoupon modelHelper.UpdateCoupon
 	if err := c.Bind(&updateCoupon); err != nil {
@@ -629,9 +628,9 @@ func (cr *ProductHandler) UpdateCoupon(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/delete-coupon/{coupon_id} [delete]
+// @Router /admin/coupons/{id} [delete]
 func (cr *ProductHandler) DeleteCoupon(c *gin.Context) {
-	paramsID := c.Param("coupon_id")
+	paramsID := c.Param("id")
 	couponID, err := strconv.Atoi(paramsID)
 
 	if err != nil {
@@ -660,7 +659,7 @@ func (cr *ProductHandler) DeleteCoupon(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/coupons/{coupon_id} [get]
+// @Router /admin/coupons/{id} [get]
 func (cr *ProductHandler) ViewCouponByID(c *gin.Context) {
 	paramsID := c.Param("coupon_id")
 	couponID, err := strconv.Atoi(paramsID)
@@ -686,7 +685,7 @@ func (cr *ProductHandler) ViewCouponByID(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/coupons [get]
+// @Router /admin/coupons/ [get]
 func (cr *ProductHandler) ViewAllCoupons(c *gin.Context) {
 	coupons, err := cr.productUseCase.ViewAllCoupons(c.Request.Context())
 	if err != nil {

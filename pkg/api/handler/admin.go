@@ -30,7 +30,7 @@ func NewAdminHandler(adminUseCase services.AdminUseCase) *AdminHandler {
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/create-admin [post]
+// @Router /admin/admins [post]
 func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 	var newAdminInfo modelHelper.NewAdminInfo
 	if err := c.Bind(&newAdminInfo); err != nil {
@@ -74,7 +74,7 @@ func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/login [post]
+// @Router /admin/login [post]
 func (cr *AdminHandler) AdminLogin(c *gin.Context) {
 	// receive data from request body
 	var body modelHelper.AdminLogin
@@ -106,7 +106,7 @@ func (cr *AdminHandler) AdminLogin(c *gin.Context) {
 // @Success 200
 // @Failure 400
 // @Failure 500
-// @Router /adminPanel/logout [get]
+// @Router /admin/logout [get]
 func (cr *AdminHandler) AdminLogout(c *gin.Context) {
 	// Set the user authentication cookie's expiration to -1 to invalidate it.
 	c.Writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") //indicates to the client that it should not cache any response data and should always revalidate it with the server
@@ -126,10 +126,10 @@ func (cr *AdminHandler) AdminLogout(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/block-admin/:admin-id [put]
+// @Router /admin/admins/{id}/block [put]
 func (cr *AdminHandler) BlockAdmin(c *gin.Context) {
 	//	get the id of the admin to be blocked
-	paramsID := c.Param("admin-id")
+	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read admin id from path parameter", Data: nil, Errors: err})
@@ -160,7 +160,7 @@ func (cr *AdminHandler) BlockAdmin(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/unblock-admin/:admin-id [put]
+// @Router /admin/admins/{id}/unblock [put]
 func (cr *AdminHandler) UnblockAdmin(c *gin.Context) {
 	//	get the id of the admin to be blocked
 	paramsID := c.Param("admin-id")
@@ -192,7 +192,7 @@ func (cr *AdminHandler) UnblockAdmin(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/dashboard [get]
+// @Router /admin/dashboard [get]
 func (cr *AdminHandler) AdminDashboard(c *gin.Context) {
 	dashboard, err := cr.adminUseCase.AdminDashboard(c.Request.Context())
 	if err != nil {

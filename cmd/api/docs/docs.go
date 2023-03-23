@@ -24,7 +24,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/add-address": {
+        "/addresses/": {
+            "put": {
+                "description": "Update address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "User can update existing address",
+                "operationId": "update-address",
+                "parameters": [
+                    {
+                        "description": "User address",
+                        "name": "user_address",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.AddressInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Add address",
                 "consumes": [
@@ -71,223 +116,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/add-coupon-to-cart/{coupon_id}": {
-            "post": {
-                "description": "User can add coupon to the cart",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Cart"
-                ],
-                "summary": "User can add a coupon to the cart",
-                "operationId": "add-coupon-to-cart",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "coupon_id",
-                        "name": "coupon_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/add-to-cart/{product_item_id}": {
-            "post": {
-                "description": "User can add product item to the cart",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Cart"
-                ],
-                "summary": "User can add a product item to the cart",
-                "operationId": "add-to-cart",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "product_item_id",
-                        "name": "product_item_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/block-admin/:admin-id": {
-            "put": {
-                "description": "Super-admin can block admins",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Block an admin",
-                "operationId": "block-admin",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of the admin to be blocked",
-                        "name": "admin_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/coupons": {
-            "get": {
-                "description": "Admins and users can see all available coupons",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admins and users can see all available coupons",
-                "operationId": "view-coupons",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/coupons/{coupon_id}": {
-            "get": {
-                "description": "Admins and users can see coupon with id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admins and users can see coupon with coupon id",
-                "operationId": "view-coupon-by-id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "coupon_id",
-                        "name": "coupon_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/create-admin": {
+        "/admin/admins": {
             "post": {
                 "description": "Super admin can create a new admin from admin panel.",
                 "consumes": [
@@ -334,7 +163,170 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/create-brand": {
+        "/admin/admins/{id}/block": {
+            "put": {
+                "description": "Super-admin can block admins",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Block an admin",
+                "operationId": "block-admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the admin to be blocked",
+                        "name": "admin_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/admins/{id}/unblock": {
+            "put": {
+                "description": "Super-admin can unblock a blocked admin",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Unblock a blocked admin",
+                "operationId": "unblock-admin",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the admin to be unblocked",
+                        "name": "admin_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/brands/": {
+            "get": {
+                "description": "Admins and users can view all brands",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin and users can all brands",
+                "operationId": "view-all-brands",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Admin can update brand details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can update brand details",
+                "operationId": "update-brand",
+                "parameters": [
+                    {
+                        "description": "brand details",
+                        "name": "brand_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ProductBrand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Admin can create new brand",
                 "consumes": [
@@ -381,7 +373,168 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/create-category": {
+        "/admin/brands/{id}": {
+            "get": {
+                "description": "Admins and users can view a specific brand details with brand id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admins and users can view a specific brand details with brand id",
+                "operationId": "view-brand-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "brand id",
+                        "name": "brand_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Admin can delete a brand",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can delete a brand",
+                "operationId": "delete-brand",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "brand id",
+                        "name": "brand_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/categories/": {
+            "get": {
+                "description": "Admin, users and unregistered users can see all the available categories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "View all available categories",
+                "operationId": "view-all-categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Admin can update category details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can update category details",
+                "operationId": "update-category",
+                "parameters": [
+                    {
+                        "description": "category info",
+                        "name": "category_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ProductCategory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Admin can create new category from admin panel",
                 "consumes": [
@@ -428,7 +581,125 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/create-coupon": {
+        "/admin/categories/{id}": {
+            "get": {
+                "description": "Users and admins can fetch details of a specific category using id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Fetch details of a specific category using category id",
+                "operationId": "find-category-by-id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "category id",
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/coupons/": {
+            "get": {
+                "description": "Admins and users can see all available coupons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admins and users can see all available coupons",
+                "operationId": "view-coupons",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Admin can update existing coupon",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can update existing coupon",
+                "operationId": "update-coupon",
+                "parameters": [
+                    {
+                        "description": "details of coupon to be updated",
+                        "name": "coupon_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.UpdateCoupon"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Admin can create new coupons",
                 "consumes": [
@@ -475,9 +746,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/create-product": {
-            "post": {
-                "description": "Admins can create new product listings",
+        "/admin/coupons/{id}": {
+            "get": {
+                "description": "Admins and users can see coupon with id",
                 "consumes": [
                     "application/json"
                 ],
@@ -487,22 +758,20 @@ const docTemplate = `{
                 "tags": [
                     "Product"
                 ],
-                "summary": "Admin can create new product listings",
-                "operationId": "create-product",
+                "summary": "Admins and users can see coupon with coupon id",
+                "operationId": "view-coupon-by-id",
                 "parameters": [
                     {
-                        "description": "new product details",
-                        "name": "new_product_details",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.Product"
-                        }
+                        "type": "string",
+                        "description": "coupon_id",
+                        "name": "coupon_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -520,131 +789,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/adminPanel/create-product-item": {
-            "post": {
-                "description": "This endpoint allows an admin user to create a new product item.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Creates a new product item",
-                "operationId": "create-product-item",
-                "parameters": [
-                    {
-                        "description": "Product item details",
-                        "name": "product_item",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.ProductItem"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successfully added new product item",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Failed to add new product item",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unable to process the request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/dashboard": {
-            "get": {
-                "description": "Admin can access dashboard and view details regarding orders, users, products, etc.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Admin Dashboard",
-                "operationId": "admin-dashboard",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/delete-brand/{id}": {
-            "delete": {
-                "description": "Admin can delete a brand",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admin can delete a brand",
-                "operationId": "delete-brand",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "brand id",
-                        "name": "brand_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/delete-coupon/{coupon_id}": {
+            },
             "delete": {
                 "description": "Admin can delete existing coupon",
                 "consumes": [
@@ -689,9 +834,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/delete-product-item/{id}": {
-            "delete": {
-                "description": "Deletes a product item from the system",
+        "/admin/dashboard": {
+            "get": {
+                "description": "Admin can access dashboard and view details regarding orders, users, products, etc.",
                 "consumes": [
                     "application/json"
                 ],
@@ -699,34 +844,19 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Admin"
                 ],
-                "summary": "Deletes a product item from the system",
-                "operationId": "delete-product-item",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of the product item to be deleted",
-                        "name": "product_item_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
+                "summary": "Admin Dashboard",
+                "operationId": "admin-dashboard",
                 "responses": {
-                    "202": {
-                        "description": "Accepted",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -734,52 +864,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/delete-product/{product_id}": {
-            "delete": {
-                "description": "This endpoint allows an admin user to delete a product by ID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Deletes a product by ID",
-                "operationId": "delete-product",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Product ID to delete",
-                        "name": "product_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Successfully deleted product",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid product ID",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unable to delete product",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/login": {
+        "/admin/login": {
             "post": {
                 "description": "Admin login",
                 "consumes": [
@@ -826,7 +911,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/logout": {
+        "/admin/logout": {
             "get": {
                 "description": "Logs out a logged-in admin from the E-commerce web api admin panel",
                 "consumes": [
@@ -853,193 +938,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/unblock-admin/:admin-id": {
-            "put": {
-                "description": "Super-admin can unblock a blocked admin",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Unblock a blocked admin",
-                "operationId": "unblock-admin",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ID of the admin to be unblocked",
-                        "name": "admin_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/update-brand": {
-            "put": {
-                "description": "Admin can update brand details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admin can update brand details",
-                "operationId": "update-brand",
-                "parameters": [
-                    {
-                        "description": "brand details",
-                        "name": "brand_details",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.ProductBrand"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/update-category": {
-            "put": {
-                "description": "Admin can update category details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admin can update category details",
-                "operationId": "update-category",
-                "parameters": [
-                    {
-                        "description": "category info",
-                        "name": "category_details",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.ProductCategory"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/update-coupon": {
-            "put": {
-                "description": "Admin can update existing coupon",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admin can update existing coupon",
-                "operationId": "update-coupon",
-                "parameters": [
-                    {
-                        "description": "details of coupon to be updated",
-                        "name": "coupon_details",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/modelHelper.UpdateCoupon"
-                        }
-                    }
-                ],
-                "responses": {
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/adminPanel/update-order": {
+        "/admin/orders": {
             "put": {
                 "description": "Endpoint for updating order status",
                 "consumes": [
@@ -1086,9 +985,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/update-product": {
-            "put": {
-                "description": "This endpoint allows an admin user to update a product's details.",
+        "/admin/product-items/": {
+            "get": {
+                "description": "view all product items",
                 "consumes": [
                     "application/json"
                 ],
@@ -1098,42 +997,23 @@ const docTemplate = `{
                 "tags": [
                     "Product"
                 ],
-                "summary": "Admin can update product details",
-                "operationId": "update-product",
-                "parameters": [
-                    {
-                        "description": "Updated product details",
-                        "name": "updated_product_details",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.Product"
-                        }
-                    }
-                ],
+                "summary": "Handler function to view all product items",
+                "operationId": "view-all-product-items",
                 "responses": {
-                    "202": {
-                        "description": "Successfully updated product",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
                     },
-                    "400": {
-                        "description": "Unable to update product",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Failed to read request body",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
-            }
-        },
-        "/adminPanel/update-product-item": {
+            },
             "put": {
                 "description": "Update an existing product item with new information.",
                 "consumes": [
@@ -1178,11 +1058,9 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/adminPanel/users": {
-            "get": {
-                "description": "Admin can list all registered users",
+            },
+            "post": {
+                "description": "This endpoint allows an admin user to create a new product item.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1190,25 +1068,36 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Product"
                 ],
-                "summary": "Admin can list all registered users",
-                "operationId": "list-all-users",
+                "summary": "Creates a new product item",
+                "operationId": "create-product-item",
+                "parameters": [
+                    {
+                        "description": "Product item details",
+                        "name": "product_item",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.ProductItem"
+                        }
+                    }
+                ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Successfully added new product item",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Failed to add new product item",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "422": {
+                        "description": "Unable to process the request",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1216,9 +1105,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/users/:id": {
+        "/admin/product-items/{id}": {
             "get": {
-                "description": "Admin can fetch a specific user details using user id",
+                "description": "Retrieve a product item by its ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -1226,15 +1115,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Product"
                 ],
-                "summary": "Admin can fetch a specific user details using user id",
-                "operationId": "find-user-by-id",
+                "summary": "Retrieve a product item by ID",
+                "operationId": "find-product-item-by-id",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID of the user to be fetched",
-                        "name": "user_id",
+                        "description": "Product item ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -1259,9 +1148,217 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Deletes a product item from the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Deletes a product item from the system",
+                "operationId": "delete-product-item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the product item to be deleted",
+                        "name": "product_item_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
             }
         },
-        "/adminPanel/users/block-user": {
+        "/admin/products/": {
+            "get": {
+                "description": "Admins and users can ses all available products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admins and users can see all available products",
+                "operationId": "view-all-products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "This endpoint allows an admin user to update a product's details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can update product details",
+                "operationId": "update-product",
+                "parameters": [
+                    {
+                        "description": "Updated product details",
+                        "name": "updated_product_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Successfully updated product",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Unable to update product",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Failed to read request body",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Admins can create new product listings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admin can create new product listings",
+                "operationId": "create-product",
+                "parameters": [
+                    {
+                        "description": "new product details",
+                        "name": "new_product_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/products/{product_id}": {
+            "delete": {
+                "description": "This endpoint allows an admin user to delete a product by ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Deletes a product by ID",
+                "operationId": "delete-product",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID to delete",
+                        "name": "product_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Successfully deleted product",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid product ID",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unable to delete product",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/users/block": {
             "put": {
                 "description": "Admin can block a registered user",
                 "consumes": [
@@ -1314,7 +1411,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/adminPanel/users/unblock-user/:id": {
+        "/admin/users/unblock/{id}": {
             "put": {
                 "description": "Admin can unblock a blocked user",
                 "consumes": [
@@ -1359,9 +1456,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/buy-product-item/": {
-            "post": {
-                "description": "Buy a product item using product item ID.",
+        "/admins/users": {
+            "get": {
+                "description": "Admin can list all registered users",
                 "consumes": [
                     "application/json"
                 ],
@@ -1369,72 +1466,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "Admin"
                 ],
-                "summary": "Buy product item",
-                "operationId": "buy-product-item",
-                "parameters": [
-                    {
-                        "description": "Order Details",
-                        "name": "order_details",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/modelHelper.PlaceOrder"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Successfully ordered product item",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Failed to order the product item",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unable to fetch authentication cookie",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unable to process the request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/cancel-order.{order_id}": {
-            "put": {
-                "description": "Endpoint for cancelling an order associated with a user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Order"
-                ],
-                "summary": "Cancels a specific order for the currently logged in user",
-                "operationId": "cancel-order",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "ID of the order to be cancelled",
-                        "name": "order_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
+                "summary": "Admin can list all registered users",
+                "operationId": "list-all-users",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1448,8 +1483,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/response.Response"
                         }
                     },
-                    "401": {
-                        "description": "Unauthorized",
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1457,9 +1492,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/cart/buy-all": {
-            "post": {
-                "description": "This endpoint allows a user to purchase all items in their cart",
+        "/admins/users/{id}": {
+            "get": {
+                "description": "Admin can fetch a specific user details using user id",
                 "consumes": [
                     "application/json"
                 ],
@@ -1467,36 +1502,22 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "Admin"
                 ],
-                "summary": "Buy all items from the user's cart",
-                "operationId": "buyAll",
+                "summary": "Admin can fetch a specific user details using user id",
+                "operationId": "find-user-by-id",
                 "parameters": [
                     {
-                        "description": "Order Details",
-                        "name": "order_details",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/modelHelper.PlaceAllOrders"
-                        }
+                        "type": "string",
+                        "description": "ID of the user to be fetched",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1506,11 +1527,51 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     }
                 }
             }
         },
-        "/empty-cart": {
+        "/cart": {
+            "get": {
+                "description": "User can view cart and cart items",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "User can view cart items and total",
+                "operationId": "view-cart",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "User can remove everything from cart at once",
                 "consumes": [
@@ -1546,9 +1607,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/find-category-by-id/{id}": {
-            "get": {
-                "description": "Users and admins can fetch details of a specific category using id",
+        "/cart/add/{product_item_id}": {
+            "post": {
+                "description": "User can add product item to the cart",
                 "consumes": [
                     "application/json"
                 ],
@@ -1556,22 +1617,34 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Cart"
                 ],
-                "summary": "Fetch details of a specific category using category id",
-                "operationId": "find-category-by-id",
+                "summary": "User can add a product item to the cart",
+                "operationId": "add-to-cart",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "category id",
-                        "name": "category_id",
+                        "description": "product_item_id",
+                        "name": "product_item_id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1581,9 +1654,48 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
+                    }
+                }
+            }
+        },
+        "/cart/coupon/{coupon_id}": {
+            "post": {
+                "description": "User can add coupon to the cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "User can add a coupon to the cart",
+                "operationId": "add-coupon-to-cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "coupon_id",
+                        "name": "coupon_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1591,7 +1703,58 @@ const docTemplate = `{
                 }
             }
         },
-        "/login-email": {
+        "/cart/remove/{product_item_id}": {
+            "delete": {
+                "description": "User can remove product from cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Remove a product from the cart",
+                "operationId": "remove-from-cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "product_item_id",
+                        "name": "product_item_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/email": {
             "post": {
                 "description": "Login as a user to access the ecommerce site",
                 "consumes": [
@@ -1638,7 +1801,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/login-phone": {
+        "/login/phone": {
             "post": {
                 "description": "Login as a user to access the ecommerce site",
                 "consumes": [
@@ -1712,6 +1875,191 @@ const docTemplate = `{
                 }
             }
         },
+        "/orders/": {
+            "get": {
+                "description": "Endpoint for getting all orders associated with a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Retrieves all orders of currently logged in user",
+                "operationId": "view-all-orders",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Buy a product item using product item ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Buy product item",
+                "operationId": "buy-product-item",
+                "parameters": [
+                    {
+                        "description": "Order Details",
+                        "name": "order_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.PlaceOrder"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully ordered product item",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to order the product item",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unable to fetch authentication cookie",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unable to process the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/buy-all": {
+            "post": {
+                "description": "This endpoint allows a user to purchase all items in their cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Buy all items from the user's cart",
+                "operationId": "buyAll",
+                "parameters": [
+                    {
+                        "description": "Order Details",
+                        "name": "order_details",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.PlaceAllOrders"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/orders/cancel/{order_id}": {
+            "put": {
+                "description": "Endpoint for cancelling an order associated with a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Cancels a specific order for the currently logged in user",
+                "operationId": "cancel-order",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the order to be cancelled",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/{order_id}": {
             "get": {
                 "description": "This function handles requests for retrieving the details of a specific order identified by its order ID. The user must be authorized with a valid cookie to view the order details.",
@@ -1763,6 +2111,90 @@ const docTemplate = `{
                 }
             }
         },
+        "/payments/razorpay/{order_id}": {
+            "get": {
+                "description": "Users can make payment via Razorpay after placing orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Users can make payment",
+                "operationId": "create-razorpay-payment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Order id",
+                        "name": "order_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/payments/success/": {
+            "get": {
+                "description": "Handler for automatically updating payment details upon successful payment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Handling successful payment",
+                "operationId": "payment-success",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment details",
+                        "name": "c",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Successfully updated payment details",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to update payment details",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/profile": {
             "get": {
                 "description": "Users can visit their profile",
@@ -1793,58 +2225,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/remove-from-cart/{product_item_id}": {
-            "delete": {
-                "description": "User can remove product from cart",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Cart"
-                ],
-                "summary": "Remove a product from the cart",
-                "operationId": "remove-from-cart",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "product_item_id",
-                        "name": "product_item_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/sendOTP": {
+        "/send-otp": {
             "post": {
                 "description": "Send OTP to use's mobile",
                 "consumes": [
@@ -1938,54 +2319,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/update-address": {
-            "post": {
-                "description": "Update address",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "User can update existing address",
-                "operationId": "update-address",
-                "parameters": [
-                    {
-                        "description": "User address",
-                        "name": "user_address",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/modelHelper.AddressInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/verifyOTP": {
+        "/verify-otp": {
             "post": {
                 "description": "Validate the  OTP sent to use's mobile",
                 "consumes": [
@@ -2008,288 +2342,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/modelHelper.VerifyData"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-all-brands": {
-            "get": {
-                "description": "Admins and users can view all brands",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admin and users can all brands",
-                "operationId": "view-all-brands",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-all-categories": {
-            "get": {
-                "description": "Admin, users and unregistered users can see all the available categories",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "View all available categories",
-                "operationId": "view-all-categories",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-all-orders": {
-            "get": {
-                "description": "Endpoint for getting all orders associated with a user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Order"
-                ],
-                "summary": "Retrieves all orders of currently logged in user",
-                "operationId": "view-all-orders",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-all-product-items": {
-            "get": {
-                "description": "view all product items",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Handler function to view all product items",
-                "operationId": "view-all-product-items",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-all/products": {
-            "get": {
-                "description": "Admins and users can ses all available products",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admins and users can see all available products",
-                "operationId": "view-all-products",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-brand-by-id/{id}": {
-            "get": {
-                "description": "Admins and users can view a specific brand details with brand id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admins and users can view a specific brand details with brand id",
-                "operationId": "view-brand-by-id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "brand id",
-                        "name": "brand_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "422": {
-                        "description": "Unprocessable Entity",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-cart": {
-            "get": {
-                "description": "User can view cart and cart items",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Cart"
-                ],
-                "summary": "User can view cart items and total",
-                "operationId": "view-cart",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/view-product-item/{id}": {
-            "get": {
-                "description": "Retrieve a product item by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Retrieve a product item by ID",
-                "operationId": "find-product-item-by-id",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Product item ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {

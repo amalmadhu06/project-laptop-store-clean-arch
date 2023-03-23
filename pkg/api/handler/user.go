@@ -83,7 +83,7 @@ func (cr UserHandler) CreateUser(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 400 {object} response.Response
-// @Router /login-email [post]
+// @Router /login/email [post]
 func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 	//receive data from request body
 	var body modelHelper.UserLoginEmail
@@ -131,7 +131,7 @@ func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /login-phone [post]
+// @Router /login/phone [post]
 func (cr *UserHandler) LoginWithPhone(c *gin.Context) {
 	// receive data from request body
 	var body modelHelper.UserLoginPhone
@@ -198,7 +198,7 @@ func (cr *UserHandler) UserLogout(c *gin.Context) {
 // @Success 201 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 400 {object} response.Response
-// @Router /add-address [post]
+// @Router /addresses/ [post]
 func (cr *UserHandler) AddAddress(c *gin.Context) {
 	// receive data from request body
 	var body modelHelper.AddressInput
@@ -230,7 +230,7 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /update-address [post]
+// @Router /addresses/ [put]
 func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 	var body modelHelper.AddressInput
 	if err := c.Bind(&body); err != nil {
@@ -260,7 +260,7 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/users [get]
+// @Router /admins/users [get]
 func (cr *UserHandler) ListAllUsers(c *gin.Context) {
 	users, err := cr.userUseCase.ListAllUsers(c.Request.Context())
 	if err != nil {
@@ -283,7 +283,7 @@ func (cr *UserHandler) ListAllUsers(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/users/:id [get]
+// @Router /admins/users/{id} [get]
 func (cr *UserHandler) FindUserByID(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)
@@ -314,7 +314,7 @@ func (cr *UserHandler) FindUserByID(c *gin.Context) {
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/users/block-user [put]
+// @Router /admin/users/block [put]
 func (cr *UserHandler) BlockUser(c *gin.Context) {
 	var blockUser modelHelper.BlockUser
 	if err := c.Bind(&blockUser); err != nil {
@@ -346,7 +346,7 @@ func (cr *UserHandler) BlockUser(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /adminPanel/users/unblock-user/:id [put]
+// @Router /admin/users/unblock/{id} [put]
 func (cr *UserHandler) UnblockUser(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)

@@ -21,6 +21,18 @@ func NewPaymentHandler(paymentUseCase services.PaymentUseCases) *PaymentHandler 
 	}
 }
 
+// CreateRazorpayPayment
+// @Summary Users can make payment
+// @ID create-razorpay-payment
+// @Description Users can make payment via Razorpay after placing orders
+// @Tags Payment
+// @Accept json
+// @Produce json
+// @Param order_id path string true "Order id"
+// @Success 200 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /payments/razorpay/{order_id} [get]
 func (cr *PaymentHandler) CreateRazorpayPayment(c *gin.Context) {
 	paramsID := c.Param("order_id")
 	orderID, err := strconv.Atoi(paramsID)
@@ -57,6 +69,17 @@ func (cr *PaymentHandler) CreateRazorpayPayment(c *gin.Context) {
 	//c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "successfully completed payment using razorpay", Data: nil, Errors: nil})
 }
 
+// PaymentSuccess
+// @Summary Handling successful payment
+// @ID payment-success
+// @Description Handler for automatically updating payment details upon successful payment
+// @Tags Payment
+// @Accept json
+// @Produce json
+// @Param c query string true "Payment details"
+// @Success 202 {object} response.Response "Successfully updated payment details"
+// @Failure 500 {object} response.Response "Failed to update payment details"
+// @Router /payments/success/ [get]
 func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
 	paymentRef := c.Query("payment_ref")
 	fmt.Println("paymentRef from query :", paymentRef)
@@ -91,7 +114,6 @@ func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
 		Total:      total,
 	}
 
-	fmt.Println("payment verifier in handler : ", paymentVerifier)
 	//paymentVerifier.
 	err = cr.paymentUseCase.UpdatePaymentDetails(c.Request.Context(), paymentVerifier)
 	if err != nil {

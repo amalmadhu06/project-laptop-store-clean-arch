@@ -31,7 +31,7 @@ func NewOrderHandler(usecase services.OrderUseCases) *OrderHandler {
 // @Failure 400 {object} response.Response "Failed to order the product item"
 // @Failure 401 {object} response.Response "Unable to fetch authentication cookie"
 // @Failure 422 {object} response.Response "Unable to process the request"
-// @Router /buy-product-item/ [post]
+// @Router /orders/ [post]
 func (cr *OrderHandler) BuyProductItem(c *gin.Context) {
 	var body modelHelper.PlaceOrder
 	if err := c.Bind(&body); err != nil {
@@ -71,7 +71,7 @@ func (cr *OrderHandler) BuyProductItem(c *gin.Context) {
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /cart/buy-all [post]
+// @Router /orders/buy-all [post]
 func (cr *OrderHandler) BuyAll(c *gin.Context) {
 	var body modelHelper.PlaceAllOrders
 	if err := c.Bind(&body); err != nil {
@@ -136,7 +136,7 @@ func (cr *OrderHandler) ViewOrderByID(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
-// @Router  /view-all-orders [get]
+// @Router  /orders/ [get]
 func (cr *OrderHandler) ViewAllOrders(c *gin.Context) {
 	cookie, err := c.Cookie("UserAuth")
 	if err != nil {
@@ -162,7 +162,7 @@ func (cr *OrderHandler) ViewAllOrders(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
-// @Router /cancel-order.{order_id} [put]
+// @Router /orders/cancel/{order_id} [put]
 func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 	paramsId := c.Param("order_id")
 	orderID, err := strconv.Atoi(paramsId)
@@ -194,7 +194,7 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /adminPanel/update-order [put]
+// @Router /admin/orders [put]
 func (cr *OrderHandler) UpdateOrder(c *gin.Context) {
 	var body modelHelper.UpdateOrder
 
