@@ -134,3 +134,28 @@ func (c *orderUseCase) UpdateOrder(ctx context.Context, orderInfo modelHelper.Up
 	order, err := c.orderRepo.UpdateOrder(ctx, orderInfo)
 	return order, err
 }
+
+func (c *orderUseCase) ReturnRequest(ctx context.Context, userID int, returnRequest modelHelper.ReturnRequest) (domain.Order, error) {
+	//	check if order is eligible to be returned
+	//	users can request for return only if order status is completed(4), delivery status is delivered(5) and is within 15 days of order delivery
+
+	orderDetails, err := c.orderRepo.ViewOrderById(ctx, userID, returnRequest.OrderID)
+	fmt.Println(orderDetails)
+	if err != nil {
+		return domain.Order{}, err
+	}
+	if orderDetails.ID == 0 {
+		return domain.Order{}, fmt.Errorf("no such order found")
+	}
+	if orderDetails.DeliveryUpdatedAt.Sub(time.Now()) > time.Hour*24*15 {
+		return domain.Order{}, fmt.Errorf("failed to place return request as it is more than 15 days")
+	}
+	if orderDetails.OrderStatusID != 4 || orderDetails.DeliveryStatusID != 5 {
+		return domain.Order{}, fmt.Errorf("cannot return as order status is %v and delivery status is %v", orderDetails.OrderStatusID, orderDetails.DeliveryStatusID)
+	}
+	order, err := c.orderRepo.ReturnRequest(ctx, returnRequest)
+	if err != nil {
+		return domain.Order{}, fmt.Errorf("failed to place return request")
+	}
+	return order, nil
+}

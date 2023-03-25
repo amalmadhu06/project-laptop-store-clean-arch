@@ -14,9 +14,5 @@ type OrderUseCases interface {
 	ViewAllOrders(ctx context.Context, cookie string) ([]domain.Order, error)
 	CancelOrder(ctx context.Context, orderID int, cookie string) (domain.Order, error)
 	UpdateOrder(ctx context.Context, orderInfo modelHelper.UpdateOrder) (domain.Order, error)
-	//	BuyAll
-	//	ViewOrderByID
-	//	ViewAllOrders
-	//	CancelOrder
-
+	ReturnRequest(ctx context.Context, userID int, returnRequest modelHelper.ReturnRequest) (domain.Order, error)
 }

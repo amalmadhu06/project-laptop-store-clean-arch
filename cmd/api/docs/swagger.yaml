@@ -163,6 +163,13 @@ definitions:
       shipping_address_id:
         type: integer
     type: object
+  modelHelper.ReturnRequest:
+    properties:
+      order_id:
+        type: integer
+      reason:
+        type: string
+    type: object
   modelHelper.UpdateCoupon:
     properties:
       code:
@@ -180,6 +187,8 @@ definitions:
     type: object
   modelHelper.UpdateOrder:
     properties:
+      delivery_status_id:
+        type: integer
       order_id:
         type: integer
       order_status_id:
@@ -1636,6 +1645,34 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Cancels a specific order for the currently logged in user
+      tags:
+      - Order
+  /orders/return:
+    post:
+      consumes:
+      - application/json
+      description: User can request for returning products withing 15 days of order
+        delivery
+      operationId: return-request
+      parameters:
+      - description: Return details
+        in: body
+        name: return_request
+        required: true
+        schema:
+          $ref: '#/definitions/modelHelper.ReturnRequest'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can request for returning products within 15 days of order delivery
       tags:
       - Order
   /payments/razorpay/{order_id}:

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
@@ -197,16 +198,45 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 // @Router /admin/orders [put]
 func (cr *OrderHandler) UpdateOrder(c *gin.Context) {
 	var body modelHelper.UpdateOrder
-
 	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request bod", Data: nil, Errors: err.Error()})
 		return
 	}
-
 	order, err := cr.orderUseCase.UpdateOrder(c.Request.Context(), body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to update order", Data: nil, Errors: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully updated order", Data: order, Errors: nil})
+}
+
+// ReturnRequest
+// @Summary User can request for returning products within 15 days of order delivery
+// @ID return-request
+// @Description User can request for returning products withing 15 days of order delivery
+// @Tags Order
+// @Accept json
+// @Produce json
+// @Param return_request body modelHelper.ReturnRequest true "Return details"
+// @Success 202 {object} response.Response
+// @Failure 400 {object} response.Response
+// @Router /orders/return [post]
+func (cr *OrderHandler) ReturnRequest(c *gin.Context) {
+	var body modelHelper.ReturnRequest
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to read request body", Data: nil, Errors: err.Error()})
+		return
+	}
+	uID := c.Value("userID")
+	userID, err := strconv.Atoi(fmt.Sprintf("%v", uID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch user id", Data: nil, Errors: err.Error()})
+		return
+	}
+	order, err := cr.orderUseCase.ReturnRequest(c.Request.Context(), userID, body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to place return request", Data: nil, Errors: err.Error()})
+		return
+	}
+	c.JSON(http.StatusAccepted, response.Response{StatusCode: 202, Message: "successfully placed return request", Data: order, Errors: nil})
 }

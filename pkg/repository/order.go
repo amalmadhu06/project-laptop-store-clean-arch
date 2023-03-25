@@ -140,7 +140,7 @@ func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelH
 	}
 
 	//update carts table
-	updateCartQuery := `UPDATE carts SET total = 0 WHERE user_id = $1`
+	updateCartQuery := `UPDATE carts SET coupon_id = 0, sub_total = 0, discount = 0, total = 0 WHERE user_id = $1`
 	err = tx.Exec(updateCartQuery, userID).Error
 	if err != nil {
 		tx.Rollback()
@@ -282,13 +282,46 @@ func (c *orderDatabase) CancelOrder(ctx context.Context, userID int, orderID int
 }
 
 func (c *orderDatabase) UpdateOrder(ctx context.Context, orderInfo modelHelper.UpdateOrder) (domain.Order, error) {
+
 	var updatedOrder domain.Order
-	updateStatusQuery := `UPDATE orders SET order_status_id = $1 WHERE id = $2 RETURNING *`
-	err := c.DB.Raw(updateStatusQuery, orderInfo.OrderStatusID, orderInfo.OrderID).Scan(&updatedOrder).Error
+
+	updateStatusQuery := `UPDATE orders SET order_status_id = $1, delivery_status_id = $2, delivery_updated_at = NOW() WHERE id = $3 RETURNING *`
+	err := c.DB.Raw(updateStatusQuery, orderInfo.OrderStatusID, orderInfo.DeliveryStatusID, orderInfo.OrderID).Scan(&updatedOrder).Error
 
 	if updatedOrder.ID == 0 {
 		return domain.Order{}, fmt.Errorf("no order found")
 	}
 
 	return updatedOrder, err
+}
+
+func (c *orderDatabase) ReturnRequest(ctx context.Context, returnRequest modelHelper.ReturnRequest) (domain.Order, error) {
+	//place return request : update orders table, update returns table
+	fmt.Println("checkpoint 1")
+	tx := c.DB.Begin()
+	var orderDetails domain.Order
+	updateOrdersQuery := `	UPDATE orders SET order_status_id = 5 WHERE id = $1 RETURNING *; `
+	if err := tx.Raw(updateOrdersQuery, returnRequest.OrderID).Scan(&orderDetails).Error; err != nil {
+		fmt.Println("checkpoint 2")
+
+		tx.Rollback()
+		return domain.Order{}, err
+	}
+	fmt.Println("checkpoint 3")
+	if orderDetails.ID == 0 {
+		fmt.Println("checkpoint 4")
+
+		tx.Rollback()
+		return domain.Order{}, fmt.Errorf("no such order found")
+	}
+
+	updateReturnsQuery := `INSERT INTO returns(order_id, reason, approved) VALUES($1, $2, false);`
+	if err := tx.Exec(updateReturnsQuery, returnRequest.OrderID, returnRequest.Reason).Error; err != nil {
+		tx.Rollback()
+		fmt.Println("checkpoint 5")
+		return domain.Order{}, err
+	}
+	fmt.Println("checkpoint 6")
+	tx.Commit()
+	return orderDetails, nil
 }
