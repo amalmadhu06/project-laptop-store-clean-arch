@@ -1,7 +1,5 @@
 # Project Laptop Store Ecommerce | Go | REST | PostgresSQL | Clean Architecture
 
-# Project Title
-
 E-commerce REST API with Go & PostgresSQL. Uses Gin framework , Wire for dependency injection, Viper for handling environment variables, GORM as ORM and Swagger for API documentation.
 
 ## Technologies Used
