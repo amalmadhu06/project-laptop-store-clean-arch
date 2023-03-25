@@ -2035,6 +2035,47 @@
                 }
             }
         },
+        "/orders/return": {
+            "post": {
+                "description": "User can request for returning products withing 15 days of order delivery",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "User can request for returning products within 15 days of order delivery",
+                "operationId": "return-request",
+                "parameters": [
+                    {
+                        "description": "Return details",
+                        "name": "return_request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/modelHelper.ReturnRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/orders/{order_id}": {
             "get": {
                 "description": "This function handles requests for retrieving the details of a specific order identified by its order ID. The user must be authorized with a valid cookie to view the order details.",
@@ -2875,6 +2916,17 @@
                 }
             }
         },
+        "modelHelper.ReturnRequest": {
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "type": "integer"
+                },
+                "reason": {
+                    "type": "string"
+                }
+            }
+        },
         "modelHelper.UpdateCoupon": {
             "type": "object",
             "properties": {
@@ -2901,6 +2953,9 @@
         "modelHelper.UpdateOrder": {
             "type": "object",
             "properties": {
+                "delivery_status_id": {
+                    "type": "integer"
+                },
                 "order_id": {
                     "type": "integer"
                 },

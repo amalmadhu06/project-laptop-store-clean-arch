@@ -13,4 +13,5 @@ type OrderRepository interface {
 	ViewAllOrders(ctx context.Context, userID int) ([]domain.Order, error)
 	CancelOrder(ctx context.Context, userID int, orderID int) (domain.Order, error)
 	UpdateOrder(ctx context.Context, orderInfo modelHelper.UpdateOrder) (domain.Order, error)
+	ReturnRequest(ctx context.Context, returnRequest modelHelper.ReturnRequest) (domain.Order, error)
 }

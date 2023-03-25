@@ -90,6 +90,7 @@ func UserRoutes(
 			order.GET("/:id", orderHandler.ViewOrderByID)
 			order.GET("", orderHandler.ViewAllOrders)
 			order.PUT("/cancel/:id", orderHandler.CancelOrder)
+			order.POST("/return", orderHandler.ReturnRequest)
 		}
 
 		// Payment routes

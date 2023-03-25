@@ -12,6 +12,12 @@ type PlaceAllOrders struct {
 }
 
 type UpdateOrder struct {
-	OrderID       int `json:"order_id"`
-	OrderStatusID int `json:"order_status_id"`
+	OrderID          int `json:"order_id"`
+	OrderStatusID    int `json:"order_status_id"`
+	DeliveryStatusID int `json:"delivery_status_id"`
+}
+
+type ReturnRequest struct {
+	OrderID int    `json:"order_id"`
+	Reason  string `json:"reason"`
 }
