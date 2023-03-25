@@ -15,7 +15,7 @@ type UserRepository interface {
 	UpdateAddress(ctx context.Context, userID int, address modelHelper.AddressInput) (domain.Address, error)
 	ViewAddress(ctx context.Context, userID int) (domain.Address, error)
 
-	ListAllUsers(ctx context.Context) ([]domain.Users, error)
+	ListAllUsers(ctx context.Context, queryParams modelHelper.QueryParams) ([]domain.Users, error)
 	FindUserByID(ctx context.Context, userID int) (domain.Users, error)
 	BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, adminID int) (domain.UserInfo, error)
 	UnblockUser(ctx context.Context, userID int) (domain.UserInfo, error)

@@ -6,8 +6,6 @@ definitions:
         type: integer
       description:
         type: string
-      exclude:
-        $ref: '#/definitions/domain.ProductCategory'
       id:
         type: integer
       name:
@@ -16,8 +14,6 @@ definitions:
         type: integer
       product_image:
         type: string
-      productBrand:
-        $ref: '#/definitions/domain.ProductBrand'
     required:
     - brand_id
     - name
@@ -55,8 +51,6 @@ definitions:
         type: number
       processor:
         type: string
-      product:
-        $ref: '#/definitions/domain.Product'
       product_id:
         type: integer
       product_item_image:
@@ -434,7 +428,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin and users can all brands
       tags:
-      - Product
+      - Product Brand
     post:
       consumes:
       - application/json
@@ -464,7 +458,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin can create new brand
       tags:
-      - Product
+      - Product Brand
     put:
       consumes:
       - application/json
@@ -494,7 +488,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin can update brand details
       tags:
-      - Product
+      - Product Brand
   /admin/brands/{id}:
     delete:
       consumes:
@@ -524,7 +518,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin can delete a brand
       tags:
-      - Product
+      - Product Brand
     get:
       consumes:
       - application/json
@@ -553,7 +547,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admins and users can view a specific brand details with brand id
       tags:
-      - Product
+      - Product Brand
   /admin/categories/:
     get:
       consumes:
@@ -573,7 +567,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: View all available categories
       tags:
-      - Product
+      - Product Category
     post:
       consumes:
       - application/json
@@ -603,7 +597,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Create new product category
       tags:
-      - Product
+      - Product Category
     put:
       consumes:
       - application/json
@@ -633,7 +627,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin can update category details
       tags:
-      - Product
+      - Product Category
   /admin/categories/{id}:
     get:
       consumes:
@@ -664,7 +658,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Fetch details of a specific category using category id
       tags:
-      - Product
+      - Product Category
   /admin/coupons/:
     get:
       consumes:
@@ -684,7 +678,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admins and users can see all available coupons
       tags:
-      - Product
+      - Coupon
     post:
       consumes:
       - application/json
@@ -714,7 +708,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin can create new coupon
       tags:
-      - Product
+      - Coupon
     put:
       consumes:
       - application/json
@@ -744,7 +738,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin can update existing coupon
       tags:
-      - Product
+      - Coupon
   /admin/coupons/{id}:
     delete:
       consumes:
@@ -774,7 +768,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admin can delete existing coupon
       tags:
-      - Product
+      - Coupon
     get:
       consumes:
       - application/json
@@ -803,7 +797,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Admins and users can see coupon with coupon id
       tags:
-      - Product
+      - Coupon
   /admin/dashboard:
     get:
       consumes:
@@ -906,25 +900,6 @@ paths:
       tags:
       - Order
   /admin/product-items/:
-    get:
-      consumes:
-      - application/json
-      description: view all product items
-      operationId: view-all-product-items
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Handler function to view all product items
-      tags:
-      - Product
     post:
       consumes:
       - application/json
@@ -954,7 +929,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Creates a new product item
       tags:
-      - Product
+      - Product Item
     put:
       consumes:
       - application/json
@@ -984,7 +959,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Update a product item
       tags:
-      - Product
+      - Product Item
   /admin/product-items/{id}:
     delete:
       consumes:
@@ -1014,7 +989,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Deletes a product item from the system
       tags:
-      - Product
+      - Product Item
     get:
       consumes:
       - application/json
@@ -1043,27 +1018,8 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Retrieve a product item by ID
       tags:
-      - Product
+      - Product Item
   /admin/products/:
-    get:
-      consumes:
-      - application/json
-      description: Admins and users can ses all available products
-      operationId: view-all-products
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Admins and users can see all available products
-      tags:
-      - Product
     post:
       consumes:
       - application/json
@@ -1154,6 +1110,85 @@ paths:
       summary: Deletes a product by ID
       tags:
       - Product
+  /admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Admin can list all registered users
+      operationId: list-all-users
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items to retrieve per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search query string
+        in: query
+        name: query
+        type: string
+      - description: Filter criteria for the users
+        in: query
+        name: filter
+        type: string
+      - description: Sorting criteria for the users
+        in: query
+        name: sort_by
+        type: string
+      - description: Sorting in descending order
+        in: query
+        name: sort_desc
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can list all registered users
+      tags:
+      - Admin
+  /admin/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Admin can fetch a specific user details using user id
+      operationId: find-user-by-id
+      parameters:
+      - description: ID of the user to be fetched
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can fetch a specific user details using user id
+      tags:
+      - Admin
   /admin/users/block:
     put:
       consumes:
@@ -1217,60 +1252,6 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Admin can unblock a blocked user
-      tags:
-      - Admin
-  /admins/users:
-    get:
-      consumes:
-      - application/json
-      description: Admin can list all registered users
-      operationId: list-all-users
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Admin can list all registered users
-      tags:
-      - Admin
-  /admins/users/{id}:
-    get:
-      consumes:
-      - application/json
-      description: Admin can fetch a specific user details using user id
-      operationId: find-user-by-id
-      parameters:
-      - description: ID of the user to be fetched
-        in: path
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "422":
-          description: Unprocessable Entity
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Admin can fetch a specific user details using user id
       tags:
       - Admin
   /cart:
@@ -1714,6 +1695,92 @@ paths:
       summary: Handling successful payment
       tags:
       - Payment
+  /product-items/:
+    get:
+      consumes:
+      - application/json
+      description: view all product items for user
+      operationId: user-view-all-product-items
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items to retrieve per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search query string
+        in: query
+        name: query
+        type: string
+      - description: Filter criteria for the product items
+        in: query
+        name: filter
+        type: string
+      - description: Sorting criteria for the product items
+        in: query
+        name: sort_by
+        type: string
+      - description: Sorting in descending order
+        in: query
+        name: sort_desc
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Handler function to view all product items
+      tags:
+      - Product
+  /products/:
+    get:
+      consumes:
+      - application/json
+      description: Admins and users can ses all available products
+      operationId: user-view-all-products
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        type: integer
+      - description: Number of items to retrieve per page
+        in: query
+        name: limit
+        type: integer
+      - description: Search query string
+        in: query
+        name: query
+        type: string
+      - description: Filter criteria for the product items
+        in: query
+        name: filter
+        type: string
+      - description: Sorting criteria for the product items
+        in: query
+        name: sort_by
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admins and users can see all available products
+      tags:
+      - Product
   /profile:
     get:
       consumes:
@@ -1827,4 +1894,110 @@ paths:
       summary: Validate the OTP to user's mobile
       tags:
       - Otp
+  /wishlist/:
+    delete:
+      consumes:
+      - application/json
+      description: User can remove all product items from wishlist
+      operationId: empty-wishlist
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can remove all product items from wishlist
+      tags:
+      - Wishlist
+    get:
+      consumes:
+      - application/json
+      description: User view product items in wishlist
+      operationId: view-wishlist
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can view items in wishlist
+      tags:
+      - Wishlist
+  /wishlist/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: User can remove product item from wishlist
+      operationId: remove-from-wishlist
+      parameters:
+      - description: ID of the product item to be removed from wishlist
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can remove product item from wishlist
+      tags:
+      - Wishlist
+    post:
+      consumes:
+      - application/json
+      description: User can add product item to wishlist
+      operationId: add-to-wishlist
+      parameters:
+      - description: ID of the product item to be added to wishlist
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User can add product item to wishlist
+      tags:
+      - Wishlist
 swagger: "2.0"

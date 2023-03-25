@@ -139,8 +139,8 @@ func (c *userUseCase) UpdateAddress(ctx context.Context, addressInfo modelHelper
 	return updatedAddress, err
 }
 
-func (c *userUseCase) ListAllUsers(ctx context.Context) ([]domain.Users, error) {
-	users, err := c.userRepo.ListAllUsers(ctx)
+func (c *userUseCase) ListAllUsers(ctx context.Context, viewUserInfo modelHelper.QueryParams) ([]domain.Users, error) {
+	users, err := c.userRepo.ListAllUsers(ctx, viewUserInfo)
 	return users, err
 }
 

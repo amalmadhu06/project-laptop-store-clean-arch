@@ -81,8 +81,8 @@ func (c *productUseCase) CreateProduct(ctx context.Context, newProduct domain.Pr
 	return createdProduct, err
 }
 
-func (c *productUseCase) ViewAllProducts(ctx context.Context) ([]domain.Product, error) {
-	allProducts, err := c.productRepo.ViewAllProducts(ctx)
+func (c *productUseCase) ViewAllProducts(ctx context.Context, viewProductInfo modelHelper.QueryParams) ([]domain.Product, error) {
+	allProducts, err := c.productRepo.ViewAllProducts(ctx, viewProductInfo)
 	return allProducts, err
 }
 
@@ -111,8 +111,8 @@ func (c *productUseCase) CreateProductItem(ctx context.Context, newProductItem d
 	return createdProductItem, err
 }
 
-func (c *productUseCase) ViewAllProductItems(ctx context.Context) ([]domain.ProductItem, error) {
-	allProductItems, err := c.productRepo.ViewAllProductItems(ctx)
+func (c *productUseCase) ViewAllProductItems(ctx context.Context, viewProductItemInfo modelHelper.QueryParams) ([]domain.ProductItem, error) {
+	allProductItems, err := c.productRepo.ViewAllProductItems(ctx, viewProductItemInfo)
 	return allProductItems, err
 }
 

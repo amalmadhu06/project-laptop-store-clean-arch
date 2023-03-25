@@ -35,7 +35,7 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /signup [post]
-func (cr UserHandler) CreateUser(c *gin.Context) {
+func (cr *UserHandler) CreateUser(c *gin.Context) {
 	//cancelling the request if it is taking more than one minute to send back a response
 	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Minute)
 	defer cancel()
@@ -257,12 +257,28 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
+// @Param page query int false "Page number for pagination"
+// @Param limit query int false "Number of items to retrieve per page"
+// @Param query query string false "Search query string"
+// @Param filter query string false "Filter criteria for the users"
+// @Param sort_by query string false "Sorting criteria for the users"
+// @Param sort_desc query bool false "Sorting in descending order"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /admins/users [get]
+// @Router /admin/users [get]
 func (cr *UserHandler) ListAllUsers(c *gin.Context) {
-	users, err := cr.userUseCase.ListAllUsers(c.Request.Context())
+
+	var viewUserInfo modelHelper.QueryParams
+
+	viewUserInfo.Page, _ = strconv.Atoi(c.Query("page"))
+	viewUserInfo.Limit, _ = strconv.Atoi(c.Query("limit"))
+	viewUserInfo.Query = c.Query("query")
+	viewUserInfo.Filter = c.Query("filter")
+	viewUserInfo.SortBy = c.Query("sort_by")
+	viewUserInfo.SortDesc, _ = strconv.ParseBool(c.Query("sort_desc"))
+
+	users, err := cr.userUseCase.ListAllUsers(c.Request.Context(), viewUserInfo)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed fetch users", Errors: err.Error()})
 		return
@@ -283,7 +299,7 @@ func (cr *UserHandler) ListAllUsers(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /admins/users/{id} [get]
+// @Router /admin/users/{id} [get]
 func (cr *UserHandler) FindUserByID(c *gin.Context) {
 	paramsID := c.Param("id")
 	id, err := strconv.Atoi(paramsID)

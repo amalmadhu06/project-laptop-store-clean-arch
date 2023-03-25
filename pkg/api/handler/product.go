@@ -27,7 +27,7 @@ func NewProductHandler(usecase services.ProductUseCase) *ProductHandler {
 // @Summary Create new product category
 // @ID create-category
 // @Description Admin can create new category from admin panel
-// @Tags Product
+// @Tags Product Category
 // @Accept json
 // @Produce json
 // @Param category_name body modelHelper.NewCategory true "New category name"
@@ -56,7 +56,7 @@ func (cr *ProductHandler) CreateCategory(c *gin.Context) {
 // @Summary View all available categories
 // @ID view-all-categories
 // @Description Admin, users and unregistered users can see all the available categories
-// @Tags Product
+// @Tags Product Category
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
@@ -76,7 +76,7 @@ func (cr *ProductHandler) ViewAllCategories(c *gin.Context) {
 // @Summary Fetch details of a specific category using category id
 // @ID find-category-by-id
 // @Description Users and admins can fetch details of a specific category using id
-// @Tags Product
+// @Tags Product Category
 // @Accept json
 // @Produce json
 // @Param category_id path string true "category id"
@@ -106,7 +106,7 @@ func (cr *ProductHandler) FindCategoryByID(c *gin.Context) {
 // @Summary Admin can update category details
 // @ID update-category
 // @Description Admin can update category details
-// @Tags Product
+// @Tags Product Category
 // @Accept json
 // @Produce json
 // @Param category_details body domain.ProductCategory true "category info"
@@ -132,7 +132,7 @@ func (cr *ProductHandler) UpdateCategory(c *gin.Context) {
 // @Summary Admin can delete a category
 // @ID delete-category
 // @Description Admin can delete a category
-// @Tags Product
+// @Tags Product Category
 // @Accept json
 // @Produce json
 // @Param category_id path string true "category_id"
@@ -163,7 +163,7 @@ func (cr *ProductHandler) DeleteCategory(c *gin.Context) {
 // @Summary Admin can create new brand
 // @ID create-brand
 // @Description Admin can create new brand
-// @Tags  Product
+// @Tags  Product Brand
 // @Accept json
 // @Produce json
 // @Param new_brand_details body domain.ProductBrand true "new brand details"
@@ -189,7 +189,7 @@ func (cr *ProductHandler) CreateBrand(c *gin.Context) {
 // @Summary Admin can update brand details
 // @ID update-brand
 // @Description Admin can update brand details
-// @Tags Product
+// @Tags Product Brand
 // @Accept json
 // @Produce json
 // @Param brand_details body domain.ProductBrand true "brand details"
@@ -215,7 +215,7 @@ func (cr *ProductHandler) UpdateBrand(c *gin.Context) {
 // @Summary Admin can delete a brand
 // @ID delete-brand
 // @Description Admin can delete a brand
-// @Tags Product
+// @Tags Product Brand
 // @Accept json
 // @Produce json
 // @Param brand_id path string true "brand id"
@@ -242,7 +242,7 @@ func (cr *ProductHandler) DeleteBrand(c *gin.Context) {
 // @Summary Admin and users can all brands
 // @ID view-all-brands
 // @Description Admins and users can view all brands
-// @Tags Product
+// @Tags Product Brand
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response
@@ -262,7 +262,7 @@ func (cr *ProductHandler) ViewAllBrands(c *gin.Context) {
 // @Summary Admins and users can view a specific brand details with brand id
 // @ID view-brand-by-id
 // @Description Admins and users can view a specific brand details with brand id
-// @Tags Product
+// @Tags Product Brand
 // @Accept json
 // @Produce json
 // @Param brand_id path string true "brand id"
@@ -322,16 +322,48 @@ func (cr *ProductHandler) CreateProduct(c *gin.Context) {
 
 // ViewAllProducts
 // @Summary Admins and users can see all available products
-// @ID view-all-products
+// @ID admin-view-all-products
 // @Description Admins and users can ses all available products
 // @Tags Product
 // @Accept json
 // @Produce json
+// @Param page query int false "Page number for pagination"
+// @Param limit query int false "Number of items to retrieve per page"
+// @Param query query string false "Search query string"
+// @Param filter query string false "Filter criteria for the products"
+// @Param sort_by query string false "Sorting criteria for the products"
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /admin/products/ [get]
+
+// ViewAllProducts
+// @Summary Admins and users can see all available products
+// @ID user-view-all-products
+// @Description Admins and users can ses all available products
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number for pagination"
+// @Param limit query int false "Number of items to retrieve per page"
+// @Param query query string false "Search query string"
+// @Param filter query string false "Filter criteria for the product items"
+// @Param sort_by query string false "Sorting criteria for the product items"
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /products/ [get]
 func (cr *ProductHandler) ViewAllProducts(c *gin.Context) {
-	products, err := cr.productUseCase.ViewAllProducts(c.Request.Context())
+
+	//fetch query parameters
+	var viewProduct modelHelper.QueryParams
+
+	viewProduct.Page, _ = strconv.Atoi(c.Query("page"))
+	viewProduct.Limit, _ = strconv.Atoi(c.Query("limit"))
+	viewProduct.Query = c.Query("query")
+	viewProduct.Filter = c.Query("filter")
+	viewProduct.SortBy = c.Query("sort_by")
+	viewProduct.SortDesc, _ = strconv.ParseBool(c.Query("sort_desc"))
+
+	products, err := cr.productUseCase.ViewAllProducts(c.Request.Context(), viewProduct)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to fetch products", Data: nil, Errors: err.Error()})
 		return
@@ -429,7 +461,7 @@ func (cr *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Summary Creates a new product item
 // @ID create-product-item
 // @Description This endpoint allows an admin user to create a new product item.
-// @Tags Product
+// @Tags Product Item
 // @Accept json
 // @Produce json
 // @Param product_item body domain.ProductItem true "Product item details"
@@ -454,16 +486,48 @@ func (cr *ProductHandler) CreateProductItem(c *gin.Context) {
 
 // ViewAllProductItems
 // @Summary Handler function to view all product items
-// @ID view-all-product-items
+// @ID admin-view-all-product-items
 // @Description view all product items
-// @Tags Product
+// @Tags Product Item
 // @Accept json
 // @Produce json
+// @Param page query int false "Page number for pagination"
+// @Param limit query int false "Number of items to retrieve per page"
+// @Param query query string false "Search query string"
+// @Param filter query string false "Filter criteria for the product items"
+// @Param sort_by query string false "Sorting criteria for the product items"
 // @Success 200 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /admin/product-items/ [get]
+
+// ViewAllProductItems for user
+// @Summary Handler function to view all product items
+// @ID user-view-all-product-items
+// @Description view all product items for user
+// @Tags Product
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number for pagination"
+// @Param limit query int false "Number of items to retrieve per page"
+// @Param query query string false "Search query string"
+// @Param filter query string false "Filter criteria for the product items"
+// @Param sort_by query string false "Sorting criteria for the product items"
+// @Param sort_desc query bool false "Sorting in descending order"
+// @Success 200 {object} response.Response
+// @Failure 500 {object} response.Response
+// @Router /product-items/ [get]
 func (cr *ProductHandler) ViewAllProductItems(c *gin.Context) {
-	productItems, err := cr.productUseCase.ViewAllProductItems(c.Request.Context())
+	//fetch query parameters
+	var viewProductItem modelHelper.QueryParams
+
+	viewProductItem.Page, _ = strconv.Atoi(c.Query("page"))
+	viewProductItem.Limit, _ = strconv.Atoi(c.Query("limit"))
+	viewProductItem.Query = c.Query("query")
+	viewProductItem.Filter = c.Query("filter")
+	viewProductItem.SortBy = c.Query("sort_by")
+	viewProductItem.SortDesc, _ = strconv.ParseBool(c.Query("sort_desc"))
+
+	productItems, err := cr.productUseCase.ViewAllProductItems(c.Request.Context(), viewProductItem)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to fetch product items", Data: nil, Errors: err.Error()})
 		return
@@ -475,7 +539,7 @@ func (cr *ProductHandler) ViewAllProductItems(c *gin.Context) {
 // @Summary Retrieve a product item by ID
 // @ID find-product-item-by-id
 // @Description Retrieve a product item by its ID
-// @Tags Product
+// @Tags Product Item
 // @Accept json
 // @Produce json
 // @Param id path string true "Product item ID"
@@ -505,7 +569,7 @@ func (cr *ProductHandler) FindProductItemByID(c *gin.Context) {
 // @Summary Update a product item
 // @ID update-product-item
 // @Description Update an existing product item with new information.
-// @Tags Product
+// @Tags Product Item
 // @Accept json
 // @Produce json
 // @Param product_item body domain.ProductItem true "Product item information to update"
@@ -531,7 +595,7 @@ func (cr *ProductHandler) UpdateProductItem(c *gin.Context) {
 // @Summary Deletes a product item from the system
 // @ID delete-product-item
 // @Description Deletes a product item from the system
-// @Tags Product
+// @Tags Product Item
 // @Accept json
 // @Produce json
 // @Param product_item_id path string true "ID of the product item to be deleted"
@@ -561,7 +625,7 @@ func (cr *ProductHandler) DeleteProductItem(c *gin.Context) {
 // @Summary Admin can create new coupon
 // @ID create-coupon
 // @Description Admin can create new coupons
-// @Tags Product
+// @Tags Coupon
 // @Accept json
 // @Produce json
 // @Param new_coupon_details body modelHelper.CreateCoupon true "details of new coupon to be created"
@@ -590,7 +654,7 @@ func (cr *ProductHandler) CreateCoupon(c *gin.Context) {
 // @Summary Admin can update existing coupon
 // @ID update-coupon
 // @Description Admin can update existing coupon
-// @Tags Product
+// @Tags Coupon
 // @Accept json
 // @Produce json
 // @Param coupon_details body modelHelper.UpdateCoupon true "details of coupon to be updated"
@@ -619,7 +683,7 @@ func (cr *ProductHandler) UpdateCoupon(c *gin.Context) {
 // @Summary Admin can delete existing coupon
 // @ID delete-coupon
 // @Description Admin can delete existing coupon
-// @Tags Product
+// @Tags Coupon
 // @Accept json
 // @Produce json
 // @Param coupon_id path string true "details of coupon to be updated"
@@ -650,7 +714,7 @@ func (cr *ProductHandler) DeleteCoupon(c *gin.Context) {
 // @Summary Admins and users can see coupon with coupon id
 // @ID view-coupon-by-id
 // @Description Admins and users can see coupon with id
-// @Tags Product
+// @Tags Coupon
 // @Accept json
 // @Produce json
 // @Param coupon_id path string true "coupon_id"
@@ -678,7 +742,7 @@ func (cr *ProductHandler) ViewCouponByID(c *gin.Context) {
 // @Summary Admins and users can see all available coupons
 // @ID view-coupons
 // @Description Admins and users can see all available coupons
-// @Tags Product
+// @Tags Coupon
 // @Accept json
 // @Produce json
 // @Success 200 {object} response.Response

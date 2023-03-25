@@ -14,7 +14,7 @@ type UserUseCase interface {
 	AddAddress(ctx context.Context, newAddress modelHelper.AddressInput, cookie string) (domain.Address, error)
 	UpdateAddress(ctx context.Context, addressInfo modelHelper.AddressInput, cookie string) (domain.Address, error)
 
-	ListAllUsers(ctx context.Context) ([]domain.Users, error)
+	ListAllUsers(ctx context.Context, viewUserInfo modelHelper.QueryParams) ([]domain.Users, error)
 	FindUserByID(ctx context.Context, userID int) (domain.Users, error)
 	BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, cookie string) (domain.UserInfo, error)
 	UnblockUser(ctx context.Context, userID int) (domain.UserInfo, error)

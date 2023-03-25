@@ -7,6 +7,7 @@ import (
 	domain "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type userDatabase struct {
@@ -103,10 +104,28 @@ func (c *userDatabase) ViewAddress(ctx context.Context, userID int) (domain.Addr
 	return address, err
 }
 
-func (c *userDatabase) ListAllUsers(ctx context.Context) ([]domain.Users, error) {
+func (c *userDatabase) ListAllUsers(ctx context.Context, queryParams modelHelper.QueryParams) ([]domain.Users, error) {
+
+	findQuery := "SELECT * FROM users"
+	if queryParams.Query != "" && queryParams.Filter != "" {
+		findQuery = fmt.Sprintf("%s WHERE LOWER(%s) LIKE '%%%s%%'", findQuery, queryParams.Filter, strings.ToLower(queryParams.Query))
+	}
+	if queryParams.SortBy != "" {
+		if queryParams.SortDesc {
+			findQuery = fmt.Sprintf("%s ORDER BY %s DESC", findQuery, queryParams.SortBy)
+		} else {
+			findQuery = fmt.Sprintf("%s ORDER BY %s ASC", findQuery, queryParams.SortBy)
+		}
+	}
+	if queryParams.Limit != 0 && queryParams.Page != 0 {
+		findQuery = fmt.Sprintf("%s LIMIT %d OFFSET %d", findQuery, queryParams.Limit, (queryParams.Page-1)*queryParams.Limit)
+	}
+	if queryParams.Limit == 0 || queryParams.Page == 0 {
+		findQuery = fmt.Sprintf("%s LIMIT 10 OFFSET 0", findQuery)
+	}
 	var users []domain.Users
-	fetchAllQuery := `SELECT * FROM users;`
-	err := c.DB.Raw(fetchAllQuery).Scan(&users).Error
+
+	err := c.DB.Raw(findQuery).Scan(&users).Error
 	if len(users) == 0 {
 		return users, fmt.Errorf("no users found")
 	}

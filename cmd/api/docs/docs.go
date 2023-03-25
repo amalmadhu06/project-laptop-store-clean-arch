@@ -263,7 +263,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Brand"
                 ],
                 "summary": "Admin and users can all brands",
                 "operationId": "view-all-brands",
@@ -291,7 +291,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Brand"
                 ],
                 "summary": "Admin can update brand details",
                 "operationId": "update-brand",
@@ -336,7 +336,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Brand"
                 ],
                 "summary": "Admin can create new brand",
                 "operationId": "create-brand",
@@ -383,7 +383,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Brand"
                 ],
                 "summary": "Admins and users can view a specific brand details with brand id",
                 "operationId": "view-brand-by-id",
@@ -426,7 +426,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Brand"
                 ],
                 "summary": "Admin can delete a brand",
                 "operationId": "delete-brand",
@@ -471,7 +471,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Category"
                 ],
                 "summary": "View all available categories",
                 "operationId": "view-all-categories",
@@ -499,7 +499,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Category"
                 ],
                 "summary": "Admin can update category details",
                 "operationId": "update-category",
@@ -544,7 +544,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Category"
                 ],
                 "summary": "Create new product category",
                 "operationId": "create-category",
@@ -591,7 +591,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Category"
                 ],
                 "summary": "Fetch details of a specific category using category id",
                 "operationId": "find-category-by-id",
@@ -636,7 +636,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Coupon"
                 ],
                 "summary": "Admins and users can see all available coupons",
                 "operationId": "view-coupons",
@@ -664,7 +664,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Coupon"
                 ],
                 "summary": "Admin can update existing coupon",
                 "operationId": "update-coupon",
@@ -709,7 +709,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Coupon"
                 ],
                 "summary": "Admin can create new coupon",
                 "operationId": "create-coupon",
@@ -756,7 +756,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Coupon"
                 ],
                 "summary": "Admins and users can see coupon with coupon id",
                 "operationId": "view-coupon-by-id",
@@ -799,7 +799,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Coupon"
                 ],
                 "summary": "Admin can delete existing coupon",
                 "operationId": "delete-coupon",
@@ -986,34 +986,6 @@ const docTemplate = `{
             }
         },
         "/admin/product-items/": {
-            "get": {
-                "description": "view all product items",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Handler function to view all product items",
-                "operationId": "view-all-product-items",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            },
             "put": {
                 "description": "Update an existing product item with new information.",
                 "consumes": [
@@ -1023,7 +995,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Item"
                 ],
                 "summary": "Update a product item",
                 "operationId": "update-product-item",
@@ -1068,7 +1040,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Item"
                 ],
                 "summary": "Creates a new product item",
                 "operationId": "create-product-item",
@@ -1115,7 +1087,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Item"
                 ],
                 "summary": "Retrieve a product item by ID",
                 "operationId": "find-product-item-by-id",
@@ -1158,7 +1130,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Item"
                 ],
                 "summary": "Deletes a product item from the system",
                 "operationId": "delete-product-item",
@@ -1194,34 +1166,6 @@ const docTemplate = `{
             }
         },
         "/admin/products/": {
-            "get": {
-                "description": "Admins and users can ses all available products",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Product"
-                ],
-                "summary": "Admins and users can see all available products",
-                "operationId": "view-all-products",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            },
             "put": {
                 "description": "This endpoint allows an admin user to update a product's details.",
                 "consumes": [
@@ -1358,6 +1302,80 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/users": {
+            "get": {
+                "description": "Admin can list all registered users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin can list all registered users",
+                "operationId": "list-all-users",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items to retrieve per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search query string",
+                        "name": "query",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter criteria for the users",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sorting criteria for the users",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Sorting in descending order",
+                        "name": "sort_desc",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users/block": {
             "put": {
                 "description": "Admin can block a registered user",
@@ -1456,43 +1474,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admins/users": {
-            "get": {
-                "description": "Admin can list all registered users",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Admin can list all registered users",
-                "operationId": "list-all-users",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/admins/users/{id}": {
+        "/admin/users/{id}": {
             "get": {
                 "description": "Admin can fetch a specific user details using user id",
                 "consumes": [
@@ -2195,6 +2177,136 @@ const docTemplate = `{
                 }
             }
         },
+        "/product-items/": {
+            "get": {
+                "description": "view all product items for user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Handler function to view all product items",
+                "operationId": "user-view-all-product-items",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items to retrieve per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search query string",
+                        "name": "query",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter criteria for the product items",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sorting criteria for the product items",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Sorting in descending order",
+                        "name": "sort_desc",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/": {
+            "get": {
+                "description": "Admins and users can ses all available products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Admins and users can see all available products",
+                "operationId": "user-view-all-products",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number for pagination",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of items to retrieve per page",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search query string",
+                        "name": "query",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter criteria for the product items",
+                        "name": "filter",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sorting criteria for the product items",
+                        "name": "sort_by",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/profile": {
             "get": {
                 "description": "Users can visit their profile",
@@ -2365,6 +2477,164 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/wishlist/": {
+            "get": {
+                "description": "User view product items in wishlist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "User can view items in wishlist",
+                "operationId": "view-wishlist",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "User can remove all product items from wishlist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "User can remove all product items from wishlist",
+                "operationId": "empty-wishlist",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/wishlist/{id}": {
+            "post": {
+                "description": "User can add product item to wishlist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "User can add product item to wishlist",
+                "operationId": "add-to-wishlist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the product item to be added to wishlist",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "User can remove product item from wishlist",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Wishlist"
+                ],
+                "summary": "User can remove product item from wishlist",
+                "operationId": "remove-from-wishlist",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the product item to be removed from wishlist",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -2382,17 +2652,11 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
-                "exclude": {
-                    "$ref": "#/definitions/domain.ProductCategory"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
-                },
-                "productBrand": {
-                    "$ref": "#/definitions/domain.ProductBrand"
                 },
                 "product_category_id": {
                     "type": "integer"
@@ -2462,9 +2726,6 @@ const docTemplate = `{
                 },
                 "processor": {
                     "type": "string"
-                },
-                "product": {
-                    "$ref": "#/definitions/domain.Product"
                 },
                 "product_id": {
                     "type": "integer"

@@ -13,7 +13,9 @@ func UserRoutes(
 	cartHandler *handler.CartHandler,
 	orderHandler *handler.OrderHandler,
 	otpHandler *handler.OtpHandler,
-	paymentHandler *handler.PaymentHandler) {
+	paymentHandler *handler.PaymentHandler,
+	wishlistHandler *handler.WishlistHandler,
+) {
 
 	// User routes that don't require authentication
 	api.POST("/signup", userHandler.CreateUser)
@@ -95,6 +97,15 @@ func UserRoutes(
 		{
 			payment.GET("/razorpay/:order_id", paymentHandler.CreateRazorpayPayment)
 			payment.GET("/success", paymentHandler.PaymentSuccess)
+		}
+
+		//wishlist routes
+		wishlist := api.Group("/wishlist")
+		{
+			wishlist.GET("/", wishlistHandler.ViewWishlist)
+			wishlist.POST("/:id", wishlistHandler.AddToWishlist)
+			wishlist.DELETE("/:id", wishlistHandler.RemoveFromWishlist)
+			wishlist.DELETE("/", wishlistHandler.EmptyWishlist)
 		}
 	}
 

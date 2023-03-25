@@ -7,6 +7,7 @@ import (
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type productDatabase struct {
@@ -147,11 +148,28 @@ func (c *productDatabase) CreateProduct(ctx context.Context, newProduct domain.P
 	return createdProduct, err
 }
 
-func (c *productDatabase) ViewAllProducts(ctx context.Context) ([]domain.Product, error) {
-	var allProducts []domain.Product
+func (c *productDatabase) ViewAllProducts(ctx context.Context, queryParams modelHelper.QueryParams) ([]domain.Product, error) {
 
-	findAllQuery := `SELECT * FROM products;`
-	rows, err := c.DB.Raw(findAllQuery).Rows()
+	findQuery := "SELECT * FROM products"
+	if queryParams.Query != "" && queryParams.Filter != "" {
+		findQuery = fmt.Sprintf("%s WHERE LOWER(%s) LIKE '%%%s%%'", findQuery, queryParams.Filter, strings.ToLower(queryParams.Query))
+	}
+	if queryParams.SortBy != "" {
+		if queryParams.SortDesc {
+			findQuery = fmt.Sprintf("%s ORDER BY %s DESC", findQuery, queryParams.SortBy)
+		} else {
+			findQuery = fmt.Sprintf("%s ORDER BY %s ASC", findQuery, queryParams.SortBy)
+		}
+	}
+	if queryParams.Limit != 0 && queryParams.Page != 0 {
+		findQuery = fmt.Sprintf("%s LIMIT %d OFFSET %d", findQuery, queryParams.Limit, (queryParams.Page-1)*queryParams.Limit)
+	}
+	if queryParams.Limit == 0 || queryParams.Page == 0 {
+		findQuery = fmt.Sprintf("%s LIMIT 10 OFFSET 0", findQuery)
+	}
+
+	var allProducts []domain.Product
+	rows, err := c.DB.Raw(findQuery).Rows()
 	if err != nil {
 		return allProducts, err
 	}
@@ -211,13 +229,30 @@ func (c *productDatabase) CreateProductItem(ctx context.Context, newProductItem 
 	return createdProductItem, err
 }
 
-func (c *productDatabase) ViewAllProductItems(ctx context.Context) ([]domain.ProductItem, error) {
-	var allProductItems []domain.ProductItem
+func (c *productDatabase) ViewAllProductItems(ctx context.Context, queryParams modelHelper.QueryParams) ([]domain.ProductItem, error) {
+	// Building query based on query params received.
+	findQuery := "SELECT * FROM product_items"
+	if queryParams.Query != "" && queryParams.Filter != "" {
+		findQuery = fmt.Sprintf("%s WHERE LOWER(%s) LIKE '%%%s%%'", findQuery, queryParams.Filter, strings.ToLower(queryParams.Query))
+	}
+	if queryParams.SortBy != "" {
+		if queryParams.SortDesc {
+			findQuery = fmt.Sprintf("%s ORDER BY %s DESC", findQuery, queryParams.SortBy)
+		} else {
+			findQuery = fmt.Sprintf("%s ORDER BY %s ASC", findQuery, queryParams.SortBy)
+		}
+	}
+	if queryParams.Limit != 0 && queryParams.Page != 0 {
+		findQuery = fmt.Sprintf("%s LIMIT %d OFFSET %d", findQuery, queryParams.Limit, (queryParams.Page-1)*queryParams.Limit)
+	}
+	if queryParams.Limit == 0 || queryParams.Page == 0 {
+		findQuery = fmt.Sprintf("%s LIMIT 10 OFFSET 0", findQuery)
+	}
 
-	findAllQuery := `SELECT * FROM product_items;`
-	rows, err := c.DB.Raw(findAllQuery).Rows()
+	var allProductItems []domain.ProductItem
+	rows, err := c.DB.Raw(findQuery).Rows()
 	if err != nil {
-		return allProductItems, err
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -226,7 +261,7 @@ func (c *productDatabase) ViewAllProductItems(ctx context.Context) ([]domain.Pro
 
 		err := rows.Scan(&productItem.ID, &productItem.ProductID, &productItem.Model, &productItem.Processor, &productItem.Ram, &productItem.Storage, &productItem.DisplaySize, &productItem.GraphicsCard, &productItem.OS, &productItem.SKU, &productItem.QntyInStock, &productItem.ProductItemImage, &productItem.Price)
 		if err != nil {
-			return allProductItems, err
+			return nil, err
 		}
 		allProductItems = append(allProductItems, productItem)
 	}
