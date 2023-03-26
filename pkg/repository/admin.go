@@ -93,7 +93,7 @@ func (c *adminDatabase) AdminDashboard(ctx context.Context) (modelHelper.AdminDa
 	creditedAmountQuery := `SELECT sum(order_total) as credited_amount FROM payment_details WHERE payment_status_id = 2`
 	err = c.DB.Raw(creditedAmountQuery).Scan(&dashboardData.CreditedAmount).Error
 	if err != nil {
-		return dashboardData, err
+		//return dashboardData, err
 	}
 
 	dashboardData.PendingAmount = dashboardData.OrderValue - dashboardData.CreditedAmount
@@ -106,4 +106,30 @@ func (c *adminDatabase) AdminDashboard(ctx context.Context) (modelHelper.AdminDa
 	err = c.DB.Raw(userCountQuery).Scan(&dashboardData).Error
 
 	return dashboardData, err
+}
+
+func (c *adminDatabase) SalesReport(ctx context.Context) ([]modelHelper.SalesReport, error) {
+	var salesData []modelHelper.SalesReport
+	salesDataQuery := `	
+						SELECT
+							o.id AS order_id, 
+							o.user_id, 
+							o.order_total AS total, 	
+							c.code AS coupon_code, 
+							pm.payment_method, 
+							os.order_status, 
+							ds.status AS delivery_status,
+							o.order_date		
+						FROM orders o 
+						LEFT JOIN
+							payment_methods pm ON o.payment_method_id = pm.id 
+						LEFT JOIN
+							order_statuses os ON o.order_status_id = os.id  
+						LEFT JOIN	
+							delivery_statuses ds ON o.delivery_status_id = ds.id
+						LEFT JOIN 
+							coupons c ON o.coupon_id = c.id;`
+
+	err := c.DB.Raw(salesDataQuery).Scan(&salesData).Error
+	return salesData, err
 }

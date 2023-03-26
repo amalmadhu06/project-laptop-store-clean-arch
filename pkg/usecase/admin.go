@@ -14,11 +14,13 @@ import (
 
 type adminUseCase struct {
 	adminRepo interfaces.AdminRepository
+	orderRepo interfaces.OrderRepository
 }
 
-func NewAdminUseCase(repo interfaces.AdminRepository) services.AdminUseCase {
+func NewAdminUseCase(adminRepo interfaces.AdminRepository, orderRepo interfaces.OrderRepository) services.AdminUseCase {
 	return &adminUseCase{
-		adminRepo: repo,
+		adminRepo: adminRepo,
+		orderRepo: orderRepo,
 	}
 }
 
@@ -144,6 +146,11 @@ func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, cookie s
 func (c *adminUseCase) AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error) {
 	dashboardData, err := c.adminRepo.AdminDashboard(ctx)
 	return dashboardData, err
+}
+
+func (c *adminUseCase) SalesReport(ctx context.Context) ([]modelHelper.SalesReport, error) {
+	sales, err := c.adminRepo.SalesReport(ctx)
+	return sales, err
 }
 
 func FindAdminID(cookie string) (int, error) {

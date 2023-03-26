@@ -1119,6 +1119,30 @@ paths:
       summary: Deletes a product by ID
       tags:
       - Product
+  /admin/sales-report/:
+    get:
+      consumes:
+      - application/json
+      description: Admin can download sales report in .csv format
+      operationId: sales-report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin can download sales report
+      tags:
+      - Admin
   /admin/users:
     get:
       consumes:

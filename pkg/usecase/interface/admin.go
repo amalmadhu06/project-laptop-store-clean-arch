@@ -13,4 +13,5 @@ type AdminUseCase interface {
 	BlockAdmin(ctx context.Context, blockID int, cookie string) (domain.Admin, error)
 	UnblockAdmin(ctx context.Context, unblockID int, cookie string) (domain.Admin, error)
 	AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error)
+	SalesReport(ctx context.Context) ([]modelHelper.SalesReport, error)
 }

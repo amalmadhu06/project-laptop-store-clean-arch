@@ -1,5 +1,7 @@
 package modelHelper
 
+import "time"
+
 type NewAdminInfo struct {
 	UserName string `json:"user_name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
@@ -31,4 +33,15 @@ type AdminDashboard struct {
 	TotalUsers    int `json:"total_users,omitempty"`
 	VerifiedUsers int `json:"verified_users,omitempty"`
 	OrderedUsers  int `json:"ordered_users,omitempty"`
+}
+
+type SalesReport struct {
+	OrderID        int
+	UserID         int
+	Total          float64
+	CouponCode     string
+	PaymentMethod  string
+	OrderStatus    string
+	DeliveryStatus string
+	OrderDate      time.Time
 }
