@@ -13,4 +13,5 @@ type AdminRepository interface {
 	BlockAdmin(ctx context.Context, blockID int) (domain.Admin, error)
 	UnblockAdmin(ctx context.Context, unblockID int) (domain.Admin, error)
 	AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error)
+	SalesReport(ctx context.Context) ([]modelHelper.SalesReport, error)
 }
