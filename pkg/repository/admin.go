@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"gorm.io/gorm"
 )
 
@@ -25,7 +25,7 @@ func (c *adminDatabase) IsSuperAdmin(ctx context.Context, adminId int) (bool, er
 	return isSuperAdmin, err
 }
 
-func (c *adminDatabase) CreateAdmin(ctx context.Context, newAdminInfo modelHelper.NewAdminInfo) (domain.Admin, error) {
+func (c *adminDatabase) CreateAdmin(ctx context.Context, newAdminInfo model.NewAdminInfo) (domain.Admin, error) {
 	var newAdmin domain.Admin
 	createAdminQuery := `	INSERT INTO admins(user_name, email, password, is_super_admin, is_blocked, created_at, updated_at)
 							VALUES($1, $2, $3, false,false, NOW(), NOW()) RETURNING *;`
@@ -68,8 +68,8 @@ func (c *adminDatabase) UnblockAdmin(ctx context.Context, unblockID int) (domain
 	return unblockedAdmin, err
 }
 
-func (c *adminDatabase) AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error) {
-	var dashboardData modelHelper.AdminDashboard
+func (c *adminDatabase) AdminDashboard(ctx context.Context) (model.AdminDashboard, error) {
+	var dashboardData model.AdminDashboard
 	fetchOrdersSummaryQuery := `SELECT 
 								  COUNT(CASE WHEN order_status_id = 4 THEN id END) AS completed_orders,
 								  COUNT(CASE WHEN order_status_id = 1 THEN id END) AS pending_orders,
@@ -108,8 +108,8 @@ func (c *adminDatabase) AdminDashboard(ctx context.Context) (modelHelper.AdminDa
 	return dashboardData, err
 }
 
-func (c *adminDatabase) SalesReport(ctx context.Context) ([]modelHelper.SalesReport, error) {
-	var salesData []modelHelper.SalesReport
+func (c *adminDatabase) SalesReport(ctx context.Context) ([]model.SalesReport, error) {
+	var salesData []model.SalesReport
 	salesDataQuery := `	
 						SELECT
 							o.id AS order_id, 

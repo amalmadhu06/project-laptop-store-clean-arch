@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/golang-jwt/jwt/v4"
 	"time"
 )
@@ -42,8 +42,8 @@ func (c *cartUseCase) RemoveFromCart(ctx context.Context, cookie string, product
 	return err
 }
 
-func (c *cartUseCase) ViewCart(ctx context.Context, cookie string) (modelHelper.ViewCart, error) {
-	var cart modelHelper.ViewCart
+func (c *cartUseCase) ViewCart(ctx context.Context, cookie string) (model.ViewCart, error) {
+	var cart model.ViewCart
 	userID, err := FindUserID(cookie)
 	if err != nil {
 		return cart, err
@@ -61,37 +61,37 @@ func (c *cartUseCase) EmptyCart(ctx context.Context, cookie string) error {
 	return err
 }
 
-func (c *cartUseCase) AddCouponToCart(ctx context.Context, userID int, couponID int) (modelHelper.ViewCart, error) {
+func (c *cartUseCase) AddCouponToCart(ctx context.Context, userID int, couponID int) (model.ViewCart, error) {
 
 	//checking is coupon is already used
 	isUsed, err := c.productRepo.CouponUsed(ctx, userID, couponID)
 	if err != nil {
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
 	if isUsed {
-		return modelHelper.ViewCart{}, fmt.Errorf("user already used the coupon")
+		return model.ViewCart{}, fmt.Errorf("user already used the coupon")
 	}
 
 	//fetching coupon details
 	couponInfo, err := c.productRepo.ViewCouponByID(ctx, couponID)
 	if err != nil {
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
 	//if no coupon found
 	if couponInfo.ID == 0 {
-		return modelHelper.ViewCart{}, fmt.Errorf("invalid coupon id")
+		return model.ViewCart{}, fmt.Errorf("invalid coupon id")
 	}
 	//checking coupon validity
 	currentTime := time.Now()
 	if couponInfo.ValidTill.Before(currentTime) {
-		return modelHelper.ViewCart{}, fmt.Errorf("coupon expired")
+		return model.ViewCart{}, fmt.Errorf("coupon expired")
 	}
 
 	//	fetch cart total
 	cartInfo, err := c.cartRepo.ViewCart(ctx, userID)
 
 	if cartInfo.SubTotal < couponInfo.MinOrderValue {
-		return modelHelper.ViewCart{}, fmt.Errorf("cart total not enogh for applying the coupon")
+		return model.ViewCart{}, fmt.Errorf("cart total not enogh for applying the coupon")
 	}
 
 	//	add coupon to the cart

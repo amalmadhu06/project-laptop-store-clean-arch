@@ -1,4 +1,4 @@
-package modelHelper
+package model
 
 type PlaceOrder struct {
 	ProductItemID     int `json:"product_item_id,omitempty"`

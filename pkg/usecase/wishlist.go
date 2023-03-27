@@ -3,9 +3,9 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 )
 
 type wishlistUsecase struct {
@@ -18,21 +18,21 @@ func NewWishlistUsecase(wishlistRepo interfaces.WishlistRepository) services.Wis
 	}
 }
 
-func (c *wishlistUsecase) AddToWishlist(ctx context.Context, userID, productItemID int) (modelHelper.ViewWishlist, error) {
+func (c *wishlistUsecase) AddToWishlist(ctx context.Context, userID, productItemID int) (model.ViewWishlist, error) {
 	if err := c.wishlistRepo.AddToWishlist(ctx, userID, productItemID); err != nil {
-		return modelHelper.ViewWishlist{}, fmt.Errorf("failed to add product item to the cart : %v", err)
+		return model.ViewWishlist{}, fmt.Errorf("failed to add product item to the cart : %v", err)
 	}
 	wishlist, err := c.wishlistRepo.ViewWishlist(ctx, userID)
 	if err != nil {
-		return modelHelper.ViewWishlist{}, fmt.Errorf("failed to retrieve wishlist info : %w", err)
+		return model.ViewWishlist{}, fmt.Errorf("failed to retrieve wishlist info : %w", err)
 	}
 	return wishlist, nil
 }
 
-func (c *wishlistUsecase) ViewWishlist(ctx context.Context, userID int) (modelHelper.ViewWishlist, error) {
+func (c *wishlistUsecase) ViewWishlist(ctx context.Context, userID int) (model.ViewWishlist, error) {
 	wishlist, err := c.wishlistRepo.ViewWishlist(ctx, userID)
 	if err != nil {
-		return modelHelper.ViewWishlist{}, fmt.Errorf("failed to retrive wishlist info : %v", err)
+		return model.ViewWishlist{}, fmt.Errorf("failed to retrive wishlist info : %v", err)
 	}
 	return wishlist, nil
 

@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 )
 
 type productUseCase struct {
@@ -81,7 +81,7 @@ func (c *productUseCase) CreateProduct(ctx context.Context, newProduct domain.Pr
 	return createdProduct, err
 }
 
-func (c *productUseCase) ViewAllProducts(ctx context.Context, viewProductInfo modelHelper.QueryParams) ([]domain.Product, error) {
+func (c *productUseCase) ViewAllProducts(ctx context.Context, viewProductInfo model.QueryParams) ([]domain.Product, error) {
 	allProducts, err := c.productRepo.ViewAllProducts(ctx, viewProductInfo)
 	return allProducts, err
 }
@@ -111,7 +111,7 @@ func (c *productUseCase) CreateProductItem(ctx context.Context, newProductItem d
 	return createdProductItem, err
 }
 
-func (c *productUseCase) ViewAllProductItems(ctx context.Context, viewProductItemInfo modelHelper.QueryParams) ([]domain.ProductItem, error) {
+func (c *productUseCase) ViewAllProductItems(ctx context.Context, viewProductItemInfo model.QueryParams) ([]domain.ProductItem, error) {
 	allProductItems, err := c.productRepo.ViewAllProductItems(ctx, viewProductItemInfo)
 	return allProductItems, err
 }
@@ -136,7 +136,7 @@ func (c *productUseCase) DeleteProductItem(ctx context.Context, productItemID in
 
 // Coupon Management
 
-func (c *productUseCase) CreateCoupon(ctx context.Context, newCoupon modelHelper.CreateCoupon) (domain.Coupon, error) {
+func (c *productUseCase) CreateCoupon(ctx context.Context, newCoupon model.CreateCoupon) (domain.Coupon, error) {
 	createdCoupon, err := c.productRepo.CreateCoupon(ctx, newCoupon)
 	if err != nil {
 		return domain.Coupon{}, err
@@ -147,7 +147,7 @@ func (c *productUseCase) CreateCoupon(ctx context.Context, newCoupon modelHelper
 	return createdCoupon, nil
 }
 
-func (c *productUseCase) UpdateCoupon(ctx context.Context, couponInfo modelHelper.UpdateCoupon) (domain.Coupon, error) {
+func (c *productUseCase) UpdateCoupon(ctx context.Context, couponInfo model.UpdateCoupon) (domain.Coupon, error) {
 	updatedCoupon, err := c.productRepo.UpdateCoupon(ctx, couponInfo)
 
 	if err != nil {

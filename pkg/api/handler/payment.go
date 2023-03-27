@@ -2,9 +2,9 @@ package handler
 
 import (
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -99,7 +99,7 @@ func (cr *PaymentHandler) PaymentSuccess(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch total from request", Data: nil, Errors: err.Error()})
 	}
 
-	paymentVerifier := modelHelper.PaymentVerification{
+	paymentVerifier := model.PaymentVerification{
 		UserID:     userID,
 		OrderID:    orderID,
 		PaymentRef: paymentRef,

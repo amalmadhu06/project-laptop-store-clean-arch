@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"gorm.io/gorm"
 )
 
@@ -41,16 +41,16 @@ func (c *wishlistDatabase) AddToWishlist(ctx context.Context, userID, productIte
 	return fmt.Errorf("product alread in wishlist")
 }
 
-func (c *wishlistDatabase) ViewWishlist(ctx context.Context, userID int) (modelHelper.ViewWishlist, error) {
-	var viewWishlist modelHelper.ViewWishlist
+func (c *wishlistDatabase) ViewWishlist(ctx context.Context, userID int) (model.ViewWishlist, error) {
+	var viewWishlist model.ViewWishlist
 	var wishlist domain.Wishlist
-	var wishlistItems []modelHelper.WishlistItem
+	var wishlistItems []model.WishlistItem
 
 	tx := c.DB.Begin()
 
 	if err := tx.Raw("SELECT * FROM wishlists WHERE user_id = $1", userID).Scan(&wishlist).Error; err != nil {
 		tx.Rollback()
-		return modelHelper.ViewWishlist{}, err
+		return model.ViewWishlist{}, err
 
 	}
 	if err := tx.Raw(`
@@ -62,7 +62,7 @@ func (c *wishlistDatabase) ViewWishlist(ctx context.Context, userID int) (modelH
 							WHERE w.wishlist_id = $1;`,
 		wishlist.ID).Scan(&wishlistItems).Error; err != nil {
 		tx.Rollback()
-		return modelHelper.ViewWishlist{}, err
+		return model.ViewWishlist{}, err
 	}
 	viewWishlist.ID = int(wishlist.ID)
 	viewWishlist.UserID = wishlist.UserID

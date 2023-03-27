@@ -45,7 +45,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.AddressInput"
+                            "$ref": "#/definitions/model.AddressInput"
                         }
                     }
                 ],
@@ -90,7 +90,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.AddressInput"
+                            "$ref": "#/definitions/model.AddressInput"
                         }
                     }
                 ],
@@ -137,7 +137,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.NewAdminInfo"
+                            "$ref": "#/definitions/model.NewAdminInfo"
                         }
                     }
                 ],
@@ -555,7 +555,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.NewCategory"
+                            "$ref": "#/definitions/model.NewCategory"
                         }
                     }
                 ],
@@ -675,7 +675,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UpdateCoupon"
+                            "$ref": "#/definitions/model.UpdateCoupon"
                         }
                     }
                 ],
@@ -720,7 +720,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.CreateCoupon"
+                            "$ref": "#/definitions/model.CreateCoupon"
                         }
                     }
                 ],
@@ -885,7 +885,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.AdminLogin"
+                            "$ref": "#/definitions/model.AdminLogin"
                         }
                     }
                 ],
@@ -959,7 +959,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UpdateOrder"
+                            "$ref": "#/definitions/model.UpdateOrder"
                         }
                     }
                 ],
@@ -1433,7 +1433,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.BlockUser"
+                            "$ref": "#/definitions/model.BlockUser"
                         }
                     }
                 ],
@@ -1793,7 +1793,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UserLoginEmail"
+                            "$ref": "#/definitions/model.UserLoginEmail"
                         }
                     }
                 ],
@@ -1840,7 +1840,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UserLoginPhone"
+                            "$ref": "#/definitions/model.UserLoginPhone"
                         }
                     }
                 ],
@@ -1948,7 +1948,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.PlaceOrder"
+                            "$ref": "#/definitions/model.PlaceOrder"
                         }
                     }
                 ],
@@ -2001,7 +2001,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.PlaceAllOrders"
+                            "$ref": "#/definitions/model.PlaceAllOrders"
                         }
                     }
                 ],
@@ -2099,7 +2099,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.ReturnRequest"
+                            "$ref": "#/definitions/model.ReturnRequest"
                         }
                     }
                 ],
@@ -2435,7 +2435,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.OTPData"
+                            "$ref": "#/definitions/model.OTPData"
                         }
                     }
                 ],
@@ -2482,7 +2482,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UserDataInput"
+                            "$ref": "#/definitions/model.UserDataInput"
                         }
                     }
                 ],
@@ -2529,7 +2529,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.VerifyData"
+                            "$ref": "#/definitions/model.VerifyData"
                         }
                     }
                 ],
@@ -2824,7 +2824,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.AddressInput": {
+        "model.AddressInput": {
             "type": "object",
             "properties": {
                 "city": {
@@ -2847,7 +2847,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.AdminLogin": {
+        "model.AdminLogin": {
             "type": "object",
             "required": [
                 "email",
@@ -2862,7 +2862,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.BlockUser": {
+        "model.BlockUser": {
             "type": "object",
             "properties": {
                 "reason": {
@@ -2873,7 +2873,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.CreateCoupon": {
+        "model.CreateCoupon": {
             "type": "object",
             "properties": {
                 "code": {
@@ -2893,7 +2893,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.NewAdminInfo": {
+        "model.NewAdminInfo": {
             "type": "object",
             "required": [
                 "email",
@@ -2912,7 +2912,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.NewCategory": {
+        "model.NewCategory": {
             "type": "object",
             "properties": {
                 "category_name": {
@@ -2920,7 +2920,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.OTPData": {
+        "model.OTPData": {
             "type": "object",
             "required": [
                 "phone"
@@ -2931,7 +2931,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.PlaceAllOrders": {
+        "model.PlaceAllOrders": {
             "type": "object",
             "properties": {
                 "payment_method_id": {
@@ -2942,7 +2942,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.PlaceOrder": {
+        "model.PlaceOrder": {
             "type": "object",
             "properties": {
                 "coupon_id": {
@@ -2959,7 +2959,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.ReturnRequest": {
+        "model.ReturnRequest": {
             "type": "object",
             "properties": {
                 "order_id": {
@@ -2970,7 +2970,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.UpdateCoupon": {
+        "model.UpdateCoupon": {
             "type": "object",
             "properties": {
                 "code": {
@@ -2993,7 +2993,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.UpdateOrder": {
+        "model.UpdateOrder": {
             "type": "object",
             "properties": {
                 "delivery_status_id": {
@@ -3007,7 +3007,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.UserDataInput": {
+        "model.UserDataInput": {
             "type": "object",
             "required": [
                 "email",
@@ -3034,7 +3034,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.UserLoginEmail": {
+        "model.UserLoginEmail": {
             "type": "object",
             "required": [
                 "email",
@@ -3049,7 +3049,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.UserLoginPhone": {
+        "model.UserLoginPhone": {
             "type": "object",
             "required": [
                 "password",
@@ -3064,7 +3064,7 @@ const docTemplate = `{
                 }
             }
         },
-        "modelHelper.VerifyData": {
+        "model.VerifyData": {
             "type": "object",
             "required": [
                 "otp",
@@ -3075,7 +3075,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
-                    "$ref": "#/definitions/modelHelper.OTPData"
+                    "$ref": "#/definitions/model.OTPData"
                 }
             }
         },

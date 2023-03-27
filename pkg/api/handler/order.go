@@ -2,9 +2,9 @@ package handler
 
 import (
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -27,14 +27,14 @@ func NewOrderHandler(usecase services.OrderUseCases) *OrderHandler {
 // @Tags Order
 // @Accept json
 // @Produce json
-// @Param order_details body modelHelper.PlaceOrder true "Order Details"
+// @Param order_details body model.PlaceOrder true "Order Details"
 // @Success 201 {object} response.Response "Successfully ordered product item"
 // @Failure 400 {object} response.Response "Failed to order the product item"
 // @Failure 401 {object} response.Response "Unable to fetch authentication cookie"
 // @Failure 422 {object} response.Response "Unable to process the request"
 // @Router /orders/ [post]
 func (cr *OrderHandler) BuyProductItem(c *gin.Context) {
-	var body modelHelper.PlaceOrder
+	var body model.PlaceOrder
 	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to read request body", Data: nil, Errors: err.Error()})
 		return
@@ -67,14 +67,14 @@ func (cr *OrderHandler) BuyProductItem(c *gin.Context) {
 // @Tags Order
 // @Accept json
 // @Produce json
-// @Param order_details body modelHelper.PlaceAllOrders true "Order Details"
+// @Param order_details body model.PlaceAllOrders true "Order Details"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /orders/buy-all [post]
 func (cr *OrderHandler) BuyAll(c *gin.Context) {
-	var body modelHelper.PlaceAllOrders
+	var body model.PlaceAllOrders
 	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to read request body", Data: nil, Errors: err.Error()})
 		return
@@ -191,13 +191,13 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 // @Tags Order
 // @Accept json
 // @Produce json
-// @Param order_info body modelHelper.UpdateOrder true "Details of the order to be updated"
+// @Param order_info body model.UpdateOrder true "Details of the order to be updated"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /admin/orders [put]
 func (cr *OrderHandler) UpdateOrder(c *gin.Context) {
-	var body modelHelper.UpdateOrder
+	var body model.UpdateOrder
 	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request bod", Data: nil, Errors: err.Error()})
 		return
@@ -217,12 +217,12 @@ func (cr *OrderHandler) UpdateOrder(c *gin.Context) {
 // @Tags Order
 // @Accept json
 // @Produce json
-// @Param return_request body modelHelper.ReturnRequest true "Return details"
+// @Param return_request body model.ReturnRequest true "Return details"
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /orders/return [post]
 func (cr *OrderHandler) ReturnRequest(c *gin.Context) {
-	var body modelHelper.ReturnRequest
+	var body model.ReturnRequest
 	if err := c.Bind(&body); err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to read request body", Data: nil, Errors: err.Error()})
 		return

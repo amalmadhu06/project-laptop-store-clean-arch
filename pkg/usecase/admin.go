@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -24,7 +24,7 @@ func NewAdminUseCase(adminRepo interfaces.AdminRepository, orderRepo interfaces.
 	}
 }
 
-func (c *adminUseCase) CreateAdmin(ctx context.Context, newAdmin modelHelper.NewAdminInfo, adminID int) (domain.Admin, error) {
+func (c *adminUseCase) CreateAdmin(ctx context.Context, newAdmin model.NewAdminInfo, adminID int) (domain.Admin, error) {
 	isSuperAdmin, err := c.adminRepo.IsSuperAdmin(ctx, adminID)
 	if err != nil {
 		return domain.Admin{}, err
@@ -43,8 +43,8 @@ func (c *adminUseCase) CreateAdmin(ctx context.Context, newAdmin modelHelper.New
 	return newAdminOutput, err
 }
 
-func (c *adminUseCase) AdminLogin(ctx context.Context, input modelHelper.AdminLogin) (string, modelHelper.AdminDataOutput, error) {
-	var adminData modelHelper.AdminDataOutput
+func (c *adminUseCase) AdminLogin(ctx context.Context, input model.AdminLogin) (string, model.AdminDataOutput, error) {
+	var adminData model.AdminDataOutput
 	// 1. Find the adminData with given email
 	adminInfo, err := c.adminRepo.FindAdmin(ctx, input.Email)
 	if err != nil {
@@ -143,12 +143,12 @@ func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, cookie s
 	return unblockedAdmin, err
 }
 
-func (c *adminUseCase) AdminDashboard(ctx context.Context) (modelHelper.AdminDashboard, error) {
+func (c *adminUseCase) AdminDashboard(ctx context.Context) (model.AdminDashboard, error) {
 	dashboardData, err := c.adminRepo.AdminDashboard(ctx)
 	return dashboardData, err
 }
 
-func (c *adminUseCase) SalesReport(ctx context.Context) ([]modelHelper.SalesReport, error) {
+func (c *adminUseCase) SalesReport(ctx context.Context) ([]model.SalesReport, error) {
 	sales, err := c.adminRepo.SalesReport(ctx)
 	return sales, err
 }

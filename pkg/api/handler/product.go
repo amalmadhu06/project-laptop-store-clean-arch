@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -30,13 +30,13 @@ func NewProductHandler(usecase services.ProductUseCase) *ProductHandler {
 // @Tags Product Category
 // @Accept json
 // @Produce json
-// @Param category_name body modelHelper.NewCategory true "New category name"
+// @Param category_name body model.NewCategory true "New category name"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /admin/categories/ [post]
 func (cr *ProductHandler) CreateCategory(c *gin.Context) {
-	var category modelHelper.NewCategory
+	var category model.NewCategory
 	if err := c.Bind(&category); err != nil {
 		// Return a 422 Bad request response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
@@ -354,7 +354,7 @@ func (cr *ProductHandler) CreateProduct(c *gin.Context) {
 func (cr *ProductHandler) ViewAllProducts(c *gin.Context) {
 
 	//fetch query parameters
-	var viewProduct modelHelper.QueryParams
+	var viewProduct model.QueryParams
 
 	viewProduct.Page, _ = strconv.Atoi(c.Query("page"))
 	viewProduct.Limit, _ = strconv.Atoi(c.Query("limit"))
@@ -518,7 +518,7 @@ func (cr *ProductHandler) CreateProductItem(c *gin.Context) {
 // @Router /product-items/ [get]
 func (cr *ProductHandler) ViewAllProductItems(c *gin.Context) {
 	//fetch query parameters
-	var viewProductItem modelHelper.QueryParams
+	var viewProductItem model.QueryParams
 
 	viewProductItem.Page, _ = strconv.Atoi(c.Query("page"))
 	viewProductItem.Limit, _ = strconv.Atoi(c.Query("limit"))
@@ -628,13 +628,13 @@ func (cr *ProductHandler) DeleteProductItem(c *gin.Context) {
 // @Tags Coupon
 // @Accept json
 // @Produce json
-// @Param new_coupon_details body modelHelper.CreateCoupon true "details of new coupon to be created"
+// @Param new_coupon_details body model.CreateCoupon true "details of new coupon to be created"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /admin/coupons/ [post]
 func (cr *ProductHandler) CreateCoupon(c *gin.Context) {
-	var newCoupon modelHelper.CreateCoupon
+	var newCoupon model.CreateCoupon
 
 	if err := c.Bind(&newCoupon); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request body", Data: nil, Errors: err})
@@ -657,13 +657,13 @@ func (cr *ProductHandler) CreateCoupon(c *gin.Context) {
 // @Tags Coupon
 // @Accept json
 // @Produce json
-// @Param coupon_details body modelHelper.UpdateCoupon true "details of coupon to be updated"
+// @Param coupon_details body model.UpdateCoupon true "details of coupon to be updated"
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /admin/coupons/ [put]
 func (cr *ProductHandler) UpdateCoupon(c *gin.Context) {
-	var updateCoupon modelHelper.UpdateCoupon
+	var updateCoupon model.UpdateCoupon
 	if err := c.Bind(&updateCoupon); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request body", Data: nil, Errors: err.Error()})
 		return

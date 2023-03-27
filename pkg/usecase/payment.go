@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/razorpay/razorpay-go"
 )
 
@@ -61,7 +61,7 @@ func (cr *paymentUseCase) CreateRazorpayPayment(ctx context.Context, cookie stri
 	return order, razorpayID, err
 }
 
-func (cr *paymentUseCase) UpdatePaymentDetails(ctx context.Context, paymentVerifier modelHelper.PaymentVerification) error {
+func (cr *paymentUseCase) UpdatePaymentDetails(ctx context.Context, paymentVerifier model.PaymentVerification) error {
 	//	fetch payment details
 
 	paymentDetails, err := cr.paymentRepo.ViewPaymentDetails(ctx, paymentVerifier.OrderID)
