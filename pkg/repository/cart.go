@@ -299,7 +299,7 @@ func (c *cartDatabase) ViewCart(ctx context.Context, userID int) (modelHelper.Vi
 	finalCart.Discount = cartDetails.Discount
 	finalCart.CartTotal = finalCart.SubTotal - finalCart.Discount
 	finalCart.CartItems = allItems
-
+	fmt.Println(finalCart)
 	return finalCart, nil
 }
 
