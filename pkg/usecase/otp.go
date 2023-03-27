@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/config"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/twilio/twilio-go"
 	openapi "github.com/twilio/twilio-go/rest/verify/v2"
@@ -25,7 +25,7 @@ func NewOtpUseCase(repo interfaces.OtpRepository, cfg config.Config) services.Ot
 	}
 }
 
-func (c *otpUseCase) SendOtp(ctx context.Context, phone modelHelper.OTPData) error {
+func (c *otpUseCase) SendOtp(ctx context.Context, phone model.OTPData) error {
 
 	//check if user exists
 	isPresent, err := c.otpRepo.CheckWithMobile(ctx, phone.Phone)
@@ -46,9 +46,9 @@ func (c *otpUseCase) SendOtp(ctx context.Context, phone modelHelper.OTPData) err
 	return err
 }
 
-func (c *otpUseCase) ValidateOtp(ctx context.Context, data modelHelper.VerifyData) (*openapi.VerifyV2VerificationCheck, modelHelper.UserDataOutput, string, error) {
+func (c *otpUseCase) ValidateOtp(ctx context.Context, data model.VerifyData) (*openapi.VerifyV2VerificationCheck, model.UserDataOutput, string, error) {
 	var resp *openapi.VerifyV2VerificationCheck
-	var userData modelHelper.UserDataOutput
+	var userData model.UserDataOutput
 
 	var client *twilio.RestClient = twilio.NewRestClientWithParams(twilio.ClientParams{
 		Username: c.cfg.TWILIOACCOUNTSID,

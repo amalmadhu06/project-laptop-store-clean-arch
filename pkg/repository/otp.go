@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"gorm.io/gorm"
 )
 
@@ -36,8 +36,8 @@ func (c *otpDatabase) CheckWithMobile(ctx context.Context, phone string) (bool, 
 	return isPresent, err
 }
 
-func (c *otpDatabase) FindByPhone(ctx context.Context, phone string) (modelHelper.UserLoginVerifier, error) {
-	var userData modelHelper.UserLoginVerifier
+func (c *otpDatabase) FindByPhone(ctx context.Context, phone string) (model.UserLoginVerifier, error) {
+	var userData model.UserLoginVerifier
 	findUserQuery := `	SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified 
 						FROM users as users 
 						FULL OUTER JOIN user_infos as infos 

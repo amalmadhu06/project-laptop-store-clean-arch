@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"gorm.io/gorm"
 )
 
@@ -240,7 +240,7 @@ func (c *cartDatabase) RemoveFromCart(ctx context.Context, userID int, productIt
 	return nil
 }
 
-func (c *cartDatabase) ViewCart(ctx context.Context, userID int) (modelHelper.ViewCart, error) {
+func (c *cartDatabase) ViewCart(ctx context.Context, userID int) (model.ViewCart, error) {
 
 	tx := c.DB.Begin()
 	//find cart_id from carts table
@@ -256,10 +256,10 @@ func (c *cartDatabase) ViewCart(ctx context.Context, userID int) (modelHelper.Vi
 
 	if err != nil {
 		tx.Rollback()
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
 
-	var allItems []modelHelper.DisplayCart
+	var allItems []model.DisplayCart
 	joinQuery := `	SELECT pi.id as product_item_id, b.brand, p.name, pi.model, ci.quantity, pi.product_item_image, pi.price, (ci.quantity * pi.price) AS total
 					FROM cart_items ci 
 					JOIN product_items pi
@@ -274,25 +274,25 @@ func (c *cartDatabase) ViewCart(ctx context.Context, userID int) (modelHelper.Vi
 	rows, err := tx.Raw(joinQuery, cartDetails.ID).Rows()
 	if err != nil {
 		tx.Rollback()
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var item modelHelper.DisplayCart
+		var item model.DisplayCart
 		err := rows.Scan(&item.ProductItemID, &item.Brand, &item.Name, &item.Model, &item.Quantity, &item.ProductItemImage, &item.Price, &item.Total)
 		if err != nil {
 			tx.Rollback()
-			return modelHelper.ViewCart{}, err
+			return model.ViewCart{}, err
 		}
 		allItems = append(allItems, item)
 	}
 
 	if err := tx.Commit().Error; err != nil {
 		tx.Rollback()
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
-	var finalCart modelHelper.ViewCart
+	var finalCart model.ViewCart
 
 	finalCart.CouponID = cartDetails.CouponID
 	finalCart.SubTotal = cartDetails.SubTotal
@@ -329,16 +329,16 @@ func (c *cartDatabase) EmptyCart(ctx context.Context, userID int) error {
 	return nil
 }
 
-func (c *cartDatabase) AddCouponToCart(ctx context.Context, userID, couponID int) (modelHelper.ViewCart, error) {
+func (c *cartDatabase) AddCouponToCart(ctx context.Context, userID, couponID int) (model.ViewCart, error) {
 	//fetch coupon details
 	var couponInfo domain.Coupon
 	fetchCouponQuery := `	SELECT * FROM coupons WHERE id = $1;`
 	err := c.DB.Raw(fetchCouponQuery, couponID).Scan(&couponInfo).Error
 	if err != nil {
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
 	if couponInfo.ID == 0 {
-		return modelHelper.ViewCart{}, fmt.Errorf("no coupon found")
+		return model.ViewCart{}, fmt.Errorf("no coupon found")
 	}
 
 	//	fetch cart details
@@ -347,14 +347,14 @@ func (c *cartDatabase) AddCouponToCart(ctx context.Context, userID, couponID int
 
 	err = c.DB.Raw(fetchCartInfo, userID).Scan(&cartInfo).Error
 	if err != nil {
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
 	if cartInfo.ID == 0 {
-		return modelHelper.ViewCart{}, fmt.Errorf("cannot add coupon to empty cart")
+		return model.ViewCart{}, fmt.Errorf("cannot add coupon to empty cart")
 	}
 	//	check if cart subtotal is enough for coupon
 	if cartInfo.SubTotal < couponInfo.MinOrderValue {
-		return modelHelper.ViewCart{}, fmt.Errorf("cannot apply this coupon as cart total doesn't meet minimum required")
+		return model.ViewCart{}, fmt.Errorf("cannot apply this coupon as cart total doesn't meet minimum required")
 	}
 
 	//	calculate discount amount
@@ -369,7 +369,7 @@ func (c *cartDatabase) AddCouponToCart(ctx context.Context, userID, couponID int
 	updateCartQuery := `UPDATE carts SET coupon_id  = $1, discount = $2, total = $3 WHERE user_id = $4`
 	err = c.DB.Exec(updateCartQuery, couponID, discount, total, userID).Error
 	if err != nil {
-		return modelHelper.ViewCart{}, err
+		return model.ViewCart{}, err
 	}
 
 	cart, err := c.ViewCart(ctx, userID)

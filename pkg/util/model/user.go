@@ -1,4 +1,4 @@
-package modelHelper
+package model
 
 import "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 

@@ -38,7 +38,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.AddressInput"
+                            "$ref": "#/definitions/model.AddressInput"
                         }
                     }
                 ],
@@ -83,7 +83,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.AddressInput"
+                            "$ref": "#/definitions/model.AddressInput"
                         }
                     }
                 ],
@@ -130,7 +130,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.NewAdminInfo"
+                            "$ref": "#/definitions/model.NewAdminInfo"
                         }
                     }
                 ],
@@ -548,7 +548,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.NewCategory"
+                            "$ref": "#/definitions/model.NewCategory"
                         }
                     }
                 ],
@@ -668,7 +668,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UpdateCoupon"
+                            "$ref": "#/definitions/model.UpdateCoupon"
                         }
                     }
                 ],
@@ -713,7 +713,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.CreateCoupon"
+                            "$ref": "#/definitions/model.CreateCoupon"
                         }
                     }
                 ],
@@ -878,7 +878,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.AdminLogin"
+                            "$ref": "#/definitions/model.AdminLogin"
                         }
                     }
                 ],
@@ -952,7 +952,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UpdateOrder"
+                            "$ref": "#/definitions/model.UpdateOrder"
                         }
                     }
                 ],
@@ -1426,7 +1426,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.BlockUser"
+                            "$ref": "#/definitions/model.BlockUser"
                         }
                     }
                 ],
@@ -1786,7 +1786,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UserLoginEmail"
+                            "$ref": "#/definitions/model.UserLoginEmail"
                         }
                     }
                 ],
@@ -1833,7 +1833,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UserLoginPhone"
+                            "$ref": "#/definitions/model.UserLoginPhone"
                         }
                     }
                 ],
@@ -1941,7 +1941,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.PlaceOrder"
+                            "$ref": "#/definitions/model.PlaceOrder"
                         }
                     }
                 ],
@@ -1994,7 +1994,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.PlaceAllOrders"
+                            "$ref": "#/definitions/model.PlaceAllOrders"
                         }
                     }
                 ],
@@ -2092,7 +2092,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.ReturnRequest"
+                            "$ref": "#/definitions/model.ReturnRequest"
                         }
                     }
                 ],
@@ -2428,7 +2428,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.OTPData"
+                            "$ref": "#/definitions/model.OTPData"
                         }
                     }
                 ],
@@ -2475,7 +2475,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.UserDataInput"
+                            "$ref": "#/definitions/model.UserDataInput"
                         }
                     }
                 ],
@@ -2522,7 +2522,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/modelHelper.VerifyData"
+                            "$ref": "#/definitions/model.VerifyData"
                         }
                     }
                 ],
@@ -2817,7 +2817,7 @@
                 }
             }
         },
-        "modelHelper.AddressInput": {
+        "model.AddressInput": {
             "type": "object",
             "properties": {
                 "city": {
@@ -2840,7 +2840,7 @@
                 }
             }
         },
-        "modelHelper.AdminLogin": {
+        "model.AdminLogin": {
             "type": "object",
             "required": [
                 "email",
@@ -2855,7 +2855,7 @@
                 }
             }
         },
-        "modelHelper.BlockUser": {
+        "model.BlockUser": {
             "type": "object",
             "properties": {
                 "reason": {
@@ -2866,7 +2866,7 @@
                 }
             }
         },
-        "modelHelper.CreateCoupon": {
+        "model.CreateCoupon": {
             "type": "object",
             "properties": {
                 "code": {
@@ -2886,7 +2886,7 @@
                 }
             }
         },
-        "modelHelper.NewAdminInfo": {
+        "model.NewAdminInfo": {
             "type": "object",
             "required": [
                 "email",
@@ -2905,7 +2905,7 @@
                 }
             }
         },
-        "modelHelper.NewCategory": {
+        "model.NewCategory": {
             "type": "object",
             "properties": {
                 "category_name": {
@@ -2913,7 +2913,7 @@
                 }
             }
         },
-        "modelHelper.OTPData": {
+        "model.OTPData": {
             "type": "object",
             "required": [
                 "phone"
@@ -2924,7 +2924,7 @@
                 }
             }
         },
-        "modelHelper.PlaceAllOrders": {
+        "model.PlaceAllOrders": {
             "type": "object",
             "properties": {
                 "payment_method_id": {
@@ -2935,7 +2935,7 @@
                 }
             }
         },
-        "modelHelper.PlaceOrder": {
+        "model.PlaceOrder": {
             "type": "object",
             "properties": {
                 "coupon_id": {
@@ -2952,7 +2952,7 @@
                 }
             }
         },
-        "modelHelper.ReturnRequest": {
+        "model.ReturnRequest": {
             "type": "object",
             "properties": {
                 "order_id": {
@@ -2963,7 +2963,7 @@
                 }
             }
         },
-        "modelHelper.UpdateCoupon": {
+        "model.UpdateCoupon": {
             "type": "object",
             "properties": {
                 "code": {
@@ -2986,7 +2986,7 @@
                 }
             }
         },
-        "modelHelper.UpdateOrder": {
+        "model.UpdateOrder": {
             "type": "object",
             "properties": {
                 "delivery_status_id": {
@@ -3000,7 +3000,7 @@
                 }
             }
         },
-        "modelHelper.UserDataInput": {
+        "model.UserDataInput": {
             "type": "object",
             "required": [
                 "email",
@@ -3027,7 +3027,7 @@
                 }
             }
         },
-        "modelHelper.UserLoginEmail": {
+        "model.UserLoginEmail": {
             "type": "object",
             "required": [
                 "email",
@@ -3042,7 +3042,7 @@
                 }
             }
         },
-        "modelHelper.UserLoginPhone": {
+        "model.UserLoginPhone": {
             "type": "object",
             "required": [
                 "password",
@@ -3057,7 +3057,7 @@
                 }
             }
         },
-        "modelHelper.VerifyData": {
+        "model.VerifyData": {
             "type": "object",
             "required": [
                 "otp",
@@ -3068,7 +3068,7 @@
                     "type": "string"
                 },
                 "phone": {
-                    "$ref": "#/definitions/modelHelper.OTPData"
+                    "$ref": "#/definitions/model.OTPData"
                 }
             }
         },

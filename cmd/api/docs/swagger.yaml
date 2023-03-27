@@ -75,7 +75,7 @@ definitions:
     - sku
     - storage
     type: object
-  modelHelper.AddressInput:
+  model.AddressInput:
     properties:
       city:
         type: string
@@ -90,7 +90,7 @@ definitions:
       street:
         type: string
     type: object
-  modelHelper.AdminLogin:
+  model.AdminLogin:
     properties:
       email:
         type: string
@@ -100,14 +100,14 @@ definitions:
     - email
     - password
     type: object
-  modelHelper.BlockUser:
+  model.BlockUser:
     properties:
       reason:
         type: string
       user_id:
         type: integer
     type: object
-  modelHelper.CreateCoupon:
+  model.CreateCoupon:
     properties:
       code:
         type: string
@@ -120,7 +120,7 @@ definitions:
       valid_till:
         type: string
     type: object
-  modelHelper.NewAdminInfo:
+  model.NewAdminInfo:
     properties:
       email:
         type: string
@@ -133,26 +133,26 @@ definitions:
     - password
     - user_name
     type: object
-  modelHelper.NewCategory:
+  model.NewCategory:
     properties:
       category_name:
         type: string
     type: object
-  modelHelper.OTPData:
+  model.OTPData:
     properties:
       phone:
         type: string
     required:
     - phone
     type: object
-  modelHelper.PlaceAllOrders:
+  model.PlaceAllOrders:
     properties:
       payment_method_id:
         type: integer
       shipping_address_id:
         type: integer
     type: object
-  modelHelper.PlaceOrder:
+  model.PlaceOrder:
     properties:
       coupon_id:
         type: integer
@@ -163,14 +163,14 @@ definitions:
       shipping_address_id:
         type: integer
     type: object
-  modelHelper.ReturnRequest:
+  model.ReturnRequest:
     properties:
       order_id:
         type: integer
       reason:
         type: string
     type: object
-  modelHelper.UpdateCoupon:
+  model.UpdateCoupon:
     properties:
       code:
         type: string
@@ -185,7 +185,7 @@ definitions:
       valid_till:
         type: string
     type: object
-  modelHelper.UpdateOrder:
+  model.UpdateOrder:
     properties:
       delivery_status_id:
         type: integer
@@ -194,7 +194,7 @@ definitions:
       order_status_id:
         type: integer
     type: object
-  modelHelper.UserDataInput:
+  model.UserDataInput:
     properties:
       email:
         type: string
@@ -213,7 +213,7 @@ definitions:
     - password
     - phone
     type: object
-  modelHelper.UserLoginEmail:
+  model.UserLoginEmail:
     properties:
       email:
         type: string
@@ -223,7 +223,7 @@ definitions:
     - email
     - password
     type: object
-  modelHelper.UserLoginPhone:
+  model.UserLoginPhone:
     properties:
       password:
         type: string
@@ -233,12 +233,12 @@ definitions:
     - password
     - phone
     type: object
-  modelHelper.VerifyData:
+  model.VerifyData:
     properties:
       otp:
         type: string
       phone:
-        $ref: '#/definitions/modelHelper.OTPData'
+        $ref: '#/definitions/model.OTPData'
     required:
     - otp
     - phone
@@ -278,7 +278,7 @@ paths:
         name: user_address
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.AddressInput'
+          $ref: '#/definitions/model.AddressInput'
       produces:
       - application/json
       responses:
@@ -308,7 +308,7 @@ paths:
         name: user_address
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.AddressInput'
+          $ref: '#/definitions/model.AddressInput'
       produces:
       - application/json
       responses:
@@ -339,7 +339,7 @@ paths:
         name: admin_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.NewAdminInfo'
+          $ref: '#/definitions/model.NewAdminInfo'
       produces:
       - application/json
       responses:
@@ -588,7 +588,7 @@ paths:
         name: category_name
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.NewCategory'
+          $ref: '#/definitions/model.NewCategory'
       produces:
       - application/json
       responses:
@@ -699,7 +699,7 @@ paths:
         name: new_coupon_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.CreateCoupon'
+          $ref: '#/definitions/model.CreateCoupon'
       produces:
       - application/json
       responses:
@@ -729,7 +729,7 @@ paths:
         name: coupon_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.UpdateCoupon'
+          $ref: '#/definitions/model.UpdateCoupon'
       produces:
       - application/json
       responses:
@@ -840,7 +840,7 @@ paths:
         name: admin_credentials
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.AdminLogin'
+          $ref: '#/definitions/model.AdminLogin'
       produces:
       - application/json
       responses:
@@ -889,7 +889,7 @@ paths:
         name: order_info
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.UpdateOrder'
+          $ref: '#/definitions/model.UpdateOrder'
       produces:
       - application/json
       responses:
@@ -1234,7 +1234,7 @@ paths:
         name: user_id
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.BlockUser'
+          $ref: '#/definitions/model.BlockUser'
       produces:
       - application/json
       responses:
@@ -1444,7 +1444,7 @@ paths:
         name: user_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.UserLoginEmail'
+          $ref: '#/definitions/model.UserLoginEmail'
       produces:
       - application/json
       responses:
@@ -1475,7 +1475,7 @@ paths:
         name: user_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.UserLoginPhone'
+          $ref: '#/definitions/model.UserLoginPhone'
       produces:
       - application/json
       responses:
@@ -1547,7 +1547,7 @@ paths:
         name: order_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.PlaceOrder'
+          $ref: '#/definitions/model.PlaceOrder'
       produces:
       - application/json
       responses:
@@ -1618,7 +1618,7 @@ paths:
         name: order_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.PlaceAllOrders'
+          $ref: '#/definitions/model.PlaceAllOrders'
       produces:
       - application/json
       responses:
@@ -1684,7 +1684,7 @@ paths:
         name: return_request
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.ReturnRequest'
+          $ref: '#/definitions/model.ReturnRequest'
       produces:
       - application/json
       responses:
@@ -1874,7 +1874,7 @@ paths:
         name: user_mobile
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.OTPData'
+          $ref: '#/definitions/model.OTPData'
       produces:
       - application/json
       responses:
@@ -1905,7 +1905,7 @@ paths:
         name: user_details
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.UserDataInput'
+          $ref: '#/definitions/model.UserDataInput'
       produces:
       - application/json
       responses:
@@ -1936,7 +1936,7 @@ paths:
         name: otp
         required: true
         schema:
-          $ref: '#/definitions/modelHelper.VerifyData'
+          $ref: '#/definitions/model.VerifyData'
       produces:
       - application/json
       responses:

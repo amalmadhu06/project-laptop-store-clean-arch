@@ -1,4 +1,4 @@
-package modelHelper
+package model
 
 type OTPData struct {
 	Phone string `json:"phone" validate:"required,phone"`

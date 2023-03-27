@@ -1,4 +1,4 @@
-package modelHelper
+package model
 
 type PaymentVerification struct {
 	UserID     int
