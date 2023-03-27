@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +17,7 @@ func NewOrderRepository(DB *gorm.DB) interfaces.OrderRepository {
 	return &orderDatabase{DB}
 }
 
-func (c *orderDatabase) BuyProductItem(ctx context.Context, userID int, orderInfo modelHelper.PlaceOrder) (domain.Order, error) {
+func (c *orderDatabase) BuyProductItem(ctx context.Context, userID int, orderInfo model.PlaceOrder) (domain.Order, error) {
 
 	tx := c.DB.Begin()
 	// finding product price and qnty
@@ -104,7 +104,7 @@ func (c *orderDatabase) BuyProductItem(ctx context.Context, userID int, orderInf
 	return orderDetails, nil
 }
 
-func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo modelHelper.PlaceAllOrders) (domain.Order, error) {
+func (c *orderDatabase) BuyAll(ctx context.Context, userID int, orderInfo model.PlaceAllOrders) (domain.Order, error) {
 	tx := c.DB.Begin()
 	var cartDetails struct {
 		ID    int
@@ -281,7 +281,7 @@ func (c *orderDatabase) CancelOrder(ctx context.Context, userID int, orderID int
 	return domain.Order{}, fmt.Errorf("order processed, cannot cancel")
 }
 
-func (c *orderDatabase) UpdateOrder(ctx context.Context, orderInfo modelHelper.UpdateOrder) (domain.Order, error) {
+func (c *orderDatabase) UpdateOrder(ctx context.Context, orderInfo model.UpdateOrder) (domain.Order, error) {
 
 	var updatedOrder domain.Order
 
@@ -295,7 +295,7 @@ func (c *orderDatabase) UpdateOrder(ctx context.Context, orderInfo modelHelper.U
 	return updatedOrder, err
 }
 
-func (c *orderDatabase) ReturnRequest(ctx context.Context, returnRequest modelHelper.ReturnRequest) (domain.Order, error) {
+func (c *orderDatabase) ReturnRequest(ctx context.Context, returnRequest model.ReturnRequest) (domain.Order, error) {
 	//place return request : update orders table, update returns table
 	fmt.Println("checkpoint 1")
 	tx := c.DB.Begin()

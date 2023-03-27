@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	domain "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"gorm.io/gorm"
 	"strings"
 )
@@ -18,8 +18,8 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 	return &userDatabase{DB}
 }
 
-func (c *userDatabase) CreateUser(ctx context.Context, user modelHelper.UserDataInput) (modelHelper.UserDataOutput, error) {
-	var userData modelHelper.UserDataOutput
+func (c *userDatabase) CreateUser(ctx context.Context, user model.UserDataInput) (model.UserDataOutput, error) {
+	var userData model.UserDataOutput
 	//query for creating a new entry in users table
 	createUserQuery := `INSERT INTO users (f_name,l_name,email,phone,password, created_at)	
 						VALUES($1,$2,$3,$4,$5, NOW()) 
@@ -36,8 +36,8 @@ func (c *userDatabase) CreateUser(ctx context.Context, user modelHelper.UserData
 	return userData, err
 }
 
-func (c *userDatabase) FindByEmail(ctx context.Context, email string) (modelHelper.UserLoginVerifier, error) {
-	var userData modelHelper.UserLoginVerifier
+func (c *userDatabase) FindByEmail(ctx context.Context, email string) (model.UserLoginVerifier, error) {
+	var userData model.UserLoginVerifier
 	findUserQuery := `	SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified 
 						FROM users as users 
 						FULL OUTER JOIN 
@@ -49,8 +49,8 @@ func (c *userDatabase) FindByEmail(ctx context.Context, email string) (modelHelp
 	return userData, err
 }
 
-func (c *userDatabase) FindByPhone(ctx context.Context, phone string) (modelHelper.UserLoginVerifier, error) {
-	var userData modelHelper.UserLoginVerifier
+func (c *userDatabase) FindByPhone(ctx context.Context, phone string) (model.UserLoginVerifier, error) {
+	var userData model.UserLoginVerifier
 	findUserQuery := `SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified 
 					  FROM users as users 
 					  FULL OUTER JOIN user_infos as infos 
@@ -61,7 +61,7 @@ func (c *userDatabase) FindByPhone(ctx context.Context, phone string) (modelHelp
 	return userData, err
 }
 
-func (c *userDatabase) AddAddress(ctx context.Context, userID int, newAddress modelHelper.AddressInput) (domain.Address, error) {
+func (c *userDatabase) AddAddress(ctx context.Context, userID int, newAddress model.AddressInput) (domain.Address, error) {
 	var existingAddress, addedAddress domain.Address
 	findAddressQuery := `SELECT * FROM addresses WHERE user_id = $1`
 	err := c.DB.Raw(findAddressQuery, userID).Scan(&existingAddress).Error
@@ -86,7 +86,7 @@ func (c *userDatabase) AddAddress(ctx context.Context, userID int, newAddress mo
 	}
 }
 
-func (c *userDatabase) UpdateAddress(ctx context.Context, userID int, address modelHelper.AddressInput) (domain.Address, error) {
+func (c *userDatabase) UpdateAddress(ctx context.Context, userID int, address model.AddressInput) (domain.Address, error) {
 	var updatedAddress domain.Address
 	updateQuery := `UPDATE addresses SET house_number = $1, street = $2, city = $3, district = $4, pincode = $5, landmark = $6 WHERE user_id = $7 RETURNING *`
 	err := c.DB.Raw(updateQuery, address.HouseNumber, address.Street, address.City, address.District, address.Pincode, address.Landmark, userID).Scan(&updatedAddress).Error
@@ -104,7 +104,7 @@ func (c *userDatabase) ViewAddress(ctx context.Context, userID int) (domain.Addr
 	return address, err
 }
 
-func (c *userDatabase) ListAllUsers(ctx context.Context, queryParams modelHelper.QueryParams) ([]domain.Users, error) {
+func (c *userDatabase) ListAllUsers(ctx context.Context, queryParams model.QueryParams) ([]domain.Users, error) {
 
 	findQuery := "SELECT * FROM users"
 	if queryParams.Query != "" && queryParams.Filter != "" {
@@ -142,7 +142,7 @@ func (c *userDatabase) FindUserByID(ctx context.Context, userID int) (domain.Use
 	return user, err
 }
 
-func (c *userDatabase) BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, adminID int) (domain.UserInfo, error) {
+func (c *userDatabase) BlockUser(ctx context.Context, blockInfo model.BlockUser, adminID int) (domain.UserInfo, error) {
 	var userInfo domain.UserInfo
 	blockQuery := `UPDATE user_infos SET is_blocked = 'true', blocked_at = NOW(), blocked_by = $1, reason_for_blocking = $2 WHERE users_id = $3 RETURNING *;`
 	err := c.DB.Raw(blockQuery, adminID, blockInfo.Reason, blockInfo.UserID).Scan(&userInfo).Error

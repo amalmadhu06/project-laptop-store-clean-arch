@@ -4,9 +4,9 @@ import (
 	//"context"
 	// "net/http"
 
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -31,14 +31,14 @@ func NewOtpHandler(otpUsecase services.OtpUseCase) *OtpHandler {
 // @Tags Otp
 // @Accept json
 // @Produce json
-// @Param user_mobile body modelHelper.OTPData true "User mobile number"
+// @Param user_mobile body model.OTPData true "User mobile number"
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /send-otp [post]
 func (cr *OtpHandler) SendOtp(c *gin.Context) {
 	//declare a variable to receive data from request
-	var phone modelHelper.OTPData
+	var phone model.OTPData
 	if err := c.Bind(&phone); err != nil {
 		//is request body is malformed, sent back 422 status code
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
@@ -77,14 +77,14 @@ func (cr *OtpHandler) SendOtp(c *gin.Context) {
 // @Tags Otp
 // @Accept json
 // @Produce json
-// @Param otp body modelHelper.VerifyData true "OTP sent to user's mobile number"
+// @Param otp body model.VerifyData true "OTP sent to user's mobile number"
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /verify-otp [post]
 func (cr *OtpHandler) ValidateOtp(c *gin.Context) {
 	//declare a variable to receive request data
-	var otpDetails modelHelper.VerifyData
+	var otpDetails model.VerifyData
 	//receiving request data
 	if err := c.Bind(&otpDetails); err != nil {
 		//if request body is malformed, send back 422 status code

@@ -1,4 +1,4 @@
-package modelHelper
+package model
 
 type ViewWishlist struct {
 	ID     int

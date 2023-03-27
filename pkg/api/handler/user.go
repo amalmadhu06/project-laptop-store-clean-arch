@@ -3,9 +3,9 @@ package handler
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
 	"net/http"
 	"strconv"
 	"time"
@@ -30,7 +30,7 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user_details body modelHelper.UserDataInput true "User details"
+// @Param user_details body model.UserDataInput true "User details"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
@@ -40,7 +40,7 @@ func (cr *UserHandler) CreateUser(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Minute)
 	defer cancel()
 	// 1. receive data from request body
-	var body modelHelper.UserDataInput
+	var body model.UserDataInput
 	if err := c.Bind(&body); err != nil {
 		// Return a 422 Bad request response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
@@ -79,14 +79,14 @@ func (cr *UserHandler) CreateUser(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user_details body modelHelper.UserLoginEmail true "User details"
+// @Param user_details body model.UserLoginEmail true "User details"
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /login/email [post]
 func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 	//receive data from request body
-	var body modelHelper.UserLoginEmail
+	var body model.UserLoginEmail
 	if err := c.Bind(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
@@ -127,14 +127,14 @@ func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user_details body modelHelper.UserLoginPhone true "User details"
+// @Param user_details body model.UserLoginPhone true "User details"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /login/phone [post]
 func (cr *UserHandler) LoginWithPhone(c *gin.Context) {
 	// receive data from request body
-	var body modelHelper.UserLoginPhone
+	var body model.UserLoginPhone
 	if err := c.Bind(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
@@ -194,14 +194,14 @@ func (cr *UserHandler) UserLogout(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user_address body modelHelper.AddressInput true "User address"
+// @Param user_address body model.AddressInput true "User address"
 // @Success 201 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Router /addresses/ [post]
 func (cr *UserHandler) AddAddress(c *gin.Context) {
 	// receive data from request body
-	var body modelHelper.AddressInput
+	var body model.AddressInput
 	if err := c.Bind(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
@@ -226,13 +226,13 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 // @Tags Users
 // @Accept json
 // @Produce json
-// @Param user_address body modelHelper.AddressInput true "User address"
+// @Param user_address body model.AddressInput true "User address"
 // @Success 200 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /addresses/ [put]
 func (cr *UserHandler) UpdateAddress(c *gin.Context) {
-	var body modelHelper.AddressInput
+	var body model.AddressInput
 	if err := c.Bind(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
@@ -269,7 +269,7 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 // @Router /admin/users [get]
 func (cr *UserHandler) ListAllUsers(c *gin.Context) {
 
-	var viewUserInfo modelHelper.QueryParams
+	var viewUserInfo model.QueryParams
 
 	viewUserInfo.Page, _ = strconv.Atoi(c.Query("page"))
 	viewUserInfo.Limit, _ = strconv.Atoi(c.Query("limit"))
@@ -325,14 +325,14 @@ func (cr *UserHandler) FindUserByID(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param user_id body modelHelper.BlockUser true "ID of the user to be blocked"
+// @Param user_id body model.BlockUser true "ID of the user to be blocked"
 // @Success 200 {object} response.Response
 // @Failure 401 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Failure 500 {object} response.Response
 // @Router /admin/users/block [put]
 func (cr *UserHandler) BlockUser(c *gin.Context) {
-	var blockUser modelHelper.BlockUser
+	var blockUser model.BlockUser
 	if err := c.Bind(&blockUser); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request body", Data: nil, Errors: err.Error()})
 		return

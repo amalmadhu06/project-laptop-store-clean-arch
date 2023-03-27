@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -24,11 +24,11 @@ func NewUserUseCase(userRepo interfaces.UserRepository, orderRepo interfaces.Ord
 	}
 }
 
-func (c *userUseCase) CreateUser(ctx context.Context, input modelHelper.UserDataInput) (modelHelper.UserDataOutput, error) {
+func (c *userUseCase) CreateUser(ctx context.Context, input model.UserDataInput) (model.UserDataOutput, error) {
 	//Hashing user password
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), 10)
 	if err != nil {
-		return modelHelper.UserDataOutput{}, err
+		return model.UserDataOutput{}, err
 	}
 	input.Password = string(hash)
 	userData, err := c.userRepo.CreateUser(ctx, input)
@@ -36,9 +36,9 @@ func (c *userUseCase) CreateUser(ctx context.Context, input modelHelper.UserData
 	return userData, err
 }
 
-func (c *userUseCase) LoginWithEmail(ctx context.Context, input modelHelper.UserLoginEmail) (string, modelHelper.UserDataOutput, error) {
+func (c *userUseCase) LoginWithEmail(ctx context.Context, input model.UserLoginEmail) (string, model.UserDataOutput, error) {
 
-	var userData modelHelper.UserDataOutput
+	var userData model.UserDataOutput
 
 	// 1. Find the userData with given email
 	user, err := c.userRepo.FindByEmail(ctx, input.Email)
@@ -78,9 +78,9 @@ func (c *userUseCase) LoginWithEmail(ctx context.Context, input modelHelper.User
 	return ss, userData, err
 }
 
-func (c *userUseCase) LoginWithPhone(ctx context.Context, input modelHelper.UserLoginPhone) (string, modelHelper.UserDataOutput, error) {
+func (c *userUseCase) LoginWithPhone(ctx context.Context, input model.UserLoginPhone) (string, model.UserDataOutput, error) {
 
-	var userData modelHelper.UserDataOutput
+	var userData model.UserDataOutput
 
 	// 1. Find the userData with given email
 	user, err := c.userRepo.FindByPhone(ctx, input.Phone)
@@ -120,7 +120,7 @@ func (c *userUseCase) LoginWithPhone(ctx context.Context, input modelHelper.User
 	return ss, userData, err
 }
 
-func (c *userUseCase) AddAddress(ctx context.Context, newAddress modelHelper.AddressInput, cookie string) (domain.Address, error) {
+func (c *userUseCase) AddAddress(ctx context.Context, newAddress model.AddressInput, cookie string) (domain.Address, error) {
 
 	userID, err := FindUserID(cookie)
 	if err != nil {
@@ -130,7 +130,7 @@ func (c *userUseCase) AddAddress(ctx context.Context, newAddress modelHelper.Add
 	return address, err
 }
 
-func (c *userUseCase) UpdateAddress(ctx context.Context, addressInfo modelHelper.AddressInput, cookie string) (domain.Address, error) {
+func (c *userUseCase) UpdateAddress(ctx context.Context, addressInfo model.AddressInput, cookie string) (domain.Address, error) {
 	userID, err := FindUserID(cookie)
 	if err != nil {
 		return domain.Address{}, err
@@ -139,7 +139,7 @@ func (c *userUseCase) UpdateAddress(ctx context.Context, addressInfo modelHelper
 	return updatedAddress, err
 }
 
-func (c *userUseCase) ListAllUsers(ctx context.Context, viewUserInfo modelHelper.QueryParams) ([]domain.Users, error) {
+func (c *userUseCase) ListAllUsers(ctx context.Context, viewUserInfo model.QueryParams) ([]domain.Users, error) {
 	users, err := c.userRepo.ListAllUsers(ctx, viewUserInfo)
 	return users, err
 }
@@ -150,7 +150,7 @@ func (c *userUseCase) FindUserByID(ctx context.Context, userID int) (domain.User
 
 }
 
-func (c *userUseCase) BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, cookie string) (domain.UserInfo, error) {
+func (c *userUseCase) BlockUser(ctx context.Context, blockInfo model.BlockUser, cookie string) (domain.UserInfo, error) {
 	adminID, err := FindAdminID(cookie)
 	if err != nil {
 		return domain.UserInfo{}, err
@@ -164,14 +164,14 @@ func (c *userUseCase) UnblockUser(ctx context.Context, userID int) (domain.UserI
 	return unblockedUser, err
 }
 
-func (c *userUseCase) UserProfile(ctx context.Context, userID int) (modelHelper.UserProfile, error) {
+func (c *userUseCase) UserProfile(ctx context.Context, userID int) (model.UserProfile, error) {
 
 	// fetch user details from users_table
 	userInfoRetrieved, err := c.userRepo.FindUserByID(ctx, userID)
 	if err != nil {
-		return modelHelper.UserProfile{}, err
+		return model.UserProfile{}, err
 	}
-	userInfo := modelHelper.UserDataOutput{
+	userInfo := model.UserDataOutput{
 		ID:    userInfoRetrieved.ID,
 		FName: userInfoRetrieved.FName,
 		LName: userInfoRetrieved.LName,
@@ -182,16 +182,16 @@ func (c *userUseCase) UserProfile(ctx context.Context, userID int) (modelHelper.
 	// fetch address from address table
 	address, err := c.userRepo.ViewAddress(ctx, userID)
 	if err != nil {
-		return modelHelper.UserProfile{}, err
+		return model.UserProfile{}, err
 	}
 
 	// fetch orders from orders table
 	orders, err := c.orderRepo.ViewAllOrders(ctx, userID)
 	if err != nil {
-		return modelHelper.UserProfile{}, err
+		return model.UserProfile{}, err
 	}
 
-	var userProfile modelHelper.UserProfile
+	var userProfile model.UserProfile
 	userProfile.UserInfo = userInfo
 	userProfile.Address = address
 	userProfile.Orders = orders

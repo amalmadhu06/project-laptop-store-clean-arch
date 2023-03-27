@@ -2,22 +2,22 @@ package interfaces
 
 import (
 	"context"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 )
 
 type UserUseCase interface {
-	CreateUser(ctx context.Context, input modelHelper.UserDataInput) (modelHelper.UserDataOutput, error)
-	LoginWithEmail(ctx context.Context, input modelHelper.UserLoginEmail) (string, modelHelper.UserDataOutput, error)
-	LoginWithPhone(ctx context.Context, input modelHelper.UserLoginPhone) (string, modelHelper.UserDataOutput, error)
+	CreateUser(ctx context.Context, input model.UserDataInput) (model.UserDataOutput, error)
+	LoginWithEmail(ctx context.Context, input model.UserLoginEmail) (string, model.UserDataOutput, error)
+	LoginWithPhone(ctx context.Context, input model.UserLoginPhone) (string, model.UserDataOutput, error)
 
-	AddAddress(ctx context.Context, newAddress modelHelper.AddressInput, cookie string) (domain.Address, error)
-	UpdateAddress(ctx context.Context, addressInfo modelHelper.AddressInput, cookie string) (domain.Address, error)
+	AddAddress(ctx context.Context, newAddress model.AddressInput, cookie string) (domain.Address, error)
+	UpdateAddress(ctx context.Context, addressInfo model.AddressInput, cookie string) (domain.Address, error)
 
-	ListAllUsers(ctx context.Context, viewUserInfo modelHelper.QueryParams) ([]domain.Users, error)
+	ListAllUsers(ctx context.Context, viewUserInfo model.QueryParams) ([]domain.Users, error)
 	FindUserByID(ctx context.Context, userID int) (domain.Users, error)
-	BlockUser(ctx context.Context, blockInfo modelHelper.BlockUser, cookie string) (domain.UserInfo, error)
+	BlockUser(ctx context.Context, blockInfo model.BlockUser, cookie string) (domain.UserInfo, error)
 	UnblockUser(ctx context.Context, userID int) (domain.UserInfo, error)
 
-	UserProfile(ctx context.Context, userID int) (modelHelper.UserProfile, error)
+	UserProfile(ctx context.Context, userID int) (model.UserProfile, error)
 }

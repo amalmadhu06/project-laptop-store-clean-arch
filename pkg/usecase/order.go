@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"time"
 )
 
@@ -24,7 +24,7 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, userRepo interfaces.U
 	}
 }
 
-func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderInfo modelHelper.PlaceOrder) (domain.Order, error) {
+func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderInfo model.PlaceOrder) (domain.Order, error) {
 	//Find user id
 	userID, err := FindUserID(cookie)
 	if err != nil {
@@ -82,7 +82,7 @@ func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderI
 	return order, err
 }
 
-func (c *orderUseCase) BuyAll(ctx context.Context, cookie string, orderInfo modelHelper.PlaceAllOrders) (domain.Order, error) {
+func (c *orderUseCase) BuyAll(ctx context.Context, cookie string, orderInfo model.PlaceAllOrders) (domain.Order, error) {
 	userID, err := FindUserID(cookie)
 	if err != nil {
 		return domain.Order{}, fmt.Errorf("failed to fetch user id")
@@ -130,12 +130,12 @@ func (c *orderUseCase) CancelOrder(ctx context.Context, orderID int, cookie stri
 	return order, err
 }
 
-func (c *orderUseCase) UpdateOrder(ctx context.Context, orderInfo modelHelper.UpdateOrder) (domain.Order, error) {
+func (c *orderUseCase) UpdateOrder(ctx context.Context, orderInfo model.UpdateOrder) (domain.Order, error) {
 	order, err := c.orderRepo.UpdateOrder(ctx, orderInfo)
 	return order, err
 }
 
-func (c *orderUseCase) ReturnRequest(ctx context.Context, userID int, returnRequest modelHelper.ReturnRequest) (domain.Order, error) {
+func (c *orderUseCase) ReturnRequest(ctx context.Context, userID int, returnRequest model.ReturnRequest) (domain.Order, error) {
 	//	check if order is eligible to be returned
 	//	users can request for return only if order status is completed(4), delivery status is delivered(5) and is within 15 days of order delivery
 

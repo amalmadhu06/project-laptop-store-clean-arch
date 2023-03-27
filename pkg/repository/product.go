@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
 	interfaces "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/repository/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"gorm.io/gorm"
 	"strings"
 )
@@ -148,7 +148,7 @@ func (c *productDatabase) CreateProduct(ctx context.Context, newProduct domain.P
 	return createdProduct, err
 }
 
-func (c *productDatabase) ViewAllProducts(ctx context.Context, queryParams modelHelper.QueryParams) ([]domain.Product, error) {
+func (c *productDatabase) ViewAllProducts(ctx context.Context, queryParams model.QueryParams) ([]domain.Product, error) {
 
 	findQuery := "SELECT * FROM products"
 	if queryParams.Query != "" && queryParams.Filter != "" {
@@ -229,7 +229,7 @@ func (c *productDatabase) CreateProductItem(ctx context.Context, newProductItem 
 	return createdProductItem, err
 }
 
-func (c *productDatabase) ViewAllProductItems(ctx context.Context, queryParams modelHelper.QueryParams) ([]domain.ProductItem, error) {
+func (c *productDatabase) ViewAllProductItems(ctx context.Context, queryParams model.QueryParams) ([]domain.ProductItem, error) {
 	// Building query based on query params received.
 	findQuery := "SELECT * FROM product_items"
 	if queryParams.Query != "" && queryParams.Filter != "" {
@@ -308,7 +308,7 @@ func (c *productDatabase) DeleteProductItem(ctx context.Context, productItemID i
 
 // coupon management
 
-func (c *productDatabase) CreateCoupon(ctx context.Context, newCoupon modelHelper.CreateCoupon) (domain.Coupon, error) {
+func (c *productDatabase) CreateCoupon(ctx context.Context, newCoupon model.CreateCoupon) (domain.Coupon, error) {
 	var createdCoupon domain.Coupon
 	createCouponQuery := `	INSERT INTO coupons(code, min_order_value, discount_percent, discount_max_amount, valid_till) 
 							VALUES($1, $2, $3, $4, $5) 
@@ -323,7 +323,7 @@ func (c *productDatabase) CreateCoupon(ctx context.Context, newCoupon modelHelpe
 	return createdCoupon, nil
 }
 
-func (c *productDatabase) UpdateCoupon(ctx context.Context, couponInfo modelHelper.UpdateCoupon) (domain.Coupon, error) {
+func (c *productDatabase) UpdateCoupon(ctx context.Context, couponInfo model.UpdateCoupon) (domain.Coupon, error) {
 	var updatedCoupon domain.Coupon
 	updateCouponQuery := `	UPDATE coupons SET 
 								code = $1,

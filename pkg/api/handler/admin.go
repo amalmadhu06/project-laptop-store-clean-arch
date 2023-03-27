@@ -3,9 +3,9 @@ package handler
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/modelHelper"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/common/response"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -28,13 +28,13 @@ func NewAdminHandler(adminUseCase services.AdminUseCase) *AdminHandler {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param admin_details body modelHelper.NewAdminInfo true "New Admin details"
+// @Param admin_details body model.NewAdminInfo true "New Admin details"
 // @Success 201 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /admin/admins [post]
 func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
-	var newAdminInfo modelHelper.NewAdminInfo
+	var newAdminInfo model.NewAdminInfo
 	if err := c.Bind(&newAdminInfo); err != nil {
 		//if request body is malformed, return 422
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to read the request body", Data: nil, Errors: err.Error()})
@@ -72,14 +72,14 @@ func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param admin_credentials body modelHelper.AdminLogin true "Admin login credentials"
+// @Param admin_credentials body model.AdminLogin true "Admin login credentials"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
 // @Router /admin/login [post]
 func (cr *AdminHandler) AdminLogin(c *gin.Context) {
 	// receive data from request body
-	var body modelHelper.AdminLogin
+	var body model.AdminLogin
 	if err := c.Bind(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
@@ -249,7 +249,7 @@ func (cr *AdminHandler) SalesReport(c *gin.Context) {
 			sale.OrderStatus,
 			sale.DeliveryStatus,
 			sale.OrderDate.Format("2006-01-02 15:04:05")}
-		
+
 		if err := wr.Write(row); err != nil {
 			c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to generate sales report", Data: nil, Errors: err})
 			return
