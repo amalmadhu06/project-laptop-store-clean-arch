@@ -120,21 +120,12 @@ func (c *userUseCase) LoginWithPhone(ctx context.Context, input model.UserLoginP
 	return ss, userData, err
 }
 
-func (c *userUseCase) AddAddress(ctx context.Context, newAddress model.AddressInput, cookie string) (domain.Address, error) {
-
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return domain.Address{}, err
-	}
+func (c *userUseCase) AddAddress(ctx context.Context, newAddress model.AddressInput, userID int) (domain.Address, error) {
 	address, err := c.userRepo.AddAddress(ctx, userID, newAddress)
 	return address, err
 }
 
-func (c *userUseCase) UpdateAddress(ctx context.Context, addressInfo model.AddressInput, cookie string) (domain.Address, error) {
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return domain.Address{}, err
-	}
+func (c *userUseCase) UpdateAddress(ctx context.Context, addressInfo model.AddressInput, userID int) (domain.Address, error) {
 	updatedAddress, err := c.userRepo.UpdateAddress(ctx, userID, addressInfo)
 	return updatedAddress, err
 }
@@ -150,11 +141,7 @@ func (c *userUseCase) FindUserByID(ctx context.Context, userID int) (domain.User
 
 }
 
-func (c *userUseCase) BlockUser(ctx context.Context, blockInfo model.BlockUser, cookie string) (domain.UserInfo, error) {
-	adminID, err := FindAdminID(cookie)
-	if err != nil {
-		return domain.UserInfo{}, err
-	}
+func (c *userUseCase) BlockUser(ctx context.Context, blockInfo model.BlockUser, adminID int) (domain.UserInfo, error) {
 	blockedUser, err := c.userRepo.BlockUser(ctx, blockInfo, adminID)
 	return blockedUser, err
 }

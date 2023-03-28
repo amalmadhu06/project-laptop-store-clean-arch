@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/api/handlerUtil"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
@@ -207,8 +207,12 @@ func (cr *UserHandler) AddAddress(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
 		return
 	}
-	cookie, err := c.Cookie("UserAuth")
-	address, err := cr.userUseCase.AddAddress(c.Request.Context(), body, cookie)
+	userID, err := handlerUtil.GetUserIdFromContext(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
+		return
+	}
+	address, err := cr.userUseCase.AddAddress(c.Request.Context(), body, userID)
 	if err != nil {
 		// Return a 400 Bad Request response if there is an error while creating the user.
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to add address", Data: nil, Errors: err.Error()})
@@ -238,8 +242,14 @@ func (cr *UserHandler) UpdateAddress(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
 		return
 	}
-	cookie, err := c.Cookie("UserAuth")
-	address, err := cr.userUseCase.UpdateAddress(c.Request.Context(), body, cookie)
+
+	userID, err := handlerUtil.GetUserIdFromContext(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	address, err := cr.userUseCase.UpdateAddress(c.Request.Context(), body, userID)
 	if err != nil {
 		// Return a 400 Bad Request response if there is an error while creating the user.
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to update address", Data: nil, Errors: err.Error()})
@@ -337,13 +347,14 @@ func (cr *UserHandler) BlockUser(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read request body", Data: nil, Errors: err.Error()})
 		return
 	}
-	//cookie for finding admin id
-	cookie, err := c.Cookie("AdminAuth")
+
+	adminID, err := handlerUtil.GetAdminIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "failed to fetch cookie from request", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch admin id from context", Data: nil, Errors: err.Error()})
 		return
 	}
-	blockedUser, err := cr.userUseCase.BlockUser(c.Request.Context(), blockUser, cookie)
+
+	blockedUser, err := cr.userUseCase.BlockUser(c.Request.Context(), blockUser, adminID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to block user", Data: nil, Errors: err.Error()})
 		return
@@ -389,11 +400,9 @@ func (cr *UserHandler) UnblockUser(c *gin.Context) {
 // @Failure 400 {object} response.Response
 // @Router /profile [get]
 func (cr *UserHandler) UserProfile(c *gin.Context) {
-	uID := c.Value("userID")
-	//convert uID to int
-	userID, err := strconv.Atoi(fmt.Sprintf("%v", uID))
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch user id", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
 

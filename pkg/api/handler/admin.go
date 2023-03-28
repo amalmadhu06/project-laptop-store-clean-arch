@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/csv"
 	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/api/handlerUtil"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
@@ -40,13 +41,8 @@ func (cr *AdminHandler) CreateAdmin(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to read the request body", Data: nil, Errors: err.Error()})
 		return
 	}
-	cookie, err := c.Cookie("AdminAuth")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to find cookie", Data: nil, Errors: err.Error()})
-		return
-	}
-
-	adminID, err := cr.adminUseCase.FindAdminID(c.Request.Context(), cookie)
+	adminID, err := handlerUtil.GetAdminIdFromContext(c)
+	fmt.Println(adminID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch admin id", Data: nil, Errors: err.Error()})
 		return
@@ -132,20 +128,21 @@ func (cr *AdminHandler) AdminLogout(c *gin.Context) {
 func (cr *AdminHandler) BlockAdmin(c *gin.Context) {
 	//	get the id of the admin to be blocked
 	paramsID := c.Param("id")
-	id, err := strconv.Atoi(paramsID)
+	blockID, err := strconv.Atoi(paramsID)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read admin id from path parameter", Data: nil, Errors: err})
-		return
-	}
-	cookie, err := c.Cookie("AdminAuth")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "failed to verify admin", Data: nil, Errors: err})
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 400, Message: "failed to read id of admin to be blocked from path parameter", Data: nil, Errors: err.Error()})
 		return
 	}
 
-	blockedAdmin, err := cr.adminUseCase.BlockAdmin(c.Request.Context(), id, cookie)
+	superAdminID, err := handlerUtil.GetAdminIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to block admin", Data: nil, Errors: err})
+		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch super admin id from context", Data: nil, Errors: err.Error()})
+		return
+	}
+
+	blockedAdmin, err := cr.adminUseCase.BlockAdmin(c.Request.Context(), blockID, superAdminID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to block admin", Data: nil, Errors: err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, response.Response{StatusCode: 200, Message: "successfully blocked admin", Data: blockedAdmin, Errors: nil})
@@ -158,26 +155,27 @@ func (cr *AdminHandler) BlockAdmin(c *gin.Context) {
 // @Tags Admin
 // @Accept json
 // @Produce json
-// @Param admin_id path string true "ID of the admin to be unblocked"
+// @Param admin-id path string true "ID of the admin to be unblocked"
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 500 {object} response.Response
-// @Router /admin/admins/{id}/unblock [put]
+// @Router /admin/admins/{admin-id}/unblock [put]
 func (cr *AdminHandler) UnblockAdmin(c *gin.Context) {
 	//	get the id of the admin to be blocked
 	paramsID := c.Param("admin-id")
-	id, err := strconv.Atoi(paramsID)
+	unblockID, err := strconv.Atoi(paramsID)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read admin id from path parameter", Data: nil, Errors: err})
+		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 400, Message: "failed to read admin id from path parameter", Data: nil, Errors: err})
 		return
 	}
-	cookie, err := c.Cookie("AdminAuth")
+
+	superAdminID, err := handlerUtil.GetAdminIdFromContext(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "failed to verify admin", Data: nil, Errors: err})
 		return
 	}
 
-	unblockedAdmin, err := cr.adminUseCase.UnblockAdmin(c.Request.Context(), id, cookie)
+	unblockedAdmin, err := cr.adminUseCase.UnblockAdmin(c.Request.Context(), unblockID, superAdminID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to unblock admin", Data: nil, Errors: err})
 		return
