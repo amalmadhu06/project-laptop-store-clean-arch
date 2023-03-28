@@ -504,7 +504,7 @@ func (cr *ProductHandler) CreateProductItem(c *gin.Context) {
 // @Summary Handler function to view all product items
 // @ID user-view-all-product-items
 // @Description view all product items for user
-// @Tags Product
+// @Tags Product Item
 // @Accept json
 // @Produce json
 // @Param page query int false "Page number for pagination"

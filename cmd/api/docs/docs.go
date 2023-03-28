@@ -163,9 +163,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/admins/{id}/block": {
+        "/admin/admins/{admin-id}/unblock": {
             "put": {
-                "description": "Super-admin can block admins",
+                "description": "Super-admin can unblock a blocked admin",
                 "consumes": [
                     "application/json"
                 ],
@@ -175,13 +175,13 @@ const docTemplate = `{
                 "tags": [
                     "Admin"
                 ],
-                "summary": "Block an admin",
-                "operationId": "block-admin",
+                "summary": "Unblock a blocked admin",
+                "operationId": "unblock-admin",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID of the admin to be blocked",
-                        "name": "admin_id",
+                        "description": "ID of the admin to be unblocked",
+                        "name": "admin-id",
                         "in": "path",
                         "required": true
                     }
@@ -208,9 +208,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/admins/{id}/unblock": {
+        "/admin/admins/{id}/block": {
             "put": {
-                "description": "Super-admin can unblock a blocked admin",
+                "description": "Super-admin can block admins",
                 "consumes": [
                     "application/json"
                 ],
@@ -220,12 +220,12 @@ const docTemplate = `{
                 "tags": [
                     "Admin"
                 ],
-                "summary": "Unblock a blocked admin",
-                "operationId": "unblock-admin",
+                "summary": "Block an admin",
+                "operationId": "block-admin",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID of the admin to be unblocked",
+                        "description": "ID of the admin to be blocked",
                         "name": "admin_id",
                         "in": "path",
                         "required": true
@@ -2264,7 +2264,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Product"
+                    "Product Item"
                 ],
                 "summary": "Handler function to view all product items",
                 "operationId": "user-view-all-product-items",

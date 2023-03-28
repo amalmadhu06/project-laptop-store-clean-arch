@@ -358,6 +358,36 @@ paths:
       summary: Create a new admin from admin panel
       tags:
       - Admin
+  /admin/admins/{admin-id}/unblock:
+    put:
+      consumes:
+      - application/json
+      description: Super-admin can unblock a blocked admin
+      operationId: unblock-admin
+      parameters:
+      - description: ID of the admin to be unblocked
+        in: path
+        name: admin-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Unblock a blocked admin
+      tags:
+      - Admin
   /admin/admins/{id}/block:
     put:
       consumes:
@@ -386,36 +416,6 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Block an admin
-      tags:
-      - Admin
-  /admin/admins/{id}/unblock:
-    put:
-      consumes:
-      - application/json
-      description: Super-admin can unblock a blocked admin
-      operationId: unblock-admin
-      parameters:
-      - description: ID of the admin to be unblocked
-        in: path
-        name: admin_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Unblock a blocked admin
       tags:
       - Admin
   /admin/brands/:
@@ -1800,7 +1800,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Handler function to view all product items
       tags:
-      - Product
+      - Product Item
   /products/:
     get:
       consumes:

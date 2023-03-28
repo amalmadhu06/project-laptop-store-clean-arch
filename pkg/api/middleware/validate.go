@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"github.com/golang-jwt/jwt"
+	"time"
 )
 
 func ValidateToken(cookie string) (int, error) {
@@ -20,7 +21,11 @@ func ValidateToken(cookie string) (int, error) {
 	var parsedID interface{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		parsedID = claims["id"]
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			return 0, fmt.Errorf("token expired")
+		}
 	}
+
 	//type assertion
 	value, ok := parsedID.(float64)
 	if !ok {
