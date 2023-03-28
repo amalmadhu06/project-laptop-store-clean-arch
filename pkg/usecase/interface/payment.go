@@ -7,6 +7,6 @@ import (
 )
 
 type PaymentUseCases interface {
-	CreateRazorpayPayment(ctx context.Context, cookie string, orderID int) (domain.Order, string, error)
+	CreateRazorpayPayment(ctx context.Context, userID, orderID int) (domain.Order, string, error)
 	UpdatePaymentDetails(ctx context.Context, paymentVerifier model.PaymentVerification) error
 }

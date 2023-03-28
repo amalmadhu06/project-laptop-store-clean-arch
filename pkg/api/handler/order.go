@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/api/handlerUtil"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
@@ -40,19 +40,13 @@ func (cr *OrderHandler) BuyProductItem(c *gin.Context) {
 		return
 	}
 
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
-	//paramsID := c.Param("product_item_id")
-	//productItemID, err := strconv.Atoi(paramsID)
-	//if err != nil {
-	//	c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "unable to process the request", Data: nil, Errors: err.Error()})
-	//	return
-	//}
 
-	order, err := cr.orderUseCase.BuyProductItem(c.Request.Context(), cookie, body)
+	order, err := cr.orderUseCase.BuyProductItem(c.Request.Context(), userID, body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to order the product item", Data: nil, Errors: err.Error()})
 		return
@@ -80,13 +74,13 @@ func (cr *OrderHandler) BuyAll(c *gin.Context) {
 		return
 	}
 
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
 
-	order, err := cr.orderUseCase.BuyAll(c.Request.Context(), cookie, body)
+	order, err := cr.orderUseCase.BuyAll(c.Request.Context(), userID, body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to create order", Data: nil, Errors: err.Error()})
 		return
@@ -114,12 +108,13 @@ func (cr *OrderHandler) ViewOrderByID(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read order id from path", Data: nil, Errors: err.Error()})
 		return
 	}
-	cookie, err := c.Cookie("UserAuth")
+
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "failed to authorize user", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
-	order, err := cr.orderUseCase.ViewOrderByID(c.Request.Context(), orderID, cookie)
+	order, err := cr.orderUseCase.ViewOrderByID(c.Request.Context(), orderID, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch order details", Data: nil, Errors: err.Error()})
 		return
@@ -139,12 +134,12 @@ func (cr *OrderHandler) ViewOrderByID(c *gin.Context) {
 // @Failure 401 {object} response.Response
 // @Router  /orders/ [get]
 func (cr *OrderHandler) ViewAllOrders(c *gin.Context) {
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "failed to authorize user", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
-	orders, err := cr.orderUseCase.ViewAllOrders(c.Request.Context(), cookie)
+	orders, err := cr.orderUseCase.ViewAllOrders(c.Request.Context(), userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch orders", Data: nil, Errors: err.Error()})
 		return
@@ -171,12 +166,12 @@ func (cr *OrderHandler) CancelOrder(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response.Response{StatusCode: 422, Message: "failed to read order id from path", Data: nil, Errors: err.Error()})
 		return
 	}
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "failed to authorize user", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
-	order, err := cr.orderUseCase.CancelOrder(c.Request.Context(), orderID, cookie)
+	order, err := cr.orderUseCase.CancelOrder(c.Request.Context(), orderID, userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to cancel order", Data: nil, Errors: err.Error()})
 		return
@@ -227,10 +222,9 @@ func (cr *OrderHandler) ReturnRequest(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to read request body", Data: nil, Errors: err.Error()})
 		return
 	}
-	uID := c.Value("userID")
-	userID, err := strconv.Atoi(fmt.Sprintf("%v", uID))
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch user id", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
 	order, err := cr.orderUseCase.ReturnRequest(c.Request.Context(), userID, body)

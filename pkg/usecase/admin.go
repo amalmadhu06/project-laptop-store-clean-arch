@@ -109,15 +109,9 @@ func (c *adminUseCase) FindAdminID(ctx context.Context, cookie string) (int, err
 	return id, nil
 }
 
-func (c *adminUseCase) BlockAdmin(ctx context.Context, blockID int, cookie string) (domain.Admin, error) {
+func (c *adminUseCase) BlockAdmin(ctx context.Context, blockID int, superAdminID int) (domain.Admin, error) {
 	//verify the request is sent by a super admin
-	adminID, err := c.FindAdminID(ctx, cookie)
-	if err != nil {
-		return domain.Admin{}, err
-	}
-
-	//check if the extracted id belongs to super admin
-	isSuper, err := c.adminRepo.IsSuperAdmin(ctx, adminID)
+	isSuper, err := c.adminRepo.IsSuperAdmin(ctx, superAdminID)
 	if err != nil || isSuper == false {
 		return domain.Admin{}, err
 	}
@@ -126,15 +120,10 @@ func (c *adminUseCase) BlockAdmin(ctx context.Context, blockID int, cookie strin
 	return blockedAdmin, err
 }
 
-func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, cookie string) (domain.Admin, error) {
-	//verify the request is sent by a super admin
-	adminID, err := c.FindAdminID(ctx, cookie)
-	if err != nil {
-		return domain.Admin{}, err
-	}
+func (c *adminUseCase) UnblockAdmin(ctx context.Context, unblockID int, superAdminID int) (domain.Admin, error) {
 
 	//check if the extracted id belongs to super admin
-	isSuper, err := c.adminRepo.IsSuperAdmin(ctx, adminID)
+	isSuper, err := c.adminRepo.IsSuperAdmin(ctx, superAdminID)
 	if err != nil || isSuper == false {
 		return domain.Admin{}, err
 	}

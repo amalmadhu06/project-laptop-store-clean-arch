@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/api/handlerUtil"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
 	"github.com/gin-gonic/gin"
@@ -40,13 +40,13 @@ func (cr *CartHandler) AddToCart(c *gin.Context) {
 		return
 	}
 
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
 
-	cartItem, err := cr.cartUseCase.AddToCart(c.Request.Context(), cookie, productItemID)
+	cartItem, err := cr.cartUseCase.AddToCart(c.Request.Context(), userID, productItemID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to add product to the cart", Data: nil, Errors: err.Error()})
 		return
@@ -75,13 +75,13 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 		return
 	}
 
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
 
-	err = cr.cartUseCase.RemoveFromCart(c.Request.Context(), cookie, productItemID)
+	err = cr.cartUseCase.RemoveFromCart(c.Request.Context(), userID, productItemID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to remove product from the cart", Data: nil, Errors: err.Error()})
 		return
@@ -101,13 +101,13 @@ func (cr *CartHandler) RemoveFromCart(c *gin.Context) {
 // @Failure 500 {object} response.Response
 // @Router /cart [get]
 func (cr *CartHandler) ViewCart(c *gin.Context) {
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
 
-	cart, err := cr.cartUseCase.ViewCart(c.Request.Context(), cookie)
+	cart, err := cr.cartUseCase.ViewCart(c.Request.Context(), userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to cart details", Data: nil, Errors: err.Error()})
 		return
@@ -127,12 +127,13 @@ func (cr *CartHandler) ViewCart(c *gin.Context) {
 // @Failure 500 {object} response.Response
 // @Router /cart [delete]
 func (cr *CartHandler) EmptyCart(c *gin.Context) {
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
-	err = cr.cartUseCase.EmptyCart(c.Request.Context(), cookie)
+
+	err = cr.cartUseCase.EmptyCart(c.Request.Context(), userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, response.Response{StatusCode: 500, Message: "failed to empty cart", Data: nil, Errors: err.Error()})
 		return
@@ -153,11 +154,9 @@ func (cr *CartHandler) EmptyCart(c *gin.Context) {
 // @Failure 422 {object} response.Response
 // @Router /cart/coupon/{coupon_id} [post]
 func (cr *CartHandler) AddCouponToCart(c *gin.Context) {
-	uID := c.Value("userID")
-	//convert uID to int
-	userID, err := strconv.Atoi(fmt.Sprintf("%v", uID))
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, response.Response{StatusCode: 400, Message: "failed to fetch user id", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
 

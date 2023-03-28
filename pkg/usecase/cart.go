@@ -23,45 +23,29 @@ func NewCartUseCase(cartRepo interfaces.CartRepository, productRepo interfaces.P
 	}
 }
 
-func (c *cartUseCase) AddToCart(ctx context.Context, cookie string, productItemID int) (domain.CartItems, error) {
+func (c *cartUseCase) AddToCart(ctx context.Context, userID, productItemID int) (domain.CartItems, error) {
 	var addedProduct domain.CartItems
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return addedProduct, err
-	}
-	addedProduct, err = c.cartRepo.AddToCart(ctx, userID, productItemID)
+	addedProduct, err := c.cartRepo.AddToCart(ctx, userID, productItemID)
 	return addedProduct, err
 }
 
-func (c *cartUseCase) RemoveFromCart(ctx context.Context, cookie string, productItemID int) error {
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return err
-	}
-	err = c.cartRepo.RemoveFromCart(ctx, userID, productItemID)
+func (c *cartUseCase) RemoveFromCart(ctx context.Context, userID, productItemID int) error {
+	err := c.cartRepo.RemoveFromCart(ctx, userID, productItemID)
 	return err
 }
 
-func (c *cartUseCase) ViewCart(ctx context.Context, cookie string) (model.ViewCart, error) {
+func (c *cartUseCase) ViewCart(ctx context.Context, userID int) (model.ViewCart, error) {
 	var cart model.ViewCart
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return cart, err
-	}
-	cart, err = c.cartRepo.ViewCart(ctx, userID)
+	cart, err := c.cartRepo.ViewCart(ctx, userID)
 	return cart, err
 }
 
-func (c *cartUseCase) EmptyCart(ctx context.Context, cookie string) error {
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return err
-	}
-	err = c.cartRepo.EmptyCart(ctx, userID)
+func (c *cartUseCase) EmptyCart(ctx context.Context, userID int) error {
+	err := c.cartRepo.EmptyCart(ctx, userID)
 	return err
 }
 
-func (c *cartUseCase) AddCouponToCart(ctx context.Context, userID int, couponID int) (model.ViewCart, error) {
+func (c *cartUseCase) AddCouponToCart(ctx context.Context, userID, couponID int) (model.ViewCart, error) {
 
 	//checking is coupon is already used
 	isUsed, err := c.productRepo.CouponUsed(ctx, userID, couponID)

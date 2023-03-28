@@ -24,12 +24,7 @@ func NewOrderUseCase(orderRepo interfaces.OrderRepository, userRepo interfaces.U
 	}
 }
 
-func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderInfo model.PlaceOrder) (domain.Order, error) {
-	//Find user id
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return domain.Order{}, fmt.Errorf("failed to fetch user id")
-	}
+func (c *orderUseCase) BuyProductItem(ctx context.Context, userID int, orderInfo model.PlaceOrder) (domain.Order, error) {
 
 	//check if user has added address. If not, return error
 	address, err := c.userRepo.ViewAddress(ctx, userID)
@@ -82,11 +77,7 @@ func (c *orderUseCase) BuyProductItem(ctx context.Context, cookie string, orderI
 	return order, err
 }
 
-func (c *orderUseCase) BuyAll(ctx context.Context, cookie string, orderInfo model.PlaceAllOrders) (domain.Order, error) {
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return domain.Order{}, fmt.Errorf("failed to fetch user id")
-	}
+func (c *orderUseCase) BuyAll(ctx context.Context, userID int, orderInfo model.PlaceAllOrders) (domain.Order, error) {
 
 	//check if user has added address. If not, return error
 	address, err := c.userRepo.ViewAddress(ctx, userID)
@@ -102,30 +93,18 @@ func (c *orderUseCase) BuyAll(ctx context.Context, cookie string, orderInfo mode
 	return orders, err
 }
 
-func (c *orderUseCase) ViewOrderByID(ctx context.Context, orderID int, cookie string) (domain.Order, error) {
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return domain.Order{}, fmt.Errorf("failed to fetch user id")
-	}
+func (c *orderUseCase) ViewOrderByID(ctx context.Context, orderID int, userID int) (domain.Order, error) {
 	order, err := c.orderRepo.ViewOrderById(ctx, userID, orderID)
 	return order, err
 
 }
 
-func (c *orderUseCase) ViewAllOrders(ctx context.Context, cookie string) ([]domain.Order, error) {
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return []domain.Order{}, fmt.Errorf("failed to fetch user id")
-	}
+func (c *orderUseCase) ViewAllOrders(ctx context.Context, userID int) ([]domain.Order, error) {
 	orders, err := c.orderRepo.ViewAllOrders(ctx, userID)
 	return orders, err
 }
 
-func (c *orderUseCase) CancelOrder(ctx context.Context, orderID int, cookie string) (domain.Order, error) {
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return domain.Order{}, fmt.Errorf("failed to fetch user id")
-	}
+func (c *orderUseCase) CancelOrder(ctx context.Context, orderID, userID int) (domain.Order, error) {
 	order, err := c.orderRepo.CancelOrder(ctx, userID, orderID)
 	return order, err
 }

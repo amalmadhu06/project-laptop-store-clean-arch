@@ -1,0 +1,59 @@
+name: Go Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+env:
+  GO111MODULE: "on"
+  CGO_ENABLED: 0
+  GOPROXY: "https://proxy.golang.org,direct"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.19.0'
+
+      - name: Install dependencies
+        run: |
+          go mod download
+          go mod tidy
+          go mod verify
+
+      - name: Install subcommands
+        run: |
+          go get github.com/google/subcommands
+
+      - name: Install wire
+        run: |
+          go get github.com/google/wire/cmd/wire@v0.5.0
+
+      - name: Generate wire_gen.go
+        run: |
+          cd pkg/di && go run github.com/google/wire/cmd/wire
+
+      - name: Install swag
+        run: |
+          go get github.com/swaggo/swag/cmd/swag
+          go get github.com/swaggo/swag/gen@v1.8.1
+          go get github.com/swaggo/swag/cmd/swag@v1.8.1
+          go install github.com/swaggo/swag/cmd/swag
+
+      - name: Generate Swagger docs
+        run: |
+          cd cmd/api && go get -u github.com/swaggo/swag/cmd/swag
+          swag init --parseDependency --parseInternal --parseDepth 1 -md ./documentation -o ./docs
+
+      - name: Build the Go application
+        run: |
+          mkdir -p build/bin
+          go build -o build/bin/myapp ./cmd/api

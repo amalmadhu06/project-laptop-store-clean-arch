@@ -27,12 +27,7 @@ func NewPaymentUseCase(orderRepo interfaces.OrderRepository, paymentRepo interfa
 	}
 }
 
-func (cr *paymentUseCase) CreateRazorpayPayment(ctx context.Context, cookie string, orderID int) (domain.Order, string, error) {
-	//fetch user id from the cookie
-	userID, err := FindUserID(cookie)
-	if err != nil {
-		return domain.Order{}, "", err
-	}
+func (cr *paymentUseCase) CreateRazorpayPayment(ctx context.Context, userID, orderID int) (domain.Order, string, error) {
 	//check payment status. if already paid, no need to proceed with payment. If not paid yet, proceed with transaction.
 	paymentDetails, err := cr.paymentRepo.ViewPaymentDetails(ctx, orderID)
 	if paymentDetails.PaymentStatusID == 2 {

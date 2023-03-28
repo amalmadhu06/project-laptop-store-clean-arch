@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/api/handlerUtil"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
@@ -41,12 +42,13 @@ func (cr *PaymentHandler) CreateRazorpayPayment(c *gin.Context) {
 
 	}
 
-	cookie, err := c.Cookie("UserAuth")
+	userID, err := handlerUtil.GetUserIdFromContext(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 401, Message: "unable to fetch cookie", Data: nil, Errors: err.Error()})
+		c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 400, Message: "unable to fetch user id from context", Data: nil, Errors: err.Error()})
 		return
 	}
-	order, razorpayID, err := cr.paymentUseCase.CreateRazorpayPayment(c.Request.Context(), cookie, orderID)
+
+	order, razorpayID, err := cr.paymentUseCase.CreateRazorpayPayment(c.Request.Context(), userID, orderID)
 	fmt.Println("order total :", order.OrderTotal)
 	fmt.Println(razorpayID)
 	if err != nil {

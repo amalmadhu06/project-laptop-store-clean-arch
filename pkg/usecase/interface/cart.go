@@ -7,9 +7,9 @@ import (
 )
 
 type CartUseCases interface {
-	AddToCart(ctx context.Context, cookie string, productItemID int) (domain.CartItems, error)
-	RemoveFromCart(ctx context.Context, cookie string, productItemID int) error
-	ViewCart(ctx context.Context, cookie string) (model.ViewCart, error)
-	EmptyCart(ctx context.Context, cookie string) error
-	AddCouponToCart(ctx context.Context, userID int, couponID int) (model.ViewCart, error)
+	AddToCart(ctx context.Context, userID, productItemID int) (domain.CartItems, error)
+	RemoveFromCart(ctx context.Context, userID, productItemID int) error
+	ViewCart(ctx context.Context, userID int) (model.ViewCart, error)
+	EmptyCart(ctx context.Context, userID int) error
+	AddCouponToCart(ctx context.Context, userID, couponID int) (model.ViewCart, error)
 }
