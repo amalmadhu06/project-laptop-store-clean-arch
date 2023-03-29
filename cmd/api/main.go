@@ -16,7 +16,7 @@ import (
 // @contact.email support@swagger.io
 
 // @license.name MIT
-// @host localhost:3000
+// @host ecom-project.amalmadhu.me
 // @license.url https://opensource.org/licenses/MIT
 
 // @BasePath /
