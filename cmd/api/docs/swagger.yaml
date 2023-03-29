@@ -252,7 +252,7 @@ definitions:
       status_code:
         type: integer
     type: object
-host: localhost:3000
+host: ecom-project.amalmadhu.me
 info:
   contact:
     email: support@swagger.io

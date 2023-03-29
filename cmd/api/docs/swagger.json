@@ -14,7 +14,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:3000",
+    "host": "ecom-project.amalmadhu.me",
     "basePath": "/",
     "paths": {
         "/addresses/": {
