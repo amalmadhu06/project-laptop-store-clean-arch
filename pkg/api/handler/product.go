@@ -690,7 +690,7 @@ func (cr *ProductHandler) UpdateCoupon(c *gin.Context) {
 // @Success 202 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /admin/coupons/{id} [delete]
+// @Router /admin/coupons/{coupon_id} [delete]
 func (cr *ProductHandler) DeleteCoupon(c *gin.Context) {
 	paramsID := c.Param("id")
 	couponID, err := strconv.Atoi(paramsID)
@@ -721,7 +721,7 @@ func (cr *ProductHandler) DeleteCoupon(c *gin.Context) {
 // @Success 200 {object} response.Response
 // @Failure 400 {object} response.Response
 // @Failure 422 {object} response.Response
-// @Router /admin/coupons/{id} [get]
+// @Router /admin/coupons/{coupon_id} [get]
 func (cr *ProductHandler) ViewCouponByID(c *gin.Context) {
 	paramsID := c.Param("coupon_id")
 	couponID, err := strconv.Atoi(paramsID)

@@ -83,10 +83,10 @@ func AdminRoutes(
 		couponRoutes := api.Group("/coupons")
 		{
 			couponRoutes.GET("/", productHandler.ViewAllCoupons)
-			couponRoutes.GET("/:id", productHandler.ViewCouponByID)
+			couponRoutes.GET("/:coupon_id", productHandler.ViewCouponByID)
 			couponRoutes.POST("/", productHandler.CreateCoupon)
 			couponRoutes.PUT("/", productHandler.UpdateCoupon)
-			couponRoutes.DELETE("/:id", productHandler.DeleteCoupon)
+			couponRoutes.DELETE("/:coupon_id", productHandler.DeleteCoupon)
 		}
 
 		order := api.Group("/orders")
