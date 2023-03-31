@@ -1,21 +1,21 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "description": "Ecommerce Web Application built using Go Lang, PSQL, REST API following Clean Architecture.",
-        "title": "Ecommerce Web API",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
+        "swagger": "2.0",
+        "info": {
+            "description": "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture. Hosted with Ngnix, AWS EC2 and RDS",
+            "title": "Ecommerce REST API",
+            "contact": {
+                "name": "Amal Madhu",
+                "url": "https://github.com/amalmadhu06",
+                "email": "madhuamal06@gmail.com"
+            },
+            "license": {
+                "name": "MIT",
+                "url": "https://opensource.org/licenses/MIT"
+            },
+            "version": "1.0"
         },
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        },
-        "version": "1.0"
-    },
-    "host": "ecom-project.amalmadhu.me",
-    "basePath": "/",
+        "host": "www.amalmadhu.live",
+        "basePath": "/",
     "paths": {
         "/addresses/": {
             "put": {
@@ -739,7 +739,7 @@
                 }
             }
         },
-        "/admin/coupons/{id}": {
+        "/admin/coupons/{coupon_id}": {
             "get": {
                 "description": "Admins and users can see coupon with id",
                 "consumes": [

@@ -7,16 +7,16 @@ import (
 	"log"
 )
 
-// @title Ecommerce Web API
+// @title Ecommerce REST API
 // @version 1.0
-// @description Ecommerce Web Application built using Go Lang, PSQL, REST API following Clean Architecture.
+// @description Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture. Hosted with Ngnix, AWS EC2 and RDS
 
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
+// @contact.name Amal Madhu
+// @contact.url https://github.com/amalmadhu06
+// @contact.email madhuamal06@gmail.com
 
 // @license.name MIT
-// @host ecom-project.amalmadhu.me
+// @host www.amalmadhu.live
 // @license.url https://opensource.org/licenses/MIT
 
 // @BasePath /

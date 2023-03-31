@@ -252,18 +252,18 @@ definitions:
       status_code:
         type: integer
     type: object
-host: ecom-project.amalmadhu.me
+host: www.amalmadhu.live
 info:
   contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: Ecommerce Web Application built using Go Lang, PSQL, REST API following
-    Clean Architecture.
+    email: madhuamal06@gmail.com
+    name: Amal Madhu
+    url: https://github.com/amalmadhu06
+  description: Ecommerce REST API built using Go Lang, PSQL, REST API following Clean
+    Architecture. Hosted with Ngnix, AWS EC2 and RDS
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  title: Ecommerce Web API
+  title: Ecommerce REST API
   version: "1.0"
 paths:
   /addresses/:
@@ -748,7 +748,7 @@ paths:
       summary: Admin can update existing coupon
       tags:
       - Coupon
-  /admin/coupons/{id}:
+  /admin/coupons/{coupon_id}:
     delete:
       consumes:
       - application/json

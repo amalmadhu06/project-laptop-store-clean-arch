@@ -11,9 +11,9 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
+            "name": "Amal Madhu",
+            "url": "https://github.com/amalmadhu06",
+            "email": "madhuamal06@gmail.com"
         },
         "license": {
             "name": "MIT",
@@ -746,7 +746,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/coupons/{id}": {
+        "/admin/coupons/{coupon_id}": {
             "get": {
                 "description": "Admins and users can see coupon with id",
                 "consumes": [
@@ -3098,11 +3098,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "ecom-project.amalmadhu.me",
+	Host:             "www.amalmadhu.live",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Ecommerce Web API",
-	Description:      "Ecommerce Web Application built using Go Lang, PSQL, REST API following Clean Architecture.",
+	Title:            "Ecommerce REST API",
+	Description:      "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture. Hosted with Ngnix, AWS EC2 and RDS",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }
