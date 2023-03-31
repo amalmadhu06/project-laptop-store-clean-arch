@@ -15,6 +15,16 @@ ${BINARY_DIR}:
 build: ${BINARY_DIR} ## Compile the code, build Executable File
 	$(GOCMD) build -v ./cmd/api
 
+build-windows: ${BINARY_DIR} ## Build executable for Windows
+	env GOOS=windows GOARCH=amd64 $(GOCMD) build -v -o $(BINARY_DIR)/api.exe ./cmd/api
+
+build-linux: ${BINARY_DIR} ## Build executable for Linux ( arm64)
+	env GOOS=linux GOARCH=arm64 $(GOCMD) build -v -o $(BINARY_DIR)/api-linux-arm64 ./cmd/api
+
+build-macos: ${BINARY_DIR} ## Build executable for macOS
+	env GOOS=darwin GOARCH=amd64 $(GOCMD) build -v -o $(BINARY_DIR)/api-macos ./cmd/api
+
+
 run: ## Start application
 	$(GOCMD) run ./cmd/api
 
