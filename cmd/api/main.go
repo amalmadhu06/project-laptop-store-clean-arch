@@ -16,7 +16,7 @@ import (
 // @contact.email madhuamal06@gmail.com
 
 // @license.name MIT
-// @host www.amalmadhu.live
+// @host amalmadhu.live
 // @license.url https://opensource.org/licenses/MIT
 
 // @BasePath /

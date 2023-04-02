@@ -252,7 +252,7 @@ definitions:
       status_code:
         type: integer
     type: object
-host: www.amalmadhu.live
+host: amalmadhu.live
 info:
   contact:
     email: madhuamal06@gmail.com
