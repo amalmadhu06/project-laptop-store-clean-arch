@@ -23,6 +23,28 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 	}
 }
 
+// @title Ecommerce REST API
+// @version 1.0
+// @description Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture.
+//              Hosted with Nginx, AWS EC2, and RDS.
+
+// @contact
+// name: Amal Madhu
+// url: https://github.com/amalmadhu06
+// email: madhuamal06@gmail.com
+
+// @license
+// name: MIT
+// url: https://opensource.org/licenses/MIT
+
+// @host amalmadhu.live
+// @schemes https
+
+// @BasePath /
+// @Accept json
+// @Produce json
+// @Router / [get]
+
 // CreateUser
 // @Summary Create a new user
 // @ID create-user
