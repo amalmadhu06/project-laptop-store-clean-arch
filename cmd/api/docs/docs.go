@@ -10,15 +10,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {
-            "name": "Amal Madhu",
-            "url": "https://github.com/amalmadhu06",
-            "email": "madhuamal06@gmail.com"
-        },
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -3099,10 +3091,10 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "amalmadhu.live",
-	BasePath:         "/",
-	Schemes:          []string{},
+	BasePath:         "",
+	Schemes:          []string{"https"},
 	Title:            "Ecommerce REST API",
-	Description:      "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture. Hosted with Ngnix, AWS EC2 and RDS",
+	Description:      "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

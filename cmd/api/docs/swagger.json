@@ -1,21 +1,15 @@
 {
+    "schemes": [
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
-        "description": "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture. Hosted with Ngnix, AWS EC2 and RDS",
+        "description": "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture.",
         "title": "Ecommerce REST API",
-        "contact": {
-            "name": "Amal Madhu",
-            "url": "https://github.com/amalmadhu06",
-            "email": "madhuamal06@gmail.com"
-        },
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        },
+        "contact": {},
         "version": "1.0"
     },
     "host": "amalmadhu.live",
-    "basePath": "/",
     "paths": {
         "/addresses/": {
             "put": {

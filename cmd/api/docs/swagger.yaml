@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   domain.Product:
     properties:
@@ -254,15 +253,9 @@ definitions:
     type: object
 host: amalmadhu.live
 info:
-  contact:
-    email: madhuamal06@gmail.com
-    name: Amal Madhu
-    url: https://github.com/amalmadhu06
+  contact: {}
   description: Ecommerce REST API built using Go Lang, PSQL, REST API following Clean
-    Architecture. Hosted with Ngnix, AWS EC2 and RDS
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
+    Architecture.
   title: Ecommerce REST API
   version: "1.0"
 paths:
@@ -2061,4 +2054,6 @@ paths:
       summary: User can add product item to wishlist
       tags:
       - Wishlist
+schemes:
+- https
 swagger: "2.0"
