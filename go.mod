@@ -12,7 +12,7 @@ require (
 	github.com/razorpay/razorpay-go v0.0.0-20230215135222-7e85dffcb7f0
 	github.com/spf13/viper v1.15.0
 	github.com/swaggo/files v1.0.1
-	github.com/swaggo/gin-swagger v1.5.3
+	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.8.12
 	github.com/twilio/twilio-go v1.3.4
 	golang.org/x/crypto v0.6.0
