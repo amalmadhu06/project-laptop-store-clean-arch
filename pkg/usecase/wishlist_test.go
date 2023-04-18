@@ -14,7 +14,7 @@ func TestAddToWishlist(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockWishlistRepo := mockRepo.NewMockWishlistRepository(ctrl)
-	mockWishlist := model.ViewWishlist{
+	mockWishlist := model.ViewWishlist{ //expected output of ViewWishlist method
 		UserID: 1,
 		Items:  []model.WishlistItem{},
 	}

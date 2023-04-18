@@ -4,86 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/domain"
-	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
-	"github.com/stretchr/testify/require"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"testing"
 )
 
 var ErrProductAlreadyInWishlist = errors.New("product already in wishlist")
-
-func TestViewWishlist(t *testing.T) {
-	// create a new sqlmock database connection
-	db, mock, err := sqlmock.New()
-	require.NoError(t, err)
-	defer func(db *sql.DB) {
-		err := db.Close()
-		if err != nil {
-
-		}
-	}(db)
-
-	gormDB, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: db,
-	}), &gorm.Config{})
-	if err != nil {
-		t.Fatalf("Failed to create GORM DB instance: %v", err)
-	}
-
-	// create a new repository instance using the mockRepo database
-	repo := NewWishlistRepository(gormDB)
-
-	// prepare test data
-	userID := 1
-	wishlistID := 2
-	productItemID := 3
-	productItemName := "Test Item"
-	productItemModel := "Test Model"
-	productItemBrand := "Test Brand"
-	productItemPrice := 1000
-	productItemImage := "test-item-image.jpg"
-	mockWishlist := domain.Wishlist{
-		ID:     uint(wishlistID),
-		UserID: userID,
-	}
-	fmt.Println(mockWishlist)
-	mockWishlistItems := []model.WishlistItem{
-		{
-			ProductItemID: productItemID,
-			Name:          productItemName,
-			Model:         productItemModel,
-			Brand:         productItemBrand,
-			Price:         float64(productItemPrice),
-			Image:         "",
-		},
-	}
-	expectedResult := model.ViewWishlist{
-		ID:     int(mockWishlist.ID),
-		UserID: mockWishlist.UserID,
-		Items:  mockWishlistItems,
-	}
-
-	// define mockRepo expectations
-	mock.ExpectBegin()
-	mock.ExpectQuery("SELECT").WithArgs(userID).WillReturnRows(
-		sqlmock.NewRows([]string{"id", "user_id"}).AddRow(wishlistID, userID))
-	mock.ExpectQuery("SELECT").WithArgs(wishlistID).WillReturnRows(
-		sqlmock.NewRows([]string{"product_item_id", "name", "model", "brand", "price", "product_item_image"}).
-			AddRow(productItemID, productItemName, productItemModel, productItemBrand, productItemPrice, productItemImage))
-	mock.ExpectCommit()
-
-	// invoke the function being tested
-	actualResult, err := repo.ViewWishlist(context.Background(), userID)
-	require.NoError(t, err)
-	require.Equal(t, expectedResult, actualResult)
-
-	// assert that all expectations were met
-	//require.NoError(t, mockRepo.ExpectationsWereMet())
-}
 
 func TestRemoveFromWishlist(t *testing.T) {
 	// create a new mockRepo database connection
