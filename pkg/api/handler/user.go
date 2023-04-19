@@ -1,16 +1,14 @@
 package handler
 
 import (
-	"context"
+	"fmt"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/api/handlerUtil"
 	services "github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/usecase/interface"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/response"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 type UserHandler struct {
@@ -59,11 +57,12 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Router /signup [post]
 func (cr *UserHandler) CreateUser(c *gin.Context) {
 	//cancelling the request if it is taking more than one minute to send back a response
-	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Minute)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(c.Request.Context(), time.Minute)
+	//defer cancel()
 	// 1. receive data from request body
 	var body model.UserDataInput
-	if err := c.Bind(&body); err != nil {
+	if err := c.BindJSON(&body); err != nil {
+		fmt.Println(err.Error())
 		// Return a 422 Bad request response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
 			StatusCode: 422,
@@ -74,7 +73,7 @@ func (cr *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 	// Call the CreateUser method of the userUseCase to create the user.
-	userData, err := cr.userUseCase.CreateUser(ctx, body)
+	userData, err := cr.userUseCase.CreateUser(c.Request.Context(), body)
 	if err != nil {
 		// Return a 400 Bad request response if there is an error while creating the user.
 		c.JSON(http.StatusBadRequest, response.Response{
