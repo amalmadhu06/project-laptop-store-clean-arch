@@ -29,29 +29,32 @@ jobs:
           go mod tidy
           go mod verify
 
-      - name: Install subcommands
+#      - name: Install subcommands
+#        run: |
+#          go get github.com/google/subcommands
+#
+#      - name: Install wire
+#        run: |
+#          go get github.com/google/wire/cmd/wire@v0.5.0
+#
+#      - name: Generate wire_gen.go
+#        run: |
+#          cd pkg/di && go run github.com/google/wire/cmd/wire
+#
+#      - name: Install swag
+#        run: |
+#          go get github.com/swaggo/swag/cmd/swag
+#          go get github.com/swaggo/swag/gen@v1.8.1
+#          go get github.com/swaggo/swag/cmd/swag@v1.8.1
+#          go install github.com/swaggo/swag/cmd/swag
+#
+#      - name: Generate Swagger docs
+#        run: |
+#          cd cmd/api && go get -u github.com/swaggo/swag/cmd/swag
+#          swag init --parseDependency --parseInternal --parseDepth 1 -md ./documentation -o ./docs
+      - name : Unit Tests
         run: |
-          go get github.com/google/subcommands
-
-      - name: Install wire
-        run: |
-          go get github.com/google/wire/cmd/wire@v0.5.0
-
-      - name: Generate wire_gen.go
-        run: |
-          cd pkg/di && go run github.com/google/wire/cmd/wire
-
-      - name: Install swag
-        run: |
-          go get github.com/swaggo/swag/cmd/swag
-          go get github.com/swaggo/swag/gen@v1.8.1
-          go get github.com/swaggo/swag/cmd/swag@v1.8.1
-          go install github.com/swaggo/swag/cmd/swag
-
-      - name: Generate Swagger docs
-        run: |
-          cd cmd/api && go get -u github.com/swaggo/swag/cmd/swag
-          swag init --parseDependency --parseInternal --parseDepth 1 -md ./documentation -o ./docs
+          go test ./... -cover
 
       - name: Build the Go application
         run: |
