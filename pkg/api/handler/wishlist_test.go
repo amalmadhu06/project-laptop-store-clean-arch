@@ -57,7 +57,6 @@ func TestAddToWishlist(t *testing.T) {
 
 func TestViewWishlist(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
 	mockWishlistUsecase := mockUsecase.NewMockWishlistUseCase(ctrl)
 

@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 )
 
@@ -32,10 +33,11 @@ func TestCreateUser(t *testing.T) {
 		buildStub        func(userUsecase mockUsecase.MockUserUseCase) // function to generate the mock user use case
 		expectedCode     int                                           // expected status code
 		expectedResponse response.Response                             // expected response for the request
+		expectedData     model.UserDataOutput                          //expected data in output
 		expectedError    error                                         // expected error in the response
 	}{
 		{ // test case for checking user sign up for a non-registered users
-			name: "create non existing user",
+			name: "non existing user",
 			userData: model.UserDataInput{
 				FName:    "Amal",
 				LName:    "Madhu",
@@ -74,6 +76,48 @@ func TestCreateUser(t *testing.T) {
 				},
 				Errors: nil,
 			},
+			expectedData: model.UserDataOutput{
+				ID:    1,
+				FName: "Amal",
+				LName: "Madhu",
+				Email: "amalmadhu@gmail.com",
+				Phone: "7902631234",
+			},
+		},
+		{
+			//	test case for checking signup of duplicate user
+			name: "duplicate user",
+			userData: model.UserDataInput{
+				FName:    "Amal",
+				LName:    "Madhu",
+				Email:    "amalmadhu@gmail.com",
+				Phone:    "7902631234",
+				Password: "password@123",
+			},
+			buildStub: func(userUsecase mockUsecase.MockUserUseCase) {
+				userUsecase.EXPECT().
+					CreateUser(gomock.Any(), model.UserDataInput{
+						FName:    "Amal",
+						LName:    "Madhu",
+						Email:    "amalmadhu@gmail.com",
+						Phone:    "7902631234",
+						Password: "password@123",
+					}).
+					Times(1).
+					Return(
+						model.UserDataOutput{},
+						errors.New("user already exists"),
+					)
+			},
+			expectedCode: 400,
+			expectedResponse: response.Response{
+				StatusCode: 400,
+				Message:    "failed to create user",
+				Data:       model.UserDataOutput{},
+				Errors:     "failed to create user",
+			},
+			expectedError: errors.New("failed to create user"),
+			expectedData:  model.UserDataOutput{},
 		},
 	}
 
@@ -100,14 +144,34 @@ func TestCreateUser(t *testing.T) {
 			req := httptest.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
 			//recorder will record the response, and req is the mock req that we created with test data
 			engine.ServeHTTP(recorder, req)
-
+			//actual will hold the actual response
 			var actual response.Response
+			//unmarshalling json data to response.Response format
 			err = json.Unmarshal(recorder.Body.Bytes(), &actual)
-
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expectedCode, recorder.Code)
 			assert.Equal(t, tt.expectedResponse.Message, actual.Message)
+
 			// Todo : compare actual response body and actual response body
+
+			//check if data is of type map[string]interface{}
+			fmt.Printf("type of actual data %t\n", actual.Data)
+			data, ok := actual.Data.(map[string]interface{})
+			if ok {
+				userData := model.UserDataOutput{
+					ID:    uint(int(data["user_id"].(float64))),
+					FName: data["f_name"].(string),
+					LName: data["l_name"].(string),
+					Email: data["email"].(string),
+					Phone: data["phone"].(string),
+				}
+				if !reflect.DeepEqual(tt.expectedData, userData) {
+					t.Errorf("got %q, but want %q", userData, tt.expectedData)
+				}
+			} else {
+				t.Errorf("actual.Data is not of type map[string]interface{}")
+			}
+
 		})
 	}
 

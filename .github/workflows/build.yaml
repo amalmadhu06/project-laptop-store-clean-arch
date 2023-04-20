@@ -29,6 +29,10 @@ jobs:
           go mod tidy
           go mod verify
 
+      - name: go fmt
+        run: |
+          go fmt ./...
+          
       - name : Unit Tests
         run: |
           go test ./... -cover

@@ -79,7 +79,7 @@ func (cr *UserHandler) CreateUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: 400,
 			Message:    "failed to create user",
-			Data:       nil,
+			Data:       model.UserDataOutput{},
 			Errors:     err.Error(),
 		})
 		return

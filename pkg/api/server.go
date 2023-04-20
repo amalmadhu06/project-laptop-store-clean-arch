@@ -23,7 +23,6 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 ) *ServerHTTP {
 
 	engine := gin.New()
-
 	engine.Use(gin.Logger())
 
 	// swagger docs
