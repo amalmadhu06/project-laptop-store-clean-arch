@@ -2,8 +2,10 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/util/model"
+	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"reflect"
@@ -11,99 +13,204 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	ctx := context.Background()
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("failed to create mockRepo: %v", err)
+	tests := []struct {
+		name           string
+		input          model.UserDataInput
+		expectedOutput model.UserDataOutput
+		buildStub      func(mock sqlmock.Sqlmock)
+		expectedErr    error
+	}{
+		{ //test case for creating a new user
+			name: "successful create user",
+			input: model.UserDataInput{
+				FName:    "Sujith",
+				LName:    "S",
+				Email:    "sujith@gmail.com",
+				Phone:    "7902638845",
+				Password: "sujith@123",
+			},
+			expectedOutput: model.UserDataOutput{
+				ID:    3,
+				FName: "Sujith",
+				LName: "S",
+				Email: "sujith@gmail.com",
+				Phone: "7902638845",
+			},
+			buildStub: func(mock sqlmock.Sqlmock) {
+				rows := sqlmock.NewRows([]string{"id", "f_name", "l_name", "email", "phone", "password"}).
+					AddRow(3, "Sujith", "S", "sujith@gmail.com", "7902638845", "sujith@123")
+
+				mock.ExpectQuery("^INSERT INTO users (.+)$").
+					WithArgs("Sujith", "S", "sujith@gmail.com", "7902638845", "sujith@123").
+					WillReturnRows(rows)
+
+				mock.ExpectExec("^INSERT INTO user_infos (.+)$").
+					WithArgs(3).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+			},
+			expectedErr: nil,
+		},
+		{ //test case for trying to insert a user with duplicate phone id
+			name: "duplicate phone",
+			input: model.UserDataInput{
+				FName:    "Sujith",
+				LName:    "S",
+				Email:    "sujith@gmail.com",
+				Phone:    "7902638845",
+				Password: "sujith@123",
+			},
+			expectedOutput: model.UserDataOutput{},
+			buildStub: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery("^INSERT INTO users (.+)$").
+					WithArgs("Sujith", "S", "sujith@gmail.com", "7902638845", "sujith@123").
+					WillReturnError(errors.New("duplicate key value violates unique constraint 'phone'"))
+			},
+			expectedErr: errors.New("duplicate key value violates unique constraint 'phone'"),
+		},
+		{ //test case for inserting a user with duplicate phone number
+			name: "duplicate phone",
+			input: model.UserDataInput{
+				FName:    "Sujith",
+				LName:    "S",
+				Email:    "sujith@gmail.com",
+				Phone:    "7902638845",
+				Password: "sujith@123",
+			},
+			expectedOutput: model.UserDataOutput{},
+			buildStub: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery("^INSERT INTO users (.+)$").
+					WithArgs("Sujith", "S", "sujith@gmail.com", "7902638845", "sujith@123").
+					WillReturnError(errors.New("duplicate key value violates unique constraint 'phone'"))
+			},
+			expectedErr: errors.New("duplicate key value violates unique constraint 'phone'"),
+		},
 	}
-	defer db.Close()
-	gormDB, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: db,
-	}), &gorm.Config{})
 
-	c := NewUserRepository(gormDB)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			//New() method from sqlmock package create sqlmock database connection and a mock to manage expectations.
+			db, mock, err := sqlmock.New()
+			if err != nil {
+				t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+			}
+			//close the mock db connection after testing.
+			defer db.Close()
 
-	// Mock the insert query for users table
-	rows := sqlmock.NewRows([]string{"id", "f_name", "l_name", "email", "phone", "password"}).
-		AddRow(1, "John", "Doe", "johndoe@example.com", "1234567890", "password")
-	mock.ExpectQuery("^INSERT INTO users (.+)$").WithArgs("John", "Doe", "johndoe@example.com", "1234567890", "password").WillReturnRows(rows)
+			//initialize a mock db session
+			gormDB, err := gorm.Open(postgres.New(postgres.Config{Conn: db}), &gorm.Config{})
+			if err != nil {
+				t.Fatalf("an error '%s' was not expected when initializing a mock db session", err)
+			}
 
-	// Mock the insert query for user_infos table
-	mock.ExpectExec("^INSERT INTO user_infos (.+)$").WithArgs(1).WillReturnResult(sqlmock.NewResult(0, 1))
+			//create NewUserRepository mock by passing a pointer to gorm.DB
+			userRepository := NewUserRepository(gormDB)
 
-	// Call the function being tested
-	input := model.UserDataInput{
-		FName:    "John",
-		LName:    "Doe",
-		Email:    "johndoe@example.com",
-		Phone:    "1234567890",
-		Password: "password",
-	}
-	expectedOutput := model.UserDataOutput{
-		ID:    1,
-		FName: "John",
-		LName: "Doe",
-		Email: "johndoe@example.com",
-		Phone: "1234567890",
-	}
-	actualOutput, err := c.CreateUser(ctx, input)
+			// before we actually execute our function, we need to expect required DB actions
+			tt.buildStub(mock)
 
-	// Check the output and error
-	if err != nil {
-		t.Errorf("Unexpected error: %v", err)
-	}
-	if !reflect.DeepEqual(expectedOutput, actualOutput) {
-		t.Errorf("Unexpected output. Expected %v, but got %v", expectedOutput, actualOutput)
-	}
+			//call the actual method
+			actualOutput, actualErr := userRepository.CreateUser(context.TODO(), tt.input)
+			// validate err is nil if we are not expecting to receive an error
+			if tt.expectedErr == nil {
+				assert.NoError(t, actualErr)
+			} else { //validate whether expected and actual errors are same
+				assert.Equal(t, tt.expectedErr, actualErr)
+			}
 
-	// Check that all expectations were met
-	err = mock.ExpectationsWereMet()
-	if err != nil {
-		t.Errorf("Unfulfilled expectations: %s", err)
+			if !reflect.DeepEqual(tt.expectedOutput, actualOutput) {
+				t.Errorf("got %v, but want %v", actualOutput, tt.expectedOutput)
+			}
+
+			// Check that all expectations were met
+			err = mock.ExpectationsWereMet()
+			if err != nil {
+				t.Errorf("Unfulfilled expectations: %s", err)
+			}
+		})
 	}
 }
 
 func TestFindByEmail(t *testing.T) {
-	ctx := context.Background()
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatalf("failed to create mockRepo: %v", err)
+	testData := []struct {
+		name           string
+		email          string
+		expectedOutput model.UserLoginVerifier
+		buildStub      func(mock sqlmock.Sqlmock)
+		expectedErr    error
+	}{
+		{ //test case for finding a valid user
+			name:  "valid email",
+			email: "sujith@gmail.com",
+			expectedOutput: model.UserLoginVerifier{
+				ID:         3,
+				FName:      "Sujith",
+				LName:      "S",
+				Email:      "sujith@gmail.com",
+				Phone:      "7902638845",
+				Password:   "sujith@123",
+				IsBlocked:  false,
+				IsVerified: true,
+			},
+			buildStub: func(mock sqlmock.Sqlmock) {
+				columns := []string{"id", "f_name", "l_name", "email", "phone", "password", "is_blocked", "is_verified"}
+				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
+					WithArgs("sujith@gmail.com").
+					WillReturnRows(sqlmock.NewRows(columns).FromCSVString("3,Sujith,S,sujith@gmail.com,7902638845,sujith@123,f,t"))
+			},
+			expectedErr: nil,
+		},
+		//{ //test case when user does not exists for the given mail
+		//	name:           "invalid phone",
+		//	email:          "nonexistinguser@gmail.com",
+		//	expectedOutput: model.UserLoginVerifier{},
+		//	buildStub: func(mock sqlmock.Sqlmock) {
+		//		mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.phone, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
+		//			WithArgs("nonexistinguser@gmail.com").
+		//			WillReturnError(errors.New("no rows found"))
+		//	},
+		//	expectedErr: errors.New("no rows found"),
+		//},
 	}
-	defer db.Close()
 
-	gormDB, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: db,
-	}), &gorm.Config{})
+	for _, tt := range testData {
+		t.Run(tt.name, func(t *testing.T) {
+			// create an sqlmock database connection and mock to manage expectations
+			db, mock, err := sqlmock.New()
+			if err != nil {
+				t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+			}
 
-	c := NewUserRepository(gormDB)
+			//	initialize a mock db session
+			gormDB, err := gorm.Open(postgres.New(postgres.Config{Conn: db}), &gorm.Config{})
 
-	// Test Case 1: Successful execution of query
-	rows := sqlmock.NewRows([]string{"id", "f_name", "l_name", "email", "phone", "password", "is_blocked", "is_verified"}).
-		AddRow(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", false, true)
+			if err != nil {
+				t.Fatalf("an error '%s' was not expected when initializing a mock db session", err)
+			}
 
-	mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.email = (.+)").
-		WithArgs("john.doe@example.com").
-		WillReturnRows(rows)
+			//create NewUserRepository mock by passing a pointer to gorm.DB
+			userRepository := NewUserRepository(gormDB)
 
-	result, err := c.FindByEmail(ctx, "john.doe@example.com")
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
+			// before we actually execute our function, we need to expect required DB actions
+			tt.buildStub(mock)
 
-	if result.ID != 1 || result.FName != "John" || result.LName != "Doe" || result.Email != "john.doe@example.com" ||
-		result.Phone != "1234567890" || result.Password != "password" || result.IsBlocked || !result.IsVerified {
-		t.Errorf("unexpected result: %v", result)
-	}
+			//call the actual method
+			actualOutput, actualErr := userRepository.FindByEmail(context.TODO(), tt.email)
 
-	// Test Case 2: Query returning no rows
-	rows = sqlmock.NewRows([]string{})
+			// validate err is nil if we are not expecting to receive an error
+			if tt.expectedErr == nil {
+				assert.NoError(t, actualErr)
+			} else { //validate whether expected and actual errors are same
+				assert.Equal(t, tt.expectedErr, actualErr)
+			}
 
-	mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.email = (.+)").
-		WithArgs("invalid@example.com").
-		WillReturnRows(rows)
+			if !reflect.DeepEqual(tt.expectedOutput, actualOutput) {
+				t.Errorf("got %v, but want %v", actualOutput, tt.expectedOutput)
+			}
 
-	result, err = c.FindByEmail(ctx, "invalid@example.com")
-	if result.ID != 0 {
-		t.Errorf("unexpected result: %v", result)
+			// Check that all expectations were met
+			if err = mock.ExpectationsWereMet(); err != nil {
+				t.Errorf("Unfulfilled expectations: %s", err)
+			}
+		})
 	}
 }

@@ -38,7 +38,7 @@ func (c *otpDatabase) CheckWithMobile(ctx context.Context, phone string) (bool, 
 
 func (c *otpDatabase) FindByPhone(ctx context.Context, phone string) (model.UserLoginVerifier, error) {
 	var userData model.UserLoginVerifier
-	findUserQuery := `	SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified 
+	findUserQuery := `	SELECT users.id, users.f_name, users.l_name, users.phone, users.phone, users.password, infos.is_blocked, infos.is_verified 
 						FROM users as users 
 						FULL OUTER JOIN user_infos as infos 
 						ON users.id = infos.users_id 	
