@@ -38,7 +38,6 @@ func EqCreateUserParams(arg model.UserDataInput, password string) gomock.Matcher
 	return eqCreateUserParamsMatcher{arg, password}
 }
 
-// Todo : fix password hashing []
 func TestCreateUser(t *testing.T) {
 	// NewController from gomock package returns a new controller for testing
 	ctrl := gomock.NewController(t)

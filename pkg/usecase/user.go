@@ -25,7 +25,6 @@ func NewUserUseCase(userRepo interfaces.UserRepository, orderRepo interfaces.Ord
 }
 
 func (c *userUseCase) CreateUser(ctx context.Context, input model.UserDataInput) (model.UserDataOutput, error) {
-	//Todo : Fix password hashing
 	//Hashing user password
 	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), 10)
 	if err != nil {
