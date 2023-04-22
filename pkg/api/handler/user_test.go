@@ -47,14 +47,14 @@ func TestCreateUser(t *testing.T) {
 			},
 			buildStub: func(userUsecase mockUsecase.MockUserUseCase) {
 				userUsecase.EXPECT(). //setting the expected behaviour of the usecase method
-							CreateUser(gomock.Any(), model.UserDataInput{ //CreateUser usecase receives two arguments, one is context.so we can use gomock.Any(). next one is user signup information
+					CreateUser(gomock.Any(), model.UserDataInput{ //CreateUser usecase receives two arguments, one is context.so we can use gomock.Any(). next one is user signup information
 						FName:    "Amal",
 						LName:    "Madhu",
 						Email:    "amalmadhu@gmail.com",
 						Phone:    "7902631234",
 						Password: "password@123",
 					}).
-					Times(1).                    //how many times the CreateUser usecase should be called
+					Times(1). //how many times the CreateUser usecase should be called
 					Return(model.UserDataOutput{ //what should CreateUser usecase return. Here it should return user info and nil (error)
 						ID:    1,
 						FName: "Amal",
@@ -151,8 +151,6 @@ func TestCreateUser(t *testing.T) {
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expectedCode, recorder.Code)
 			assert.Equal(t, tt.expectedResponse.Message, actual.Message)
-
-			// Todo : compare actual response body and actual response body
 
 			//check if data is of type map[string]interface{}
 			fmt.Printf("type of actual data %t\n", actual.Data)
