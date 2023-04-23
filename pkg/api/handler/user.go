@@ -108,7 +108,7 @@ func (cr *UserHandler) CreateUser(c *gin.Context) {
 func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 	//receive data from request body
 	var body model.UserLoginEmail
-	if err := c.Bind(&body); err != nil {
+	if err := c.BindJSON(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
 			StatusCode: 422,
@@ -125,7 +125,7 @@ func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: 400,
 			Message:    "failed to login",
-			Data:       nil,
+			Data:       model.UserDataOutput{},
 			Errors:     err.Error(),
 		})
 		return
@@ -156,7 +156,7 @@ func (cr *UserHandler) LoginWithEmail(c *gin.Context) {
 func (cr *UserHandler) LoginWithPhone(c *gin.Context) {
 	// receive data from request body
 	var body model.UserLoginPhone
-	if err := c.Bind(&body); err != nil {
+	if err := c.BindJSON(&body); err != nil {
 		// Return a 421 response if the request body is malformed.
 		c.JSON(http.StatusUnprocessableEntity, response.Response{
 			StatusCode: 422,
@@ -173,7 +173,7 @@ func (cr *UserHandler) LoginWithPhone(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response.Response{
 			StatusCode: 400,
 			Message:    "failed to login",
-			Data:       nil,
+			Data:       model.UserDataOutput{},
 			Errors:     err.Error(),
 		})
 		return

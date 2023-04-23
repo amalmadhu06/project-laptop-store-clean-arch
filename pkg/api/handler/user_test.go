@@ -47,14 +47,14 @@ func TestCreateUser(t *testing.T) {
 			},
 			buildStub: func(userUsecase mockUsecase.MockUserUseCase) {
 				userUsecase.EXPECT(). //setting the expected behaviour of the usecase method
-					CreateUser(gomock.Any(), model.UserDataInput{ //CreateUser usecase receives two arguments, one is context.so we can use gomock.Any(). next one is user signup information
+							CreateUser(gomock.Any(), model.UserDataInput{ //CreateUser usecase receives two arguments, one is context.so we can use gomock.Any(). next one is user signup information
 						FName:    "Amal",
 						LName:    "Madhu",
 						Email:    "amalmadhu@gmail.com",
 						Phone:    "7902631234",
 						Password: "password@123",
 					}).
-					Times(1). //how many times the CreateUser usecase should be called
+					Times(1).                    //how many times the CreateUser usecase should be called
 					Return(model.UserDataOutput{ //what should CreateUser usecase return. Here it should return user info and nil (error)
 						ID:    1,
 						FName: "Amal",
@@ -173,6 +173,340 @@ func TestCreateUser(t *testing.T) {
 		})
 	}
 
+}
+
+func TestLoginWithEmail(t *testing.T) {
+	// create a new controller for testing
+	ctrl := gomock.NewController(t)
+
+	// create a new instance of the mock user use case
+	userUseCase := mockUsecase.NewMockUserUseCase(ctrl)
+
+	// create a new handler using the mock user use case created
+	userHandler := NewUserHandler(userUseCase)
+
+	// testData is a slice of structs for storing test cases
+	testData := []struct {
+		name             string               //name of the test case
+		userData         model.UserLoginEmail // data that is used for user login
+		buildStub        func(userUseCase mockUsecase.MockUserUseCase)
+		expectedResponse response.Response
+		expectedCode     int
+		expectedErr      error
+		expectedData     model.UserDataOutput
+	}{
+		{
+			name: "valid user",
+			userData: model.UserLoginEmail{
+				Email:    "amalmadhu@gmail.com",
+				Password: "password@123",
+			},
+			buildStub: func(userUseCase mockUsecase.MockUserUseCase) {
+				userUseCase.EXPECT().
+					LoginWithEmail(
+						gomock.Any(), model.UserLoginEmail{
+							Email:    "amalmadhu@gmail.com",
+							Password: "password@123",
+						}).
+					Times(1).
+					Return(
+						"singedString",
+						model.UserDataOutput{
+							ID:    1,
+							FName: "Amal",
+							LName: "Madhu",
+							Email: "amalmadhu@gmail.com",
+							Phone: "7902631234",
+						},
+						nil)
+			},
+			expectedResponse: response.Response{
+				StatusCode: 200,
+				Message:    "Successfully logged in",
+				Data: model.UserDataOutput{
+					ID:    1,
+					FName: "Amal",
+					LName: "Madhu",
+					Email: "amalmadhu@gmail.com",
+					Phone: "7902631234",
+				},
+				Errors: nil,
+			},
+			expectedCode: 200,
+			expectedErr:  nil,
+			expectedData: model.UserDataOutput{
+				ID:    1,
+				FName: "Amal",
+				LName: "Madhu",
+				Email: "amalmadhu@gmail.com",
+				Phone: "7902631234",
+			},
+		},
+		{
+			name: "incorrect email or password",
+			userData: model.UserLoginEmail{
+				Email:    "randomemail@gmail.com",
+				Password: "randomPassword@123",
+			},
+			buildStub: func(userUseCase mockUsecase.MockUserUseCase) {
+				userUseCase.EXPECT().LoginWithEmail(
+					gomock.Any(),
+					model.UserLoginEmail{
+						Email:    "randomemail@gmail.com",
+						Password: "randomPassword@123",
+					}).
+					Times(1).
+					Return("", model.UserDataOutput{}, errors.New("incorrect email id or password"))
+
+			},
+			expectedResponse: response.Response{
+				StatusCode: 400,
+				Message:    "failed to login",
+				Data:       model.UserDataOutput{},
+				Errors:     errors.New("incorrect email id or password"),
+			},
+			expectedCode: 400,
+			expectedErr:  errors.New("incorrect email id or password"),
+			expectedData: model.UserDataOutput{},
+		},
+	}
+
+	// looping through the test cases and running them individually
+	for _, tt := range testData {
+		t.Run(tt.name, func(t *testing.T) {
+
+			// pass mock use case to buildStub
+			tt.buildStub(*userUseCase)
+
+			// gin.Default will create an engine with default logger middlewares
+			engine := gin.Default()
+
+			// initialize a response recorder for capturing http  response
+			recorder := httptest.NewRecorder()
+
+			//url string for the endpoint
+			url := "/login/email"
+
+			// create a new route for testing
+			engine.POST(url, userHandler.LoginWithEmail)
+
+			// body is a slice of bytes. It is used for Marshaling data to json and passing to the request body
+			var body []byte
+
+			// marshaling user data in the test case
+			body, err := json.Marshal(tt.userData)
+
+			// validate no error occurred while marshaling data to json
+			assert.NoError(t, err)
+
+			// NewRequest returns a new incoming server Request, which we can pass to a http.Handler for testing
+			req := httptest.NewRequest(http.MethodPost, url, bytes.NewBuffer(body)) // check what is buffer
+
+			// req is a pointer to http.Request . With httptest.NewRequest we are mentioning the http method, endpoint and body
+			engine.ServeHTTP(recorder, req)
+
+			// actual will hold the actual reponse
+			var actual response.Response
+
+			// unmarshalling json data to response.Response format
+			err = json.Unmarshal(recorder.Body.Bytes(), &actual)
+
+			// validating no error occurred while unmarshalling json to response.Response struct
+			assert.NoError(t, err)
+
+			// validate expected status code and received status code are same
+			assert.Equal(t, tt.expectedCode, recorder.Code)
+
+			// validate expected response message and received response are same
+			assert.Equal(t, tt.expectedResponse.Message, actual.Message)
+
+			// validate expected data and received data are same
+			// type assertion
+			data, ok := actual.Data.(map[string]interface{})
+			if !ok {
+				t.Errorf("type assertion failed for actual.Data")
+			}
+			userData := model.UserDataOutput{
+				ID:    uint(data["user_id"].(float64)),
+				FName: data["f_name"].(string),
+				LName: data["l_name"].(string),
+				Email: data["email"].(string),
+				Phone: data["phone"].(string),
+			}
+
+			// validating expected data and received are same. If not test will fail
+			if !reflect.DeepEqual(tt.expectedData, userData) {
+				t.Errorf("got %v, but want %v", userData, tt.expectedData)
+			}
+		})
+	}
+}
+
+func TestLoginWithPhone(t *testing.T) {
+	// create a new controller for testing
+	ctrl := gomock.NewController(t)
+
+	// create a new instance of the mock user use case
+	userUseCase := mockUsecase.NewMockUserUseCase(ctrl)
+
+	// create a new handler using the mock user use case created
+	userHandler := NewUserHandler(userUseCase)
+
+	// testData is a slice of structs for storing test cases
+	testData := []struct {
+		name             string               //name of the test case
+		userData         model.UserLoginPhone // data that is used for user login
+		buildStub        func(userUseCase mockUsecase.MockUserUseCase)
+		expectedResponse response.Response
+		expectedCode     int
+		expectedErr      error
+		expectedData     model.UserDataOutput
+	}{
+		{
+			name: "valid user",
+			userData: model.UserLoginPhone{
+				Phone:    "7902631234",
+				Password: "password@123",
+			},
+			buildStub: func(userUseCase mockUsecase.MockUserUseCase) {
+				userUseCase.EXPECT().
+					LoginWithPhone(
+						gomock.Any(), model.UserLoginPhone{
+							Phone:    "7902631234",
+							Password: "password@123",
+						}).
+					Times(1).
+					Return(
+						"singedString",
+						model.UserDataOutput{
+							ID:    1,
+							FName: "Amal",
+							LName: "Madhu",
+							Email: "amalmadhu@gmail.com",
+							Phone: "7902631234",
+						},
+						nil)
+			},
+			expectedResponse: response.Response{
+				StatusCode: 200,
+				Message:    "Successfully logged in",
+				Data: model.UserDataOutput{
+					ID:    1,
+					FName: "Amal",
+					LName: "Madhu",
+					Email: "amalmadhu@gmail.com",
+					Phone: "7902631234",
+				},
+				Errors: nil,
+			},
+			expectedCode: 200,
+			expectedErr:  nil,
+			expectedData: model.UserDataOutput{
+				ID:    1,
+				FName: "Amal",
+				LName: "Madhu",
+				Email: "amalmadhu@gmail.com",
+				Phone: "7902631234",
+			},
+		},
+		{
+			name: "incorrect phone or password",
+			userData: model.UserLoginPhone{
+				Phone:    "7902631234",
+				Password: "randomPassword@123",
+			},
+			buildStub: func(userUseCase mockUsecase.MockUserUseCase) {
+				userUseCase.EXPECT().LoginWithPhone(
+					gomock.Any(),
+					model.UserLoginPhone{
+						Phone:    "7902631234",
+						Password: "randomPassword@123",
+					}).
+					Times(1).
+					Return("", model.UserDataOutput{}, errors.New("incorrect email id or password"))
+
+			},
+			expectedResponse: response.Response{
+				StatusCode: 400,
+				Message:    "failed to login",
+				Data:       model.UserDataOutput{},
+				Errors:     errors.New("incorrect phone id or password"),
+			},
+			expectedCode: 400,
+			expectedErr:  errors.New("incorrect phone id or password"),
+			expectedData: model.UserDataOutput{},
+		},
+	}
+
+	// looping through the test cases and running them individually
+	for _, tt := range testData {
+		t.Run(tt.name, func(t *testing.T) {
+
+			// pass mock use case to buildStub
+			tt.buildStub(*userUseCase)
+
+			// gin.Default will create an engine with default logger middlewares
+			engine := gin.Default()
+
+			// initialize a response recorder for capturing http  response
+			recorder := httptest.NewRecorder()
+
+			//url string for the endpoint
+			url := "/login/phone"
+
+			// create a new route for testing
+			engine.POST(url, userHandler.LoginWithPhone)
+
+			// body is a slice of bytes. It is used for Marshaling data to json and passing to the request body
+			var body []byte
+
+			// marshaling user data in the test case
+			body, err := json.Marshal(tt.userData)
+
+			// validate no error occurred while marshaling data to json
+			assert.NoError(t, err)
+
+			// NewRequest returns a new incoming server Request, which we can pass to a http.Handler for testing
+			req := httptest.NewRequest(http.MethodPost, url, bytes.NewBuffer(body)) // check what is buffer
+
+			// req is a pointer to http.Request . With httptest.NewRequest we are mentioning the http method, endpoint and body
+			engine.ServeHTTP(recorder, req)
+
+			// actual will hold the actual reponse
+			var actual response.Response
+
+			// unmarshalling json data to response.Response format
+			err = json.Unmarshal(recorder.Body.Bytes(), &actual)
+
+			// validating no error occurred while unmarshalling json to response.Response struct
+			assert.NoError(t, err)
+
+			// validate expected status code and received status code are same
+			assert.Equal(t, tt.expectedCode, recorder.Code)
+
+			// validate expected response message and received response are same
+			assert.Equal(t, tt.expectedResponse.Message, actual.Message)
+
+			// validate expected data and received data are same
+			// type assertion
+			data, ok := actual.Data.(map[string]interface{})
+			if !ok {
+				t.Errorf("type assertion failed for actual.Data")
+			}
+			userData := model.UserDataOutput{
+				ID:    uint(data["user_id"].(float64)),
+				FName: data["f_name"].(string),
+				LName: data["l_name"].(string),
+				Email: data["email"].(string),
+				Phone: data["phone"].(string),
+			}
+
+			// validating expected data and received are same. If not test will fail
+			if !reflect.DeepEqual(tt.expectedData, userData) {
+				t.Errorf("got %v, but want %v", userData, tt.expectedData)
+			}
+		})
+	}
 }
 
 func TestFindUserByID(t *testing.T) {
