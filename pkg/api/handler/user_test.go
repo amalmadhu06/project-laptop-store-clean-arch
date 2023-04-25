@@ -255,7 +255,7 @@ func TestLoginWithEmail(t *testing.T) {
 						Email:    "randomemail@gmail.com",
 						Password: "randomPassword@123",
 					}).
-					Times(1).
+					Times(2).
 					Return("", model.UserDataOutput{}, errors.New("incorrect email id or password"))
 
 			},
