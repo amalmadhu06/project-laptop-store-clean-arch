@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecom
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  web:
+    image: amalmadhu06/ecom-app
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ecom
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    depends_on:
+      - db
+    volumes:
+      - ./template:/app/template
+
+volumes:
+  db-data:
