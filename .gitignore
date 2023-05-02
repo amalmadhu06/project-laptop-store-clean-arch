@@ -21,7 +21,6 @@ build/bin/
 # Go workspace file
 go.work
 .idea
-go.sum
 
 # Environment file
 .env
