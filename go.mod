@@ -12,7 +12,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/razorpay/razorpay-go v0.0.0-20230215135222-7e85dffcb7f0
 	github.com/spf13/viper v1.16.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
 	github.com/swaggo/swag v1.16.1
