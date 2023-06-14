@@ -36,7 +36,7 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 }
 
 func (sh *ServerHTTP) Start() {
-	sh.engine.LoadHTMLGlob("template/*.html")
+	//sh.engine.LoadHTMLGlob("template/*.html")
 	err := sh.engine.Run(":3000")
 	if err != nil {
 		return
