@@ -12,7 +12,7 @@ COPY . .
 RUN go build -o ./out/dist ./cmd/api
 
 # Use a smaller base image for the final image
-FROM alpine:3.14
+FROM alpine:3.14 AS prod
 # copy html files
 COPY template ./template
 # Copy only the necessary files from the build image
