@@ -9,7 +9,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "amalmadhu.live",
+    "host": "localhost:3000",
     "paths": {
         "/addresses/": {
             "put": {

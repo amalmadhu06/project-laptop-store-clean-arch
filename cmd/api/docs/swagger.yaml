@@ -251,7 +251,7 @@ definitions:
       status_code:
         type: integer
     type: object
-host: amalmadhu.live
+host: localhost:3000
 info:
   contact: {}
   description: Ecommerce REST API built using Go Lang, PSQL, REST API following Clean

@@ -44,9 +44,9 @@ wire: ## Generate wire_gen.go
 #	swag init -g pkg/http/handler/user.go -o ./cmd/api/docs
 
 ## swag init -g pkg/api/handler/user.go -o ./cmd/api/docs
+## cd cmd/api && swag init --parseDependency --parseInternal --parseDepth 1 -md ./documentation -o ./docs
 swag: ## Generate swagger docs
 	swag init -g pkg/api/handler/user.go -o ./cmd/api/docs
-	#cd cmd/api && swag init --parseDependency --parseInternal --parseDepth 1 -md ./documentation -o ./docs
 
 
 help: ## Display this help screen
