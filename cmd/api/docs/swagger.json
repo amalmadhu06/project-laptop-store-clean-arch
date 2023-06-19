@@ -1,7 +1,4 @@
 {
-    "schemes": [
-        "https"
-    ],
     "swagger": "2.0",
     "info": {
         "description": "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture.",

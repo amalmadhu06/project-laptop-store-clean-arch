@@ -3092,7 +3092,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:3000",
 	BasePath:         "",
-	Schemes:          []string{"https"},
+	Schemes:          []string{},
 	Title:            "Ecommerce REST API",
 	Description:      "Ecommerce REST API built using Go Lang, PSQL, REST API following Clean Architecture.",
 	InfoInstanceName: "swagger",

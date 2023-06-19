@@ -2054,6 +2054,4 @@ paths:
       summary: User can add product item to wishlist
       tags:
       - Wishlist
-schemes:
-- https
 swagger: "2.0"

@@ -21,9 +21,9 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 func (c *userDatabase) CreateUser(ctx context.Context, user model.UserDataInput) (model.UserDataOutput, error) {
 	var userData model.UserDataOutput
 	//query for creating a new entry in users table
-	createUserQuery := `INSERT INTO users (f_name,l_name,phone,phone,password, created_at)	
+	createUserQuery := `INSERT INTO users (f_name,l_name,email,phone,password, created_at)	
 						VALUES($1,$2,$3,$4,$5, NOW()) 
-						RETURNING id,f_name,l_name,phone,phone`
+						RETURNING id,f_name,l_name,email,phone`
 	//Todo : Context Cancelling
 	err := c.DB.Raw(createUserQuery, user.FName, user.LName, user.Email, user.Phone, user.Password).Scan(&userData).Error
 
@@ -39,11 +39,11 @@ func (c *userDatabase) CreateUser(ctx context.Context, user model.UserDataInput)
 func (c *userDatabase) FindByEmail(ctx context.Context, email string) (model.UserLoginVerifier, error) {
 	var userData model.UserLoginVerifier
 	findUserQuery := `	SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified 
-						FROM users as users 
+						FROM users
 						FULL OUTER JOIN 
 							user_infos as infos
 						ON users.id = infos.users_id 
-						WHERE users.phone = $1;`
+						WHERE users.email = $1;`
 	//Todo : Context Cancelling
 	err := c.DB.Raw(findUserQuery, email).Scan(&userData).Error
 	return userData, err
@@ -52,7 +52,7 @@ func (c *userDatabase) FindByEmail(ctx context.Context, email string) (model.Use
 func (c *userDatabase) FindByPhone(ctx context.Context, phone string) (model.UserLoginVerifier, error) {
 	var userData model.UserLoginVerifier
 	findUserQuery := `SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified 
-					  FROM users as users 
+					  FROM users
 					  FULL OUTER JOIN user_infos as infos 
 					  ON users.id = infos.users_id 
 					  WHERE users.phone = $1;`

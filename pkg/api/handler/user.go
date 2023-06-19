@@ -36,7 +36,6 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // url: https://opensource.org/licenses/MIT
 
 // @host localhost:3000
-// @schemes https
 
 // @BasePath /
 // @Accept json
