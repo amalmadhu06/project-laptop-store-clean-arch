@@ -27,7 +27,7 @@ func (c *adminDatabase) IsSuperAdmin(ctx context.Context, adminId int) (bool, er
 
 func (c *adminDatabase) CreateAdmin(ctx context.Context, newAdminInfo model.NewAdminInfo) (domain.Admin, error) {
 	var newAdmin domain.Admin
-	createAdminQuery := `	INSERT INTO admins(user_name, phone, password, is_super_admin, is_blocked, created_at, updated_at)
+	createAdminQuery := `	INSERT INTO admins(user_name, email, password, is_super_admin, is_blocked, created_at, updated_at)
 							VALUES($1, $2, $3, false,false, NOW(), NOW()) RETURNING *;`
 	err := c.DB.Raw(createAdminQuery, newAdminInfo.UserName, newAdminInfo.Email, newAdminInfo.Password).Scan(&newAdmin).Error
 	newAdmin.Password = ""
@@ -38,7 +38,7 @@ func (c *adminDatabase) FindAdmin(ctx context.Context, email string) (domain.Adm
 	var adminData domain.Admin
 	findAdminQuery := `	SELECT * 
 						FROM admins
-						WHERE phone = $1;`
+						WHERE email = $1;`
 	//Todo : Context Cancelling
 	err := c.DB.Raw(findAdminQuery, email).Scan(&adminData).Error
 	return adminData, err
