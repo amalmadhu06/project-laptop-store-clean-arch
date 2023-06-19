@@ -14,8 +14,7 @@ const (
 INSERT INTO delivery_statuses (status)
 	SELECT ds.status
 	FROM (
-		VALUES ('delivered'),
-		('pending')
+		VALUES ('delivered'),('pending')
 	) AS ds(status)
 	LEFT JOIN delivery_statuses d 
 	    ON d.status = ds.status
@@ -25,14 +24,27 @@ WHERE d.status IS NULL;
 	initOrderStatus string = `
 INSERT INTO order_statuses (order_status)
 	SELECT status
-	FROM (VALUES ('pending'),
-				 ('cancelled by user'),
-				 ('cancelled by admin'),
-				 ('completed'),
-				 ('return requested')
-		 ) AS statuses(status)
+	FROM (VALUES ('pending'),('cancelled by user'),('cancelled by admin'), ('completed'),('return requested')) AS statuses(status)
 	LEFT JOIN order_statuses os ON os.order_status = statuses.status
 WHERE os.order_status IS NULL;
+`
+
+	initPaymentMethod string = `
+INSERT INTO
+    payment_methods (payment_method)
+	SELECT pm.payment_method FROM
+    (VALUES ('cod'), ('online')) AS pm(payment_method)
+    LEFT JOIN payment_methods p ON p.payment_method = pm.payment_method
+WHERE
+    p.payment_method IS NULL;
+`
+
+	initPaymentStatus string = `
+INSERT INTO
+	payment_statuses (payment_status)
+	SELECT ps.payment_status FROM
+	(VALUES ('pending'), ('completed')) AS ps(payment_status)
+	LEFT JOIN payment_statuses p ON p.payment_status = ps.payment_status
 `
 )
 
@@ -85,6 +97,8 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	// populate status tables with predefined values
 	db.Exec(initDeliveryStatus)
 	db.Exec(initOrderStatus)
+	db.Exec(initPaymentMethod)
+	db.Exec(initPaymentStatus)
 
 	return db, dbErr
 }
