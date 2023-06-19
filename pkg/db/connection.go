@@ -9,6 +9,33 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	initDeliveryStatus string = `
+INSERT INTO delivery_statuses (status)
+	SELECT ds.status
+	FROM (
+		VALUES ('delivered'),
+		('pending')
+	) AS ds(status)
+	LEFT JOIN delivery_statuses d 
+	    ON d.status = ds.status
+WHERE d.status IS NULL;
+`
+
+	initOrderStatus string = `
+INSERT INTO order_statuses (order_status)
+	SELECT status
+	FROM (VALUES ('pending'),
+				 ('cancelled by user'),
+				 ('cancelled by admin'),
+				 ('completed'),
+				 ('return requested')
+		 ) AS statuses(status)
+	LEFT JOIN order_statuses os ON os.order_status = statuses.status
+WHERE os.order_status IS NULL;
+`
+)
+
 func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s user=%s dbname=%s port=%s password=%s", cfg.DBHost, cfg.DBUser, cfg.DBName, cfg.DBPort, cfg.DBPassword)
 	db, dbErr := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{
@@ -55,6 +82,9 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	// populate status tables with predefined values
+	db.Exec(initDeliveryStatus)
+	db.Exec(initOrderStatus)
 
 	return db, dbErr
 }
