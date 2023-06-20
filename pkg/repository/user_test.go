@@ -153,7 +153,7 @@ func TestFindByEmail(t *testing.T) {
 			},
 			buildStub: func(mock sqlmock.Sqlmock) {
 				columns := []string{"id", "f_name", "l_name", "email", "phone", "password", "is_blocked", "is_verified"}
-				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
+				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.email (.+)$").
 					WithArgs("sujith@gmail.com").
 					WillReturnRows(sqlmock.NewRows(columns).FromCSVString("3,Sujith,S,sujith@gmail.com,7902638845,sujith@123,f,t"))
 			},
@@ -164,7 +164,7 @@ func TestFindByEmail(t *testing.T) {
 			email:          "nonexistinguser@gmail.com",
 			expectedOutput: model.UserLoginVerifier{},
 			buildStub: func(mock sqlmock.Sqlmock) {
-				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
+				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.email (.+)$").
 					WithArgs("nonexistinguser@gmail.com").
 					WillReturnError(errors.New("no rows found"))
 			},
@@ -238,7 +238,7 @@ func TestFindByPhone(t *testing.T) {
 			},
 			buildStub: func(mock sqlmock.Sqlmock) {
 				columns := []string{"id", "f_name", "l_name", "email", "phone", "password", "is_blocked", "is_verified"}
-				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
+				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
 					WithArgs("7902638875").
 					WillReturnRows(sqlmock.NewRows(columns).FromCSVString("3,Sujith,S,sujith@gmail.com,7902638875,sujith@123,f,t"))
 			},
@@ -249,7 +249,7 @@ func TestFindByPhone(t *testing.T) {
 			phone:          "7902638875",
 			expectedOutput: model.UserLoginVerifier{},
 			buildStub: func(mock sqlmock.Sqlmock) {
-				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users as users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
+				mock.ExpectQuery("SELECT users.id, users.f_name, users.l_name, users.email, users.phone, users.password, infos.is_blocked, infos.is_verified FROM users FULL OUTER JOIN user_infos as infos ON users.id = infos.users_id WHERE users.phone (.+)$").
 					WithArgs("7902638875").
 					WillReturnError(errors.New("no rows found"))
 			},
