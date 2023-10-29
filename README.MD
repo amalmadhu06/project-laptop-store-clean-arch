@@ -54,6 +54,10 @@ Open any browser and access following link
 http://localhost:3000/swagger/index.html#/
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=amalmadhu06/project-laptop-store-clean-arch&type=Timeline)](https://star-history.com/#amalmadhu06/project-laptop-store-clean-arch&Timeline)
+
 ## API Documentation
 
 
