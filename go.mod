@@ -18,8 +18,8 @@ require (
 	github.com/swaggo/swag v1.16.2
 	github.com/twilio/twilio-go v1.14.1
 	golang.org/x/crypto v0.14.0
-	gorm.io/driver/postgres v1.5.3
-	gorm.io/gorm v1.25.4
+	gorm.io/driver/postgres v1.5.4
+	gorm.io/gorm v1.25.5
 )
 
 require (
