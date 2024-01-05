@@ -1,10 +1,11 @@
 package main
 
 import (
+	"log"
+
 	_ "github.com/amalmadhu06/project-laptop-store-clean-arch/cmd/api/docs"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/config"
 	"github.com/amalmadhu06/project-laptop-store-clean-arch/pkg/di"
-	"log"
 )
 
 func main() {
@@ -20,3 +21,5 @@ func main() {
 		server.Start()
 	}
 }
+
+//some test changes
